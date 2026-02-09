@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		<title>LinguaQuest</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Cinzel:wght@400;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			/* Part 2 で記載 */
+		</style>
+	</head>
+	<body>
+		<div class="app-container">
+			<div class="particles" id="particles"></div>
+
+			<!-- ===== NAV ===== -->
+			<nav class="nav-bar">
+				<div class="nav-logo">
+					<span class="logo-icon">✦</span
+					><span class="logo-text">LinguaQuest</span>
+				</div>
+				<div class="world-clocks">
+					<div class="world-clock">
+						<span class="world-clock-time" id="clockJP">--:--:--</span
+						><span class="world-clock-label">🇯🇵 Tokyo</span>
+					</div>
+					<div class="world-clock">
+						<span class="world-clock-time" id="clockHK">--:--:--</span
+						><span class="world-clock-label">🇭🇰 HK</span>
+					</div>
+				</div>
+				<div class="nav-links">
+					<a href="#" class="nav-link active" data-page="home"
+						><span class="nav-icon">🏠</span><span>Home</span></a
+					>
+					<a href="#" class="nav-link" data-page="timer"
+						><span class="nav-icon">⏱️</span><span>Timer</span></a
+					>
+					<a href="#" class="nav-link" data-page="calendar"
+						><span class="nav-icon">📅</span><span>Cal</span></a
+					>
+					<a href="#" class="nav-link" data-page="vocab"
+						><span class="nav-icon">📖</span><span>Vocab</span></a
+					>
+					<a href="#" class="nav-link" data-page="review"
+						><span class="nav-icon">🃏</span><span>Review</span></a
+					>
+					<a href="#" class="nav-link" data-page="character"
+						><span class="nav-icon">🧑</span><span>Char</span></a
+					>
+					<a href="#" class="nav-link" data-page="sphere"
+						><span class="nav-icon">🌐</span><span>Sphere</span></a
+					>
+					<a href="#" class="nav-link" data-page="report"
+						><span class="nav-icon">📊</span><span>Report</span></a
+					>
+				</div>
+			</nav>
+
+			<main class="main-content">
+				<!-- ===== PAGE: HOME ===== -->
+				<section class="page" id="page-home">
+					<div class="hero-section">
+						<div class="hero-greeting">
+							<h1 id="heroGreetingText">おかえりなさい、冒険者</h1>
+							<p class="hero-subtitle">今日も言葉の冒険に出かけよう</p>
+						</div>
+						<div class="streak-display">
+							<div class="streak-flame" id="streakFlame">🔥</div>
+							<div class="streak-info">
+								<span class="streak-count" id="streakCount">0</span>
+								<span class="streak-label">日連続</span>
+							</div>
+						</div>
+					</div>
+					<div class="stats-grid">
+						<div class="stat-card glass-card">
+							<div class="stat-icon">🇺🇸</div>
+							<div class="stat-info">
+								<span class="stat-label">English</span
+								><span class="stat-value" id="statEnToday">未学習</span>
+							</div>
+							<div class="stat-bar">
+								<div
+									class="stat-bar-fill en"
+									id="statEnBar"
+									style="width: 0%"
+								></div>
+							</div>
+						</div>
+						<div class="stat-card glass-card">
+							<div class="stat-icon">🇭🇰</div>
+							<div class="stat-info">
+								<span class="stat-label">廣東話</span
+								><span class="stat-value" id="statYueToday">未学習</span>
+							</div>
+							<div class="stat-bar">
+								<div
+									class="stat-bar-fill yue"
+									id="statYueBar"
+									style="width: 0%"
+								></div>
+							</div>
+						</div>
+					</div>
+					<div class="quick-actions">
+						<h2 class="section-title">⚔️ クイックアクション</h2>
+						<div class="action-grid">
+							<button
+								class="action-card glass-card"
+								onclick="
+									Router.go('timer');
+									TimerApp.selectMode('full');
+								"
+							>
+								<div class="action-icon">⚔️</div>
+								<div class="action-title">Full Session</div>
+								<div class="action-desc">15分×2+休憩30分</div>
+							</button>
+							<button
+								class="action-card glass-card"
+								onclick="
+									Router.go('timer');
+									TimerApp.selectMode('quick');
+								"
+							>
+								<div class="action-icon">🗡️</div>
+								<div class="action-title">Quick Session</div>
+								<div class="action-desc">15分一本勝負</div>
+							</button>
+						</div>
+					</div>
+					<div
+						class="review-section"
+						id="homeReviewSection"
+						style="display: none"
+					>
+						<h2 class="section-title">📖 復習クエスト</h2>
+						<div class="review-card glass-card">
+							<p id="homeReviewMsg"></p>
+							<div class="review-stats">
+								<span class="review-badge en" id="homeRevEn">EN: 0</span>
+								<span class="review-badge yue" id="homeRevYue">YUE: 0</span>
+							</div>
+							<button
+								class="timer-btn start"
+								style="margin-top: 12px"
+								onclick="Router.go('review')"
+							>
+								復習を始める
+							</button>
+						</div>
+					</div>
+					<div class="schedule-section">
+						<h2 class="section-title">🗺️ 今日の冒険マップ</h2>
+						<div class="schedule-card glass-card">
+							<div class="schedule-timeline" id="scheduleTimeline"></div>
+						</div>
+					</div>
+				</section>
+
+				<!-- ===== PAGE: TIMER ===== -->
+				<section class="page" id="page-timer" style="display: none">
+					<div id="timerModeSelect">
+						<h1 class="section-title" style="justify-content: center">
+							⚔️ 冒険モードを選択
+						</h1>
+						<div class="action-grid">
+							<button
+								class="action-card glass-card"
+								onclick="TimerApp.selectMode('full')"
+							>
+								<div class="action-icon">⚔️</div>
+								<div class="action-title">Full Session</div>
+								<div class="action-desc">15分学習→30分休憩→15分学習</div>
+							</button>
+							<button
+								class="action-card glass-card"
+								onclick="TimerApp.selectMode('quick')"
+							>
+								<div class="action-icon">🗡️</div>
+								<div class="action-title">Quick Session</div>
+								<div class="action-desc">15分学習のみ</div>
+							</button>
+						</div>
+					</div>
+					<div id="timerLangSelect" style="display: none">
+						<h1 class="section-title" style="justify-content: center">
+							🌐 言語を選択
+						</h1>
+						<div class="lang-grid">
+							<button
+								class="lang-card glass-card"
+								onclick="TimerApp.selectLang('en')"
+							>
+								<span class="lang-flag">🇺🇸</span
+								><span class="lang-name">English</span>
+							</button>
+							<button
+								class="lang-card glass-card"
+								onclick="TimerApp.selectLang('yue')"
+							>
+								<span class="lang-flag">🇭🇰</span
+								><span class="lang-name">廣東話</span>
+							</button>
+						</div>
+					</div>
+					<div id="timerDisplay" style="display: none">
+						<div class="timer-display">
+							<div class="timer-phase-label" id="phaseLabel">
+								⚔️ 学習フェーズ
+							</div>
+							<div class="timer-lang-label" id="timerLangLabel">🇺🇸 English</div>
+							<div class="timer-ring-container">
+								<svg class="timer-ring" viewBox="0 0 200 200">
+									<circle class="timer-ring-bg" cx="100" cy="100" r="90" />
+									<circle
+										class="timer-ring-progress"
+										id="timerRingProgress"
+										cx="100"
+										cy="100"
+										r="90"
+										stroke-dasharray="565.48"
+										stroke-dashoffset="0"
+									/>
+								</svg>
+								<div class="timer-time" id="timerTime">15:00</div>
+							</div>
+							<div class="timer-info">
+								<span id="setLabel">セット 1/1</span
+								><span id="totalStudied">学習: 0分</span>
+							</div>
+							<div class="timer-controls">
+								<button
+									class="timer-btn start"
+									id="btnStart"
+									onclick="TimerApp.start()"
+								>
+									▶ スタート
+								</button>
+								<button
+									class="timer-btn"
+									id="btnPause"
+									onclick="TimerApp.pause()"
+									style="display: none"
+								>
+									⏸ 一時停止
+								</button>
+								<button
+									class="timer-btn start"
+									id="btnResume"
+									onclick="TimerApp.resume()"
+									style="display: none"
+								>
+									▶ 再開
+								</button>
+								<button
+									class="timer-btn stop"
+									id="btnStop"
+									onclick="TimerApp.stop()"
+									style="display: none"
+								>
+									⏹ 終了
+								</button>
+							</div>
+							<div class="pomo-queue glass-card" id="pomoQueue"></div>
+						</div>
+					</div>
+					<div id="timerComplete" style="display: none">
+						<div
+							class="complete-card glass-card"
+							style="max-width: 480px; margin: 40px auto; text-align: center"
+						>
+							<div style="font-size: 2.8rem; margin-bottom: 10px">🎉</div>
+							<h2
+								style="
+									font-family: 'Cinzel', serif;
+									color: var(--gold);
+									margin-bottom: 18px;
+								"
+							>
+								冒険完了！
+							</h2>
+							<div class="complete-stats">
+								<div class="complete-stat">
+									<span class="complete-stat-value" id="completeMinutes">0</span
+									><span class="complete-stat-label">分間学習</span>
+								</div>
+								<div class="complete-stat">
+									<span class="complete-stat-value" id="completeExp">+0</span
+									><span class="complete-stat-label">EXP</span>
+								</div>
+								<div class="complete-stat">
+									<span class="complete-stat-value" id="completeCrystal"
+										>+0</span
+									><span class="complete-stat-label">言霊の結晶</span>
+								</div>
+							</div>
+							<div class="complete-actions">
+								<button class="timer-btn start" onclick="Router.go('home')">
+									🏠 ホームへ</button
+								><button class="timer-btn start" onclick="TimerApp.reset()">
+									🔄 もう一戦
+								</button>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- ===== PAGE: CALENDAR ===== -->
+				<section class="page" id="page-calendar" style="display: none">
+					<h1 class="section-title">📅 冒険の記録</h1>
+					<div class="streak-banner glass-card">
+						<div class="streak-flame-large" id="calStreakFlame">🔥</div>
+						<div class="streak-banner-info">
+							<span class="streak-banner-count" id="calStreakCount">0</span
+							><span class="streak-banner-label">日連続ストリーク</span>
+						</div>
+						<div class="streak-banner-best">
+							<span>最高: </span><span id="calStreakBest">0</span
+							><span>日</span>
+						</div>
+					</div>
+					<div class="cal-nav">
+						<button class="cal-nav-btn" onclick="CalendarApp.prev()">◀</button>
+						<h2 class="cal-month-label" id="calMonthLabel"></h2>
+						<button class="cal-nav-btn" onclick="CalendarApp.next()">▶</button>
+					</div>
+					<div class="cal-grid glass-card">
+						<div class="cal-header">
+							<span>日</span><span>月</span><span>火</span><span>水</span
+							><span>木</span><span>金</span><span>土</span>
+						</div>
+						<div class="cal-body" id="calBody"></div>
+					</div>
+					<div class="glass-card" id="calDetail" style="display: none">
+						<h3 id="calDetailDate"></h3>
+						<div id="calDetailLangs"></div>
+					</div>
+					<div class="cal-stats glass-card">
+						<h3>今月のまとめ</h3>
+						<div class="cal-stats-grid">
+							<div class="cal-stat-item">
+								<span class="cal-stat-value" id="calMonthDays">0</span
+								><span class="cal-stat-label">学習日</span>
+							</div>
+							<div class="cal-stat-item">
+								<span class="cal-stat-value" id="calMonthMins">0</span
+								><span class="cal-stat-label">合計(分)</span>
+							</div>
+							<div class="cal-stat-item">
+								<span class="cal-stat-value" id="calMonthRate">0%</span
+								><span class="cal-stat-label">達成率</span>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- ===== PAGE: VOCAB ===== -->
+				<section class="page" id="page-vocab" style="display: none">
+					<h1 class="section-title">📖 単語帳</h1>
+					<div class="vocab-controls">
+						<button
+							class="vocab-tab active"
+							data-lang="en"
+							onclick="VocabApp.setLang('en')"
+						>
+							🇺🇸 English
+						</button>
+						<button
+							class="vocab-tab"
+							data-lang="yue"
+							onclick="VocabApp.setLang('yue')"
+						>
+							🇭🇰 廣東話
+						</button>
+					</div>
+					<div class="glass-card" style="margin-bottom: 20px">
+						<h3
+							style="font-size: 0.9rem; color: var(--gold); margin-bottom: 10px"
+						>
+							➕ 単語を追加
+						</h3>
+						<div class="vocab-add-form">
+							<input
+								class="vocab-input"
+								id="inputWord"
+								placeholder="単語 / Word"
+							/>
+							<input
+								class="vocab-input"
+								id="inputMeaning"
+								placeholder="意味（日本語）"
+							/>
+							<input
+								class="vocab-input"
+								id="inputPron"
+								placeholder="🗣️ カタカナ発音"
+							/>
+							<input
+								class="vocab-input"
+								id="inputJyutping"
+								placeholder="🔤 Jyutping（広東語のみ）"
+							/>
+							<input
+								class="vocab-input"
+								id="inputExample"
+								placeholder="例文（任意）"
+								style="grid-column: 1/-1"
+							/>
+						</div>
+						<button
+							class="timer-btn start"
+							onclick="VocabApp.add()"
+							style="width: 100%; margin-top: 8px"
+						>
+							追加する
+						</button>
+					</div>
+					<div class="glass-card" style="margin-bottom: 20px">
+						<h3
+							style="font-size: 0.9rem; color: var(--gold); margin-bottom: 10px"
+						>
+							📋 CSVインポート / エクスポート
+						</h3>
+						<textarea
+							class="vocab-csv-area"
+							id="csvArea"
+							placeholder="word, meaning, pronunciation, jyutping, tone, example, status"
+						></textarea>
+						<div style="display: flex; gap: 8px; margin-top: 8px">
+							<button
+								class="timer-btn start"
+								onclick="VocabApp.importCSV()"
+								style="flex: 1"
+							>
+								インポート
+							</button>
+							<button
+								class="timer-btn"
+								onclick="VocabApp.exportCSV()"
+								style="flex: 1"
+							>
+								エクスポート
+							</button>
+						</div>
+					</div>
+					<p class="vocab-count" id="vocabCount">0語</p>
+					<div id="vocabList"></div>
+				</section>
+
+				<!-- ===== PAGE: REVIEW ===== -->
+				<section class="page" id="page-review" style="display: none">
+					<h1 class="section-title">🃏 フラッシュカード復習</h1>
+					<div class="review-progress">
+						<span id="revCurrent">0</span> / <span id="revTotal">0</span>
+					</div>
+					<div id="reviewArea">
+						<div
+							class="review-flashcard glass-card"
+							id="flashcard"
+							onclick="ReviewApp.flip()"
+						>
+							<div class="review-flashcard-front">
+								<div class="review-flashcard-word" id="fcWord"></div>
+								<div class="review-flashcard-hint" id="fcHint"></div>
+								<p
+									style="
+										font-size: 0.75rem;
+										color: var(--text-muted);
+										margin-top: 12px;
+									"
+								>
+									タップで答えを表示
+								</p>
+							</div>
+							<div class="review-flashcard-back">
+								<img
+									class="review-flashcard-img"
+									id="fcImg"
+									src=""
+									alt=""
+									style="display: none"
+								/>
+								<div class="review-flashcard-meaning" id="fcMeaning"></div>
+								<div class="review-flashcard-pron" id="fcPron"></div>
+								<div class="review-flashcard-example" id="fcExample"></div>
+							</div>
+						</div>
+						<div class="review-rating" id="ratingBtns" style="display: none">
+							<button class="review-rating-btn r1" onclick="ReviewApp.rate(1)">
+								1 全然
+							</button>
+							<button class="review-rating-btn" onclick="ReviewApp.rate(2)">
+								2 難しい
+							</button>
+							<button class="review-rating-btn r3" onclick="ReviewApp.rate(3)">
+								3 まあまあ
+							</button>
+							<button class="review-rating-btn" onclick="ReviewApp.rate(4)">
+								4 簡単
+							</button>
+							<button class="review-rating-btn r5" onclick="ReviewApp.rate(5)">
+								5 完璧！
+							</button>
+						</div>
+					</div>
+					<div id="reviewDone" style="display: none">
+						<div class="glass-card" style="padding: 40px; text-align: center">
+							<div style="font-size: 2.5rem; margin-bottom: 12px">🎉</div>
+							<h2
+								style="
+									font-family: 'Cinzel', serif;
+									color: var(--gold);
+									margin-bottom: 12px;
+								"
+							>
+								復習完了！
+							</h2>
+							<p style="color: var(--text-secondary)">
+								<span id="revDoneCount">0</span>語を復習しました
+							</p>
+							<button
+								class="timer-btn start"
+								style="margin-top: 16px"
+								onclick="Router.go('home')"
+							>
+								🏠 ホームへ
+							</button>
+						</div>
+					</div>
+				</section>
+
+				<!-- ===== PAGE: CHARACTER ===== -->
+				<section class="page" id="page-character" style="display: none">
+					<h1 class="section-title">🧑 キャラクター</h1>
+					<div class="char-current glass-card">
+						<div class="char-avatar" id="charAvatar">🧑</div>
+						<div class="char-info">
+							<div class="char-name" id="charName">Lv.1</div>
+							<div class="char-class" id="charClass">Apprentice Linguist</div>
+							<div class="char-resources">
+								<div class="char-resource">
+									<span>💎</span
+									><span class="char-resource-val" id="charCrystals">0</span
+									><span>結晶</span>
+								</div>
+								<div class="char-resource">
+									<span>🪙</span
+									><span class="char-resource-val" id="charPoints">0</span
+									><span>pt</span>
+								</div>
+							</div>
+							<div class="char-exp-bar">
+								<div
+									class="char-exp-fill"
+									id="charExpFill"
+									style="width: 0%"
+								></div>
+							</div>
+							<div class="char-exp-text" id="charExpText">EXP: 0/100</div>
+						</div>
+					</div>
+					<h2 class="section-title">
+						🏰 種族
+						<span style="font-size: 0.72rem; color: var(--text-muted)"
+							>(変更100pt)</span
+						>
+					</h2>
+					<div class="char-grid" id="ancestryGrid"></div>
+					<h2 class="section-title">
+						⚔️ 職業
+						<span style="font-size: 0.72rem; color: var(--text-muted)"
+							>(変更50pt)</span
+						>
+					</h2>
+					<div class="char-grid" id="classGrid"></div>
+				</section>
+
+				<!-- ===== PAGE: SPHERE GRID ===== -->
+				<section class="page" id="page-sphere" style="display: none">
+					<h1 class="section-title">🌐 スフィア盤 — 言霊の座</h1>
+					<div class="sphere-stats">
+						<div class="sphere-stat">
+							<span>💎</span><span id="sphereCrystals">0</span><span>結晶</span>
+						</div>
+						<div class="sphere-stat">
+							<span>🔓</span><span id="sphereUnlocked">0</span><span>解放</span>
+						</div>
+						<div class="sphere-stat">
+							<span>⭐</span><span id="sphereSpec">0/5</span><span>特化</span>
+						</div>
+					</div>
+					<div class="sphere-info glass-card" id="sphereInfoCard">
+						<p style="color: var(--text-muted)">
+							ノードをクリックして詳細を表示
+						</p>
+					</div>
+					<div class="sphere-container">
+						<div class="sphere-canvas" id="sphereCanvas"></div>
+					</div>
+				</section>
+
+				<!-- ===== PAGE: REPORT ===== -->
+				<section class="page" id="page-report" style="display: none">
+					<h1 class="section-title">📊 冒険レポート</h1>
+					<div class="report-period">
+						<button
+							class="report-tab active"
+							data-days="7"
+							onclick="ReportApp.setPeriod(7)"
+						>
+							7日
+						</button>
+						<button
+							class="report-tab"
+							data-days="14"
+							onclick="ReportApp.setPeriod(14)"
+						>
+							14日
+						</button>
+						<button
+							class="report-tab"
+							data-days="30"
+							onclick="ReportApp.setPeriod(30)"
+						>
+							30日
+						</button>
+					</div>
+					<div class="report-grid">
+						<div class="report-card glass-card">
+							<span class="report-card-value" id="rptDays">0</span
+							><span class="report-card-label">学習日</span>
+						</div>
+						<div class="report-card glass-card">
+							<span class="report-card-value" id="rptMins">0</span
+							><span class="report-card-label">合計(分)</span>
+						</div>
+						<div class="report-card glass-card">
+							<span class="report-card-value" id="rptWords">0</span
+							><span class="report-card-label">新規単語</span>
+						</div>
+						<div class="report-card glass-card">
+							<span class="report-card-value" id="rptStreak">0</span
+							><span class="report-card-label">🔥 ストリーク</span>
+						</div>
+						<div class="report-card glass-card">
+							<span class="report-card-value" id="rptLevel">Lv.1</span
+							><span class="report-card-label">レベル</span>
+						</div>
+						<div class="report-card glass-card">
+							<span class="report-card-value" id="rptExp">0</span
+							><span class="report-card-label">EXP</span>
+						</div>
+					</div>
+					<h2 class="section-title">🌐 言語別</h2>
+					<div class="glass-card">
+						<div class="report-lang-row">
+							<span class="report-lang-flag">🇺🇸</span
+							><span class="report-lang-name">English</span>
+							<div class="report-lang-bar">
+								<div
+									class="report-lang-bar-fill en"
+									id="rptBar_en"
+									style="width: 0%"
+								></div>
+							</div>
+							<span class="report-lang-mins" id="rptMins_en">0分</span>
+						</div>
+						<div class="report-lang-row">
+							<span class="report-lang-flag">🇭🇰</span
+							><span class="report-lang-name">廣東話</span>
+							<div class="report-lang-bar">
+								<div
+									class="report-lang-bar-fill yue"
+									id="rptBar_yue"
+									style="width: 0%"
+								></div>
+							</div>
+							<span class="report-lang-mins" id="rptMins_yue">0分</span>
+						</div>
+					</div>
+				</section>
+			</main>
+			<footer class="app-footer">
+				<p>LinguaQuest v1.0 — 言葉の冒険は続く ✦</p>
+			</footer>
+		</div>
+
+		<script>
+			/* Part 3 で記載 */
+		</script>
+	</body>
+</html>
