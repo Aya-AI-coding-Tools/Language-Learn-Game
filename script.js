@@ -1,3124 +1,3319 @@
-// ============================================================
-// LinguaQuest app.js — Complete (compressed data)
-// ============================================================
+/* ============================================================
+   LinguaQuest — app.js (ALL-IN-ONE: Data + Logic + AI Tutor)
+   ============================================================ */
 
-// === ANCESTRIES (30) ===
-const A_ = [
-	[
-		'human',
-		'Human/ヒューマン',
-		'万能種族',
-		'👤',
-		'Core',
-		[
-			['versatile', 'Versatile/万能型', '全EXP+3%'],
-			['skilled', 'Skilled/技巧型', 'Vocabコスト-1'],
-			['ambitious', 'Ambitious/野心型', 'LVアップ結晶+2'],
-		],
-	],
-	[
-		'elf',
-		'Elf/エルフ',
-		'文法と読解に才能',
-		'🧝',
-		'Core',
-		[
-			['ancient', 'Ancient Elf/古代', 'Grammarコスト-2'],
-			['woodland', 'Woodland/森', 'Listening+5%'],
-			['cavern', 'Cavern/洞窟', '復習間隔+0.5日'],
-			['seer', 'Seer/予見', 'イベント報酬+20%'],
-		],
-	],
-	[
-		'dwarf',
-		'Dwarf/ドワーフ',
-		'継続学習に強い',
-		'⛏️',
-		'Core',
-		[
-			['forge', 'Forge/炉', 'ストリークEXP+10%'],
-			['strong', 'Strong-Blooded/強血', 'ポモドーロEXP+5%'],
-			['rock', 'Rock/岩', 'Writingコスト-1'],
-		],
-	],
-	[
-		'gnome',
-		'Gnome/ノーム',
-		'好奇心旺盛',
-		'🍄',
-		'Core',
-		[
-			['fey', 'Fey-Touched/妖精', '新単語EXP+3'],
-			['sensate', 'Sensate/感覚', '画像記憶+10%'],
-			['umbral', 'Umbral/影', '夜間EXP+8%'],
-			['wellspring', 'Wellspring/泉', '結晶+10%'],
-		],
-	],
-	[
-		'halfling',
-		'Halfling/ハーフリング',
-		'幸運と機転',
-		'🦶',
-		'Core',
-		[
-			['gutsy', 'Gutsy/度胸', 'ボスEXP+15%'],
-			['hillock', 'Hillock/丘', 'Quick EXP+10%'],
-			['nomadic', 'Nomadic/放浪', '多言語+20%'],
-		],
-	],
-	[
-		'goblin',
-		'Goblin/ゴブリン',
-		'素早い学習者',
-		'👺',
-		'Core',
-		[
-			['charhide', 'Charhide/焦皮', '連続正解+12%'],
-			['irongut', 'Irongut/鉄腹', 'ストリーク保護1日'],
-			['razortooth', 'Razortooth/剃刀', 'Speaking+5%'],
-			['unbreakable', 'Unbreakable/不壊', '全コスト-1'],
-		],
-	],
-	[
-		'orc',
-		'Orc/オーク',
-		'困難なノードに挑む',
-		'💪',
-		'Core',
-		[
-			['badlands', 'Badlands/荒野', '★4+EXP+10%'],
-			['hold', 'Hold-Scarred/傷痕', '失敗ペナ半減'],
-			['rainfall', 'Rainfall/雨', 'Listeningコスト-2'],
-		],
-	],
-	[
-		'leshy',
-		'Leshy/レシー',
-		'着実に成長',
-		'🌿',
-		'Core',
-		[
-			['fungus', 'Fungus/菌糸', '復習間隔+1日'],
-			['leaf', 'Leaf/葉', '朝学習EXP+8%'],
-			['vine', 'Vine/蔓', '隣接ノード割引'],
-		],
-	],
-	[
-		'kobold',
-		'Kobold/コボルド',
-		'効率的パス発見',
-		'🐉',
-		'Uncommon',
-		[
-			['caveclimber', 'Caveclimber/洞窟', '隠しルート+15%'],
-			['dragonscaled', 'Dragonscaled/竜鱗', '属性EXP+8%'],
-			['tunnelflood', 'Tunnelflood/洪水', '3ノード同時で結晶+3'],
-		],
-	],
-	[
-		'catfolk',
-		'Catfolk/キャットフォーク',
-		'反射神経優秀',
-		'🐱',
-		'Uncommon',
-		[
-			['clawed', 'Clawed/爪', 'FC速度+5%'],
-			['hunting', 'Hunting/狩猟', 'Listening+7%'],
-			['ninelives', 'Nine Lives/九命', '失敗2回無効'],
-		],
-	],
-	[
-		'tengu',
-		'Tengu/テング',
-		'発音と語彙に才能',
-		'🐦‍⬛',
-		'Uncommon',
-		[
-			['jinxed', 'Jinxed/呪われ', 'イベント+20%'],
-			['mountainkeeper', 'Mountainkeeper/山守', 'Speaking+7%'],
-			['skyborn', 'Skyborn/空生まれ', 'Vocab+8%'],
-			['stormtossed', 'Stormtossed/嵐', 'ボス報酬+25%'],
-		],
-	],
-	[
-		'kitsune',
-		'Kitsune/キツネ',
-		'多言語切替得意',
-		'🦊',
-		'Uncommon',
-		[
-			['celestial', 'Celestial/天使い', '切替EXP+5'],
-			['dark_k', 'Dark Fields/闇野', '夜間+10%'],
-			['earthly', 'Earthly/地の野', '復習+5%'],
-			['frozen', 'Frozen Wind/凍風', '7日連続+5%'],
-		],
-	],
-	[
-		'ratfolk',
-		'Ratfolk/ラットフォーク',
-		'単語関連付け',
-		'🐀',
-		'Uncommon',
-		[
-			['deeprat', 'Deep Rat/深淵', 'グループ+3/語'],
-			['longsnout', 'Longsnout/長鼻', 'CSV+10%'],
-			['sewer', 'Sewer/下水', '全コスト-1'],
-		],
-	],
-	[
-		'fetchling',
-		'Fetchling/フェッチリング',
-		'文法パターン発見',
-		'🌑',
-		'Uncommon',
-		[
-			['bright', 'Bright/輝影', 'Grammar+8%'],
-			['deep_f', 'Deep/深影', '★5コスト-3'],
-			['liminal', 'Liminal/境界', '共通ノード+10%'],
-		],
-	],
-	[
-		'automaton',
-		'Automaton/オートマトン',
-		'反復学習の達人',
-		'🤖',
-		'Uncommon',
-		[
-			['hunter_auto', 'Hunter/狩猟', 'ポモドーロ連続+8%'],
-			['mage_auto', 'Mage/魔導', '可視範囲+1'],
-			['warrior_auto', 'Warrior/戦士', 'ボス難易度軽減'],
-		],
-	],
-	[
-		'poppet',
-		'Poppet/ポペット',
-		'記憶力抜群',
-		'🧸',
-		'Uncommon',
-		[
-			['ghost_p', 'Ghost/幽霊', '忘却曲線-10%'],
-			['royal', 'Royal/王族', '称号時結晶+5'],
-			['stuffed', 'Stuffed/ぬいぐるみ', '休憩後+5%'],
-		],
-	],
-	[
-		'sprite',
-		'Sprite/スプライト',
-		'素早いセッション向き',
-		'✨',
-		'Uncommon',
-		[
-			['draxie', 'Draxie', 'Quick+15%'],
-			['grig', 'Grig/グリグ', '音楽記憶+5%'],
-			['luminous', 'Luminous/光', '演出+EXP+3%'],
-			['pixie', 'Pixie/ピクシー', 'ボーナスイベント+15%'],
-		],
-	],
-	[
-		'strix',
-		'Strix/ストリクス',
-		'夜行種族',
-		'🦅',
-		'Rare',
-		[
-			['nightglider', 'Nightglider/夜滑空', '夜間+12%'],
-			['predator', 'Predator/捕食者', '5連続でEXP2倍'],
-			['scavenger', 'Scavenger/屍食い', '宝箱報酬2倍'],
-		],
-	],
-	[
-		'grippli',
-		'Grippli/グリプリ',
-		'粘り強い反復',
-		'🐸',
-		'Rare',
-		[
-			['poisonhide', 'Poisonhide/毒皮', 'Hard+15%'],
-			['snaptongue', 'Snaptongue/弾舌', '発音+8%'],
-			['windweb', 'Windweb/風糸', 'Writing+7%'],
-		],
-	],
-	[
-		'azarketi',
-		'Azarketi/アザルケティ',
-		'リスニング抜群',
-		'🌊',
-		'Rare',
-		[
-			['benthic', 'Benthic/深海', '長文Listening+10%'],
-			['river', 'River/河川', '30分連続+8%'],
-			['thalassic', 'Thalassic/外洋', 'Listeningコスト-2'],
-		],
-	],
-	[
-		'conrasu',
-		'Conrasu/コンラス',
-		'体系的学習',
-		'🔮',
-		'Rare',
-		[
-			['rite_know', 'Knowing/知の儀式', 'Grammar+10%'],
-			['rite_light', 'Light/光の儀式', '全ノード可視'],
-			['rite_passage', 'Passage/通過儀式', 'ボスクリア結晶+5'],
-		],
-	],
-	[
-		'fleshwarp',
-		'Fleshwarp/フレッシュワープ',
-		'枠を超える学習',
-		'🧬',
-		'Rare',
-		[
-			['created', 'Created/被造物', 'カスタム+5%'],
-			['mutated', 'Mutated/突然変異', '20%でスキル1.5倍'],
-			['shapewrought', 'Shapewrought/形鋳', 'Heritage変更可'],
-		],
-	],
-	[
-		'ganzi',
-		'Ganzi/ガンジ',
-		'予測不能ボーナス',
-		'🎲',
-		'Rare',
-		[
-			['keened', 'Keened/鋭敏', '正解時EXPランダム倍'],
-			['mutable', 'Mutable/可変', '毎日ランダム+20%'],
-			['offbalance', 'Offbalance/不均衡', '予想外接続10%'],
-		],
-	],
-	[
-		'ghoran',
-		'Ghoran/ゴーラン',
-		'知識の種を蒔く',
-		'🌸',
-		'Rare',
-		[
-			['enchanting', 'Enchanting/魅惑', '共有+10%'],
-			['strong_oak', 'Strong Oak/強樫', '30日連続+10%'],
-			['thorned', 'Thorned/棘', '失敗→成功+15%'],
-		],
-	],
-	[
-		'goloma',
-		'Goloma/ゴロマ',
-		'ミスを素早く修正',
-		'👁️',
-		'Rare',
-		[
-			['frightful', 'Frightful/恐怖', 'ミス検出+10%'],
-			['insightful', 'Insightful/洞察', '復習最適化'],
-			['vicious', 'Vicious/凶暴', 'ボス2連勝3倍'],
-		],
-	],
-	[
-		'kashrishi',
-		'Kashrishi/カシリシ',
-		'結晶の扱いに長ける',
-		'💎',
-		'Rare',
-		[
-			['athamasi', 'Athamasi', '結晶+20%'],
-			['nascent', 'Nascent/新生', '新ノードEXP+5'],
-			['trogloshi', 'Trogloshi', '暗記+8%'],
-		],
-	],
-	[
-		'nagaji',
-		'Nagaji/ナガジ',
-		'集中と忍耐',
-		'🐍',
-		'Rare',
-		[
-			['hooded', 'Hooded/冠蛇', '集中+10%'],
-			['sacred', 'Sacred/聖蛇', '復習正解+5%'],
-			['whipfang', 'Whipfang/鞭牙', 'Speaking速度+12%'],
-		],
-	],
-	[
-		'shisk',
-		'Shisk/シスク',
-		'知識の守護者',
-		'📚',
-		'Rare',
-		[
-			['lorekeeper', 'Lorekeeper/伝承', 'マスター間隔+50%'],
-			['quillcoat', 'Quillcoat/針衣', 'Writing+10%'],
-			['spellkeeper', 'Spellkeeper/呪文', 'Grammarコスト-2'],
-		],
-	],
-	[
-		'vanara',
-		'Vanara/ヴァナラ',
-		'俊敏な思考と模倣',
-		'🐒',
-		'Rare',
-		[
-			['bandaagee', 'Bandaagee', '模倣+10%'],
-			['lahkgyan', 'Lahkgyan', '新手法+8%'],
-			['wajaghand', 'Wajaghand', 'Vocab全+7%'],
-		],
-	],
-	[
-		'vishkanya',
-		'Vishkanya/ヴィシュカニャ',
-		'ニュアンスを捉える',
-		'💜',
-		'Rare',
-		[
-			['elusive', 'Elusive/逃げ水', 'イベント選択肢+1'],
-			['old_venom', 'Old Venom/古毒', '難単語記憶+15%'],
-			['prismatic', 'Prismatic/虹彩', '多言語切替+8%'],
-		],
-	],
-	[
-		'anadi',
-		'Anadi/アナディ',
-		'知識のネットワーク',
-		'🕷️',
-		'Rare',
-		[
-			['adaptive_a', 'Adaptive/適応', '種族変更可'],
-			['snaring', 'Snaring/罠', '連続正解で指数EXP'],
-			['venomous', 'Venomous/毒', '間違い優先+正解2倍'],
-		],
-	],
-];
-const ANCESTRIES = A_.map((a) => ({
-	id: a[0],
-	name: a[1],
-	desc: a[2],
-	icon: a[3],
-	category: a[4],
-	heritages: a[5].map((h) => ({ id: h[0], name: h[1], desc: h[2] })),
-}));
+/* ==================== DATA ==================== */
+function expForLevel(lv) {
+	return Math.floor(100 * Math.pow(1.15, lv - 1));
+}
 
-// === CLASSES (23) ===
-const C_ = [
-	[
-		'fighter',
-		'Fighter/ファイター',
-		'Speaking特化',
-		'⚔️',
-		'Martial',
-		[
-			['duelist', 'Duelist/決闘士', '会話+10%'],
-			['shieldwall', 'Shieldwall/盾壁', '文法耐性+15%'],
-			['weaponmaster', 'Weapon Master/武器', 'Speakingコスト-3'],
-		],
-		{ speaking: -2, vocab: 0, grammar: 1, listening: 0, writing: 1 },
-	],
-	[
-		'rogue',
-		'Rogue/ローグ',
-		'効率の達人',
-		'🗡️',
-		'Martial',
-		[
-			['thief', 'Thief/盗賊', 'EXP5%吸収'],
-			['mastermind', 'Mastermind/策士', '計画+8%'],
-			['scoundrel', 'Scoundrel/悪漢', 'ボス弱点+20%'],
-		],
-		{ speaking: 0, vocab: -1, grammar: 0, listening: 0, writing: -1 },
-	],
-	[
-		'ranger',
-		'Ranger/レンジャー',
-		'Listening特化',
-		'🏹',
-		'Martial',
-		[
-			['hunter_r', 'Hunter/狩人', 'Listening+12%'],
-			['outwit', 'Outwit/知恵', 'イベント正解+15%'],
-			['precision', 'Precision/精密', '発音+10%'],
-		],
-		{ speaking: 0, vocab: 0, grammar: 1, listening: -3, writing: 1 },
-	],
-	[
-		'barbarian',
-		'Barbarian/バーバリアン',
-		'短期集中の王',
-		'🪓',
-		'Martial',
-		[
-			['fury', 'Fury/激怒', 'Quick+20%'],
-			['giant', 'Giant/巨人', 'EXP上限+50%'],
-			['spirit_b', 'Spirit/精霊', '怒りゲージ蓄積'],
-		],
-		{ speaking: -1, vocab: 0, grammar: 2, listening: 0, writing: 1 },
-	],
-	[
-		'monk',
-		'Monk/モンク',
-		'規律正しい反復',
-		'👊',
-		'Martial',
-		[
-			['crane', 'Crane/鶴', '復習+12%'],
-			['mountain', 'Mountain/山', 'ストリーク2倍'],
-			['tiger', 'Tiger/虎', 'Speaking連続+15%'],
-		],
-		{ speaking: 0, vocab: 1, grammar: 0, listening: 0, writing: -2 },
-	],
-	[
-		'champion',
-		'Champion/チャンピオン',
-		'学習の守護者',
-		'🛡️',
-		'Martial',
-		[
-			['paladin', 'Paladin', 'ログイン+10EXP'],
-			['liberator', 'Liberator/解放', 'ロックコスト-2'],
-			['redeemer', 'Redeemer/贖い', 'Again次回2倍'],
-		],
-		{ speaking: 0, vocab: 0, grammar: -1, listening: 0, writing: -1 },
-	],
-	[
-		'swashbuckler',
-		'Swashbuckler/スワッシュバックラー',
-		'華麗なる剣士',
-		'🤺',
-		'Martial',
-		[
-			['braggart', 'Braggart/自慢', 'スタイルP→EXP'],
-			['fencer', 'Fencer/フェンサー', '速答+15%'],
-			['gymnast', 'Gymnast/体操', '切替速度+8%'],
-		],
-		{ speaking: -2, vocab: 1, grammar: 1, listening: 0, writing: 0 },
-	],
-	[
-		'gunslinger',
-		'Gunslinger/ガンスリンガー',
-		'一撃必中',
-		'🔫',
-		'Martial',
-		[
-			['drifter', 'Drifter/流れ者', '多言語同時+10%'],
-			['sniper', 'Sniper/狙撃', 'ノーヒント3倍'],
-			['vanguard', 'Vanguard/前衛', '最速解放+5'],
-		],
-		{ speaking: 0, vocab: -2, grammar: 0, listening: 1, writing: 0 },
-	],
-	[
-		'wizard',
-		'Wizard/ウィザード',
-		'Grammar体系理解',
-		'🧙',
-		'Caster',
-		[
-			['abjuration', 'Abjuration/防護', '忘却-15%'],
-			['evocation', 'Evocation/力術', 'Grammar+15%'],
-			['divination', 'Divination/占術', '最適復習予測'],
-			['universalist', 'Universalist/万能', '全+5%'],
-		],
-		{ speaking: 1, vocab: 0, grammar: -3, listening: 1, writing: 0 },
-	],
-	[
-		'cleric',
-		'Cleric/クレリック',
-		'復習と記憶定着',
-		'⛪',
-		'Caster',
-		[
-			['healing', 'Healing/癒し', '忘れかけ+20%'],
-			['harmful', 'Harmful/害', '特訓+15%'],
-			['warpriest', 'Warpriest/戦神官', '複合+10%'],
-		],
-		{ speaking: 0, vocab: -1, grammar: 0, listening: 0, writing: -1 },
-	],
-	[
-		'bard',
-		'Bard/バード',
-		'Listening&Speaking二刀流',
-		'🎵',
-		'Caster',
-		[
-			['maestro', 'Maestro', '音声全+12%'],
-			['polymath', 'Polymath/博学', '交互学習+8%'],
-			['enigma', 'Enigma/謎', 'イベント報酬+30%'],
-		],
-		{ speaking: -1, vocab: 0, grammar: 0, listening: -1, writing: 1 },
-	],
-	[
-		'sorcerer',
-		'Sorcerer/ソーサラー',
-		'直感的学習',
-		'🔥',
-		'Caster',
-		[
-			['draconic', 'Draconic/竜血', '広東語+15%'],
-			['imperial', 'Imperial/帝血', '英語+15%'],
-			['fey_s', 'Fey/妖精血', '宝箱+25%'],
-			['divine_s', 'Divine/神血', '復習連続+10%'],
-		],
-		{ speaking: 0, vocab: 0, grammar: 0, listening: -1, writing: -1 },
-	],
-	[
-		'druid',
-		'Druid/ドルイド',
-		'バランス型成長',
-		'🌙',
-		'Caster',
-		[
-			['storm', 'Storm/嵐', '集中+12%'],
-			['wild', 'Wild/野生', '3秒以内+20%'],
-			['leaf_d', 'Leaf/葉', 'Vocab全+8%'],
-		],
-		{ speaking: 0, vocab: -1, grammar: -1, listening: 0, writing: 0 },
-	],
-	[
-		'witch',
-		'Witch/ウィッチ',
-		'予測不能な効果',
-		'🧹',
-		'Caster',
-		[
-			['curse', 'Curse/呪い', '間違い+25%'],
-			['hex', 'Lesson/教訓', '開始時バフ'],
-			['familiar', 'Familiar/使い魔', '1時間+1結晶'],
-		],
-		{ speaking: 0, vocab: 0, grammar: -2, listening: 0, writing: 0 },
-	],
-	[
-		'oracle',
-		'Oracle/オラクル',
-		'代償と引き換えに強力',
-		'🔮',
-		'Caster',
-		[
-			['bones', 'Bones/骸骨', '忘却回収+30%'],
-			['flames', 'Flames/炎', '全+10%間隔-10%'],
-			['cosmos', 'Cosmos/宇宙', '隠しノード+25%'],
-		],
-		{ speaking: 0, vocab: 0, grammar: 0, listening: -2, writing: 0 },
-	],
-	[
-		'alchemist',
-		'Alchemist/アルケミスト',
-		'知識の錬金術師',
-		'⚗️',
-		'Caster',
-		[
-			['bomber', 'Bomber/爆弾', '短期集中+18%'],
-			['chirurgeon', 'Chirurgeon/外科', '弱点分析'],
-			['mutagenist', 'Mutagenist/変異', '一時2倍(結晶3)'],
-		],
-		{ speaking: 0, vocab: -1, grammar: 0, listening: 0, writing: -1 },
-	],
-	[
-		'investigator',
-		'Investigator/インヴェスティゲーター',
-		'文脈と推理',
-		'🔍',
-		'Hybrid',
-		[
-			['empiricism', 'Empiricism/経験', '文脈推測+20%'],
-			['forensic', 'Forensic/法医', 'パターン分析'],
-			['interrogation', 'Interrogation/尋問', '質問形式+12%'],
-		],
-		{ speaking: 0, vocab: 0, grammar: -1, listening: -1, writing: 0 },
-	],
-	[
-		'magus',
-		'Magus/メイガス',
-		'Speaking+Grammar複合',
-		'⚡',
-		'Hybrid',
-		[
-			['laughing', 'Laughing Shadow/笑う影', '複合+15%'],
-			['sparkling', 'Sparkling Targe/閃盾', '復習重視+10%'],
-			['starlit', 'Starlit Span/星光', 'Listening+Reading+12%'],
-		],
-		{ speaking: -1, vocab: 0, grammar: -1, listening: 0, writing: 0 },
-	],
-	[
-		'summoner',
-		'Summoner/サモナー',
-		'Vocab圧倒',
-		'👻',
-		'Hybrid',
-		[
-			['angel', 'Angel/天使', 'Vocab+15%間隔+20%'],
-			['dragon_e', 'Dragon/竜', '広東語Vocab+20%'],
-			['phantom', 'Phantom/幻影', '暗記全+12%'],
-		],
-		{ speaking: 1, vocab: -3, grammar: 0, listening: 0, writing: 1 },
-	],
-	[
-		'inventor',
-		'Inventor/インヴェンター',
-		'ツールカスタマイズ',
-		'🔧',
-		'Hybrid',
-		[
-			['armor_i', 'Armor/防具', 'ストリーク保護+2'],
-			['construct', 'Construct/構造体', '自動復習最適化'],
-			['weapon_i', 'Weapon/武器', 'ノード効果+20%'],
-		],
-		{ speaking: 0, vocab: 0, grammar: 0, listening: -1, writing: -1 },
-	],
-	[
-		'psychic',
-		'Psychic/サイキック',
-		'記憶術の達人',
-		'🧠',
-		'Hybrid',
-		[
-			['conscious', 'Conscious/意識', '記憶+12%'],
-			['subconscious', 'Subconscious/無意識', 'パッシブ+15%'],
-			['oscillating', 'Oscillating/振動波', 'EXP変動+10~30%'],
-		],
-		{ speaking: 0, vocab: -2, grammar: 0, listening: 0, writing: 0 },
-	],
-	[
-		'thaumaturge',
-		'Thaumaturge/サウマタージ',
-		'隠された法則発見',
-		'📿',
-		'Hybrid',
-		[
-			['tome', 'Tome/書物', 'Reading+Writing+12%'],
-			['chalice', 'Chalice/聖杯', '復習完了やる気回復'],
-			['lantern', 'Lantern/灯火', '未発見照明'],
-		],
-		{ speaking: 0, vocab: 0, grammar: -1, listening: 0, writing: -1 },
-	],
-	[
-		'kineticist',
-		'Kineticist/キネティシスト',
-		'属性ノードの達人',
-		'🌀',
-		'Hybrid',
-		[
-			['fire_g', 'Fire Gate/火門', '火+20%コスト-2'],
-			['water_g', 'Water Gate/水門', '水+20%コスト-2'],
-			['air_g', 'Air Gate/風門', '風+20%コスト-2'],
-			['earth_g', 'Earth Gate/地門', '地+20%コスト-2'],
-		],
-		{ speaking: 0, vocab: 0, grammar: 0, listening: 0, writing: 0 },
-	],
-];
-const CLASSES = C_.map((c) => ({
-	id: c[0],
-	name: c[1],
-	desc: c[2],
-	icon: c[3],
-	category: c[4],
-	subclasses: c[5].map((s) => ({ id: s[0], name: s[1], desc: s[2] })),
-	synergy: c[6],
-}));
-
-// === TITLES ===
-const TITLES = [
-	{ minLv: 1, t: '見習い冒険者' },
-	{ minLv: 5, t: '言葉の旅人' },
-	{ minLv: 10, t: '知識の探索者' },
-	{ minLv: 15, t: '文法の守護者' },
-	{ minLv: 20, t: '語彙の魔術師' },
-	{ minLv: 25, t: '多言語の使徒' },
-	{ minLv: 30, t: '言霊の覚醒者' },
-	{ minLv: 35, t: 'スフィアの支配者' },
-	{ minLv: 40, t: '言語の賢者' },
-	{ minLv: 50, t: '言霊の王' },
-	{ minLv: 60, t: '次元を超えし者' },
-	{ minLv: 80, t: '創世の言霊' },
-	{ minLv: 99, t: '∞ 言語の彼方 ∞' },
+var TITLES = [
+	{ lv: 1, title: '駆け出し冒険者' },
+	{ lv: 5, title: '見習い言語士' },
+	{ lv: 10, title: '言葉の旅人' },
+	{ lv: 15, title: '知識の探求者' },
+	{ lv: 20, title: '銀舌の語り部' },
+	{ lv: 25, title: '言霊の使い手' },
+	{ lv: 30, title: '多言語の賢者' },
+	{ lv: 40, title: '言語の守護者' },
+	{ lv: 50, title: '伝説の翻訳師' },
+	{ lv: 60, title: '万語の大魔導士' },
+	{ lv: 75, title: '言語神の代行者' },
+	{ lv: 99, title: '全知の言語王' },
 ];
 
-// === APP CORE ===
-const App = {
-	SK: {
-		log: 'lq_log',
-		streak: 'lq_streak',
-		best: 'lq_best',
-		vocab: 'lq_vocab',
-		exp: 'lq_exp',
-		lv: 'lq_lv',
-		cry: 'lq_cry',
-		pts: 'lq_pts',
-		char: 'lq_char',
-		tree: 'lq_tree',
-	},
-	init() {
-		const d = { exp: 0, lv: 1, cry: 10, pts: 5, streak: 0, best: 0 };
-		for (const [k, v] of Object.entries(d))
-			if (localStorage.getItem(this.SK[k]) === null)
-				localStorage.setItem(this.SK[k], v);
-		if (!localStorage.getItem(this.SK.log))
-			localStorage.setItem(this.SK.log, '{}');
-		if (!localStorage.getItem(this.SK.vocab))
-			localStorage.setItem(this.SK.vocab, '[]');
-		if (!localStorage.getItem(this.SK.char))
-			localStorage.setItem(
-				this.SK.char,
-				JSON.stringify({
-					ancestry: null,
-					heritage: null,
-					cls: null,
-					subclass: null,
-				}),
-			);
-		if (!localStorage.getItem(this.SK.tree))
-			localStorage.setItem(this.SK.tree, '{}');
-		this.startClocks();
-		this.particles();
-	},
-	todayKey() {
-		const d = new Date();
-		return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-	},
-	getLog() {
-		return JSON.parse(localStorage.getItem(this.SK.log) || '{}');
-	},
-	saveLog(l) {
-		localStorage.setItem(this.SK.log, JSON.stringify(l));
-	},
-	logStudy(lang, mins) {
-		const l = this.getLog(),
-			k = this.todayKey();
-		if (!l[k]) l[k] = { EN: 0, YUE: 0 };
-		l[k][lang] = (l[k][lang] || 0) + mins;
-		this.saveLog(l);
-		this.updateStreak();
-	},
-	updateStreak() {
-		const l = this.getLog(),
-			today = this.todayKey();
-		if (!l[today]) return;
-		let s = 1,
-			d = new Date();
-		while (true) {
-			d.setDate(d.getDate() - 1);
-			const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-			if (l[k] && (l[k].EN > 0 || l[k].YUE > 0)) s++;
-			else break;
-		}
-		localStorage.setItem(this.SK.streak, s);
-		localStorage.setItem(this.SK.best, Math.max(s, this.getBest()));
-	},
-	getStreak() {
-		return parseInt(localStorage.getItem(this.SK.streak)) || 0;
-	},
-	getBest() {
-		return parseInt(localStorage.getItem(this.SK.best)) || 0;
-	},
-	getExp() {
-		return parseInt(localStorage.getItem(this.SK.exp)) || 0;
-	},
-	getLv() {
-		return parseInt(localStorage.getItem(this.SK.lv)) || 1;
-	},
-	getCry() {
-		return parseInt(localStorage.getItem(this.SK.cry)) || 0;
-	},
-	getPts() {
-		return parseInt(localStorage.getItem(this.SK.pts)) || 0;
-	},
-	expNeeded(lv) {
-		return Math.floor(100 * Math.pow(1.15, lv - 1));
-	},
-	addExp(a) {
-		let e = this.getExp() + a,
-			l = this.getLv();
-		while (e >= this.expNeeded(l)) {
-			e -= this.expNeeded(l);
-			l++;
-			this.addCry(2);
-			this.addPts(1);
-		}
-		localStorage.setItem(this.SK.exp, e);
-		localStorage.setItem(this.SK.lv, l);
-	},
-	addCry(n) {
-		localStorage.setItem(this.SK.cry, this.getCry() + n);
-	},
-	spendCry(n) {
-		const c = this.getCry();
-		if (c >= n) {
-			localStorage.setItem(this.SK.cry, c - n);
-			return true;
-		}
-		return false;
-	},
-	addPts(n) {
-		localStorage.setItem(this.SK.pts, this.getPts() + n);
-	},
-	spendPts(n) {
-		const p = this.getPts();
-		if (p >= n) {
-			localStorage.setItem(this.SK.pts, p - n);
-			return true;
-		}
-		return false;
-	},
-	getVocab() {
-		return JSON.parse(localStorage.getItem(this.SK.vocab) || '[]');
-	},
-	saveVocab(v) {
-		localStorage.setItem(this.SK.vocab, JSON.stringify(v));
-	},
-	getChar() {
-		return JSON.parse(localStorage.getItem(this.SK.char) || '{}');
-	},
-	saveChar(c) {
-		localStorage.setItem(this.SK.char, JSON.stringify(c));
-	},
-	getTree() {
-		return JSON.parse(localStorage.getItem(this.SK.tree) || '{}');
-	},
-	saveTree(t) {
-		localStorage.setItem(this.SK.tree, JSON.stringify(t));
-	},
-	getTitle() {
-		const lv = this.getLv();
-		let t = TITLES[0].t;
-		for (const e of TITLES) if (lv >= e.minLv) t = e.t;
-		return t;
-	},
-	getClassSynergy() {
-		const ch = this.getChar();
-		const cls = CLASSES.find((c) => c.id === ch.cls);
-		return cls
-			? cls.synergy
-			: { speaking: 0, vocab: 0, grammar: 0, listening: 0, writing: 0 };
-	},
-	startClocks() {
-		const u = () => {
-			const n = new Date();
-			const f = (tz) =>
-				n.toLocaleTimeString('en-GB', {
-					timeZone: tz,
-					hour: '2-digit',
-					minute: '2-digit',
-					second: '2-digit',
-				});
-			document.getElementById('clock-tokyo').textContent = f('Asia/Tokyo');
-			document.getElementById('clock-hk').textContent = f('Asia/Hong_Kong');
-		};
-		u();
-		setInterval(u, 1000);
-	},
-	particles() {
-		const c = document.getElementById('particles');
-		for (let i = 0; i < 25; i++) {
-			const p = document.createElement('div');
-			p.className = 'particle';
-			const s = Math.random() * 3 + 1;
-			p.style.cssText = `left:${Math.random() * 100}%;width:${s}px;height:${s}px;animation-duration:${Math.random() * 15 + 10}s;animation-delay:${Math.random() * 10}s;background:${['#d4a843', '#50e3a4', '#fbbf24', '#34d399'][Math.floor(Math.random() * 4)]}`;
-			c.appendChild(p);
-		}
-	},
-};
-
-// === ROUTER ===
-const Router = {
-	pages: [
-		'home',
-		'timer',
-		'calendar',
-		'vocab',
-		'review',
-		'character',
-		'sphere',
-		'report',
-	],
-	go(page) {
-		this.pages.forEach((p) => {
-			document
-				.getElementById('page-' + p)
-				.classList.toggle('active', p === page);
-		});
-		document
-			.querySelectorAll('.nav button')
-			.forEach((b) => b.classList.toggle('active', b.dataset.page === page));
-		const m = {
-			home: () => HomePage.render(),
-			timer: () => TimerApp.init(),
-			calendar: () => CalendarApp.render(),
-			vocab: () => VocabApp.render(),
-			review: () => ReviewApp.init(),
-			character: () => CharApp.render(),
-			sphere: () => SphereGrid.init(),
-			report: () => ReportApp.render(),
-		};
-		if (m[page]) m[page]();
-	},
-	init() {
-		document
-			.querySelectorAll('.nav button')
-			.forEach((b) =>
-				b.addEventListener('click', () => this.go(b.dataset.page)),
-			);
-	},
-};
-
-// === HOME ===
-const HomePage = {
-	render() {
-		const lv = App.getLv(),
-			exp = App.getExp(),
-			need = App.expNeeded(lv),
-			streak = App.getStreak(),
-			best = App.getBest();
-		const ch = App.getChar(),
-			anc = ANCESTRIES.find((a) => a.id === ch.ancestry),
-			cls = CLASSES.find((c) => c.id === ch.cls);
-		document.getElementById('home-status').innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px">
-        <div>
-          <div style="font-size:1.3rem;font-weight:900;color:var(--accent)">こんにちは、冒険者</div>
-          <div style="font-size:.78rem;color:var(--text2)">今日も言葉の冒険に出かけよう</div>
-          <div style="font-size:.72rem;color:var(--text3);margin-top:4px">${anc ? anc.icon + ' ' + anc.name : '種族未選択'} ・ ${cls ? cls.icon + ' ' + cls.name : '職業未選択'}</div>
-          <div style="font-size:.72rem;color:var(--gold);margin-top:2px">称号: ${App.getTitle()}</div>
-        </div>
-        <div style="text-align:center">
-          <div style="font-family:var(--font2);font-size:2rem;font-weight:900;color:var(--gold)">${streak}</div>
-          <div style="font-size:.68rem;color:var(--text3)">日連続 (Best: ${best})</div>
-        </div>
-      </div>
-      <div style="margin-top:16px">
-        <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--text2)"><span>LV ${lv}</span><span>${exp}/${need} EXP</span></div>
-        <div class="progress"><div class="progress-bar gold" style="width:${((exp / need) * 100).toFixed(1)}%"></div></div>
-        <div style="display:flex;gap:16px;margin-top:8px;font-size:.75rem;color:var(--text2)"><span>💎 ${App.getCry()}</span><span>⭐ ${App.getPts()}</span></div>
-      </div>`;
-		const log = App.getLog(),
-			today = App.todayKey(),
-			td = log[today] || { EN: 0, YUE: 0 };
-		document.getElementById('home-today').innerHTML =
-			`<div class="stat-row"><div class="stat"><div class="stat-value">${td.EN || 0}</div><div class="stat-label">🇺🇸 English (分)</div></div><div class="stat"><div class="stat-value">${td.YUE || 0}</div><div class="stat-label">🇭🇰 廣東話 (分)</div></div></div>`;
-		document.getElementById('home-schedule').innerHTML =
-			`<div style="font-size:.82rem;color:var(--text2);line-height:2"><div>🔴 🇺🇸 English — Speaking + Writing</div><div>🔴 🇭🇰 廣東話 — 会話 + 声調練習</div><div>⬜ 🔄 復習 — フラッシュカード</div></div>`;
-		const vocab = App.getVocab(),
-			due = vocab.filter(
-				(v) => v.next_review && new Date(v.next_review) <= new Date(),
-			);
-		document.getElementById('home-review-queue').innerHTML =
-			due.length > 0
-				? due
-						.slice(0, 5)
-						.map(
-							(v) =>
-								`<div class="vocab-item"><div class="vocab-info"><span class="vocab-word">${v.word}</span> <span class="vocab-meaning">${v.meaning_jp}</span></div></div>`,
-						)
-						.join('') +
-					(due.length > 5
-						? `<div style="font-size:.75rem;color:var(--text3);margin-top:8px">...他${due.length - 5}件</div>`
-						: '')
-				: '<div style="color:var(--text3);font-size:.82rem">復習待ちなし 🎉</div>';
-	},
-};
-
-// === TIMER ===
-const TimerApp = {
-	mode: 'full',
-	lang: 'EN',
-	phases: [],
-	phaseIdx: 0,
-	seconds: 0,
-	total: 0,
-	running: false,
-	paused: false,
-	interval: null,
-	init() {
-		this.setupMode(this.mode);
-		document.getElementById('timer-mode-full').onclick = () =>
-			this.setupMode('full');
-		document.getElementById('timer-mode-short').onclick = () =>
-			this.setupMode('short');
-		document.getElementById('timer-lang').onchange = (e) => {
-			this.lang = e.target.value;
-		};
-		document.getElementById('timer-start').onclick = () => this.start();
-		document.getElementById('timer-pause').onclick = () => this.togglePause();
-		document.getElementById('timer-reset').onclick = () => this.reset();
-	},
-	setupMode(m) {
-		this.mode = m;
-		this.reset();
-		this.phases =
-			m === 'full'
-				? [
-						{ type: 'study', dur: 900 },
-						{ type: 'rest', dur: 1800 },
-						{ type: 'study', dur: 900 },
-					]
-				: [{ type: 'study', dur: 900 }];
-		this.phaseIdx = 0;
-		this.loadPhase();
-		document.getElementById('timer-mode-full').className =
-			'btn ' + (m === 'full' ? 'btn-primary' : 'btn-secondary') + ' btn-sm';
-		document.getElementById('timer-mode-short').className =
-			'btn ' + (m === 'short' ? 'btn-primary' : 'btn-secondary') + ' btn-sm';
-		document.getElementById('timer-session-info').textContent =
-			m === 'full' ? 'Full: 15分学習→30分休憩→15分学習' : 'Quick: 15分学習のみ';
-	},
-	loadPhase() {
-		const p = this.phases[this.phaseIdx];
-		this.seconds = p.dur;
-		this.total = p.dur;
-		this.updateDisplay();
-		const fg = document.getElementById('timer-progress'),
-			d = document.querySelector('.timer-display');
-		if (p.type === 'rest') {
-			fg.classList.add('rest');
-			d.classList.add('rest');
-		} else {
-			fg.classList.remove('rest');
-			d.classList.remove('rest');
-		}
-		document.getElementById('timer-label').textContent =
-			p.type === 'study' ? '学習タイム ⚔️' : '休憩タイム ☕';
-	},
-	start() {
-		if (this.running && !this.paused) return;
-		this.running = true;
-		this.paused = false;
-		document.getElementById('timer-start').disabled = true;
-		document.getElementById('timer-pause').disabled = false;
-		this.interval = setInterval(() => this.tick(), 1000);
-	},
-	tick() {
-		if (this.seconds <= 0) {
-			this.phaseComplete();
-			return;
-		}
-		this.seconds--;
-		this.updateDisplay();
-	},
-	phaseComplete() {
-		clearInterval(this.interval);
-		const p = this.phases[this.phaseIdx];
-		if (p.type === 'study') {
-			App.logStudy(this.lang, 15);
-			App.addExp(30);
-			App.addCry(1);
-			App.addPts(1);
-		}
-		this.phaseIdx++;
-		if (this.phaseIdx < this.phases.length) {
-			this.loadPhase();
-			this.start();
-		} else {
-			this.running = false;
-			document.getElementById('timer-start').disabled = false;
-			document.getElementById('timer-pause').disabled = true;
-			document.getElementById('timer-label').textContent = '完了！🎉';
-		}
-	},
-	togglePause() {
-		if (this.paused) {
-			this.paused = false;
-			this.interval = setInterval(() => this.tick(), 1000);
-			document.getElementById('timer-pause').textContent = '⏸ PAUSE';
-		} else {
-			this.paused = true;
-			clearInterval(this.interval);
-			document.getElementById('timer-pause').textContent = '▶ RESUME';
-		}
-	},
-	reset() {
-		clearInterval(this.interval);
-		this.running = false;
-		this.paused = false;
-		this.phaseIdx = 0;
-		if (this.phases.length) this.loadPhase();
-		document.getElementById('timer-start').disabled = false;
-		document.getElementById('timer-pause').disabled = true;
-		document.getElementById('timer-pause').textContent = '⏸ PAUSE';
-	},
-	updateDisplay() {
-		const m = Math.floor(this.seconds / 60),
-			s = this.seconds % 60;
-		document.getElementById('timer-time').textContent =
-			`${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-		document.getElementById('timer-progress').style.strokeDashoffset =
-			2 * Math.PI * 115 * (1 - this.seconds / this.total);
-	},
-};
-
-// === CALENDAR ===
-const CalendarApp = {
-	year: new Date().getFullYear(),
-	month: new Date().getMonth(),
-	render() {
-		this.drawCal();
-		document.getElementById('cal-prev').onclick = () => {
-			this.month--;
-			if (this.month < 0) {
-				this.month = 11;
-				this.year--;
-			}
-			this.drawCal();
-		};
-		document.getElementById('cal-next').onclick = () => {
-			this.month++;
-			if (this.month > 11) {
-				this.month = 0;
-				this.year++;
-			}
-			this.drawCal();
-		};
-	},
-	drawCal() {
-		const mn = [
-			'January',
-			'February',
-			'March',
-			'April',
-			'May',
-			'June',
-			'July',
-			'August',
-			'September',
-			'October',
-			'November',
-			'December',
-		];
-		document.getElementById('cal-month').textContent =
-			`${mn[this.month]} ${this.year}`;
-		const g = document.getElementById('cal-grid');
-		g.innerHTML = ['日', '月', '火', '水', '木', '金', '土']
-			.map((d) => `<div class="cal-header">${d}</div>`)
-			.join('');
-		const first = new Date(this.year, this.month, 1).getDay(),
-			days = new Date(this.year, this.month + 1, 0).getDate(),
-			log = App.getLog(),
-			today = App.todayKey();
-		for (let i = 0; i < first; i++)
-			g.innerHTML += `<div class="cal-cell empty"></div>`;
-		for (let d = 1; d <= days; d++) {
-			const k = `${this.year}-${String(this.month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`,
-				e = log[k],
-				t = e ? (e.EN || 0) + (e.YUE || 0) : 0;
-			let c = 'cal-cell';
-			if (k === today) c += ' today';
-			if (t > 30) c += ' studied-heavy';
-			else if (t > 0) c += ' studied';
-			g.innerHTML += `<div class="${c}" data-date="${k}">${d}</div>`;
-		}
-		g.querySelectorAll('.cal-cell[data-date]').forEach((c) =>
-			c.addEventListener('click', () => this.showDetail(c.dataset.date)),
-		);
-		document.getElementById('cal-detail').innerHTML =
-			'<div style="color:var(--text3);font-size:.82rem">日付をクリック</div>';
-	},
-	showDetail(date) {
-		const log = App.getLog(),
-			e = log[date] || { EN: 0, YUE: 0 };
-		document.getElementById('cal-detail').innerHTML =
-			`<div style="font-size:.85rem;color:var(--accent);font-weight:700;margin-bottom:8px">${date}</div><div style="font-size:.82rem;color:var(--text2)">🇺🇸 ${e.EN || 0}分 / 🇭🇰 ${e.YUE || 0}分 / 合計 ${(e.EN || 0) + (e.YUE || 0)}分</div>`;
-	},
-};
-
-// === VOCAB ===
-const VocabApp = {
-	lang: 'EN',
-	render() {
-		this.drawList();
-		document.querySelectorAll('#vocab-tabs button').forEach((b) =>
-			b.addEventListener('click', () => {
-				this.lang = b.dataset.lang;
-				document
-					.querySelectorAll('#vocab-tabs button')
-					.forEach((x) => x.classList.remove('active'));
-				b.classList.add('active');
-				this.drawList();
-			}),
-		);
-		document.getElementById('vocab-add-btn').onclick = () =>
-			document.getElementById('vocab-modal').classList.add('show');
-		document.getElementById('v-cancel').onclick = () =>
-			document.getElementById('vocab-modal').classList.remove('show');
-		document.getElementById('v-save').onclick = () => this.addWord();
-		document.getElementById('vocab-csv-import').onclick = () =>
-			document.getElementById('vocab-csv-file').click();
-		document.getElementById('vocab-csv-file').onchange = (e) =>
-			this.importCSV(e);
-		document.getElementById('vocab-csv-export').onclick = () =>
-			this.exportCSV();
-	},
-	drawList() {
-		const v = App.getVocab().filter((w) => w.language === this.lang),
-			list = document.getElementById('vocab-list');
-		if (!v.length) {
-			list.innerHTML =
-				'<div class="vocab-empty">単語がありません。追加してみましょう！</div>';
-			return;
-		}
-		list.innerHTML = v
-			.map(
-				(w) =>
-					`<div class="vocab-item"><div class="vocab-info"><div class="vocab-word">${w.word}</div><div class="vocab-meaning">${w.meaning_jp}</div><div class="vocab-meta">${w.pronunciation || ''}</div></div><button class="btn btn-danger btn-sm" onclick="VocabApp.del('${w.id}')">✕</button></div>`,
-			)
-			.join('');
-	},
-	addWord() {
-		const v = App.getVocab(),
-			w = {
-				id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-				language: document.getElementById('v-lang').value,
-				word: document.getElementById('v-word').value.trim(),
-				meaning_jp: document.getElementById('v-meaning').value.trim(),
-				pronunciation: document.getElementById('v-pron').value.trim(),
-				example: document.getElementById('v-example').value.trim(),
-				date_added: new Date().toISOString(),
-				next_review: new Date().toISOString(),
-				interval_days: 1,
-				ease_factor: 2.5,
-				review_count: 0,
-			};
-		if (!w.word || !w.meaning_jp) return;
-		v.push(w);
-		App.saveVocab(v);
-		App.addExp(3);
-		document.getElementById('vocab-modal').classList.remove('show');
-		['v-word', 'v-meaning', 'v-pron', 'v-example'].forEach(
-			(id) => (document.getElementById(id).value = ''),
-		);
-		this.drawList();
-	},
-	del(id) {
-		App.saveVocab(App.getVocab().filter((v) => v.id !== id));
-		this.drawList();
-	},
-	importCSV(e) {
-		const f = e.target.files[0];
-		if (!f) return;
-		const r = new FileReader();
-		r.onload = (ev) => {
-			const lines = ev.target.result.split('\n').filter((l) => l.trim()),
-				v = App.getVocab();
-			lines.forEach((line, i) => {
-				if (i === 0 && line.toLowerCase().includes('word')) return;
-				const p = line
-					.split(',')
-					.map((s) => (s || '').trim().replace(/^"|"$/g, ''));
-				if (p[1] && p[2])
-					v.push({
-						id:
-							Date.now().toString(36) +
-							Math.random().toString(36).slice(2, 6) +
-							i,
-						language: p[0] || 'EN',
-						word: p[1],
-						meaning_jp: p[2],
-						pronunciation: p[3] || '',
-						example: p[4] || '',
-						date_added: new Date().toISOString(),
-						next_review: new Date().toISOString(),
-						interval_days: 1,
-						ease_factor: 2.5,
-						review_count: 0,
-					});
-			});
-			App.saveVocab(v);
-			this.drawList();
-		};
-		r.readAsText(f);
-		e.target.value = '';
-	},
-	exportCSV() {
-		const v = App.getVocab().filter((w) => w.language === this.lang);
-		let csv = 'language,word,meaning_jp,pronunciation,example\n';
-		v.forEach(
-			(w) =>
-				(csv += `${w.language},"${w.word}","${w.meaning_jp}","${w.pronunciation || ''}","${w.example || ''}"\n`),
-		);
-		const b = new Blob([csv], { type: 'text/csv' }),
-			a = document.createElement('a');
-		a.href = URL.createObjectURL(b);
-		a.download = `lq_${this.lang}.csv`;
-		a.click();
-	},
-};
-
-// === REVIEW (SM-2) ===
-const ReviewApp = {
-	queue: [],
-	current: null,
-	flipped: false,
-	init() {
-		document.getElementById('review-start').onclick = () => this.startReview();
-		document.getElementById('flashcard').onclick = () => this.flip();
-		document
-			.querySelectorAll('#review-buttons button')
-			.forEach((b) =>
-				b.addEventListener('click', () =>
-					this.score(parseInt(b.dataset.score)),
-				),
-			);
-	},
-	startReview() {
-		const now = new Date();
-		this.queue = App.getVocab().filter(
-			(v) => v.next_review && new Date(v.next_review) <= now,
-		);
-		if (!this.queue.length) {
-			document.getElementById('review-status').innerHTML =
-				'<div style="color:var(--green);text-align:center;padding:40px">復習する単語なし 🎉</div>';
-			return;
-		}
-		this.queue.sort(() => Math.random() - 0.5);
-		this.next();
-	},
-	next() {
-		if (!this.queue.length) {
-			document.getElementById('review-status').innerHTML =
-				'<div style="color:var(--green);text-align:center;padding:40px">復習完了！🎉</div>';
-			document.getElementById('review-buttons').style.display = 'none';
-			return;
-		}
-		this.current = this.queue.shift();
-		this.flipped = false;
-		document.getElementById('flashcard-inner').classList.remove('flipped');
-		document.getElementById('fc-word').textContent = this.current.word;
-		document.getElementById('fc-pron').textContent =
-			this.current.pronunciation || '';
-		document.getElementById('fc-meaning').textContent = this.current.meaning_jp;
-		document.getElementById('fc-example').textContent =
-			this.current.example || '';
-		document.getElementById('review-buttons').style.display = 'none';
-		document.getElementById('review-status').innerHTML =
-			`<div style="font-size:.82rem;color:var(--text2)">残り: ${this.queue.length + 1}語</div>`;
-	},
-	flip() {
-		if (!this.current) return;
-		this.flipped = !this.flipped;
-		document
-			.getElementById('flashcard-inner')
-			.classList.toggle('flipped', this.flipped);
-		if (this.flipped)
-			document.getElementById('review-buttons').style.display = 'flex';
-	},
-	score(q) {
-		if (!this.current) return;
-		const v = App.getVocab(),
-			item = v.find((w) => w.id === this.current.id);
-		if (item) {
-			let ef = item.ease_factor || 2.5,
-				iv = item.interval_days || 1;
-			if (q === 1) {
-				iv = 1;
-				ef = Math.max(1.3, ef - 0.2);
-			} else if (q === 2) {
-				iv = Math.max(1, Math.round(iv * 1.2));
-				ef = Math.max(1.3, ef - 0.15);
-			} else if (q === 3) {
-				iv = Math.round(iv * ef);
-			} else {
-				iv = Math.round(iv * ef * 1.3);
-				ef += 0.15;
-			}
-			const nx = new Date();
-			nx.setDate(nx.getDate() + iv);
-			item.interval_days = iv;
-			item.ease_factor = ef;
-			item.review_count = (item.review_count || 0) + 1;
-			item.next_review = nx.toISOString();
-			App.saveVocab(v);
-			App.addExp(q >= 3 ? 5 : 2);
-		}
-		this.next();
-	},
-};
-
-// === CHARACTER ===
-const CharApp = {
-	selAnc: null,
-	selHer: null,
-	selCls: null,
-	selSub: null,
-	ancFilter: 'All',
-	clsFilter: 'All',
-	render() {
-		const ch = App.getChar();
-		this.selAnc = ch.ancestry;
-		this.selHer = ch.heritage;
-		this.selCls = ch.cls;
-		this.selSub = ch.subclass;
-		this.drawCurrent();
-		this.drawAncFilters();
-		this.drawAncs();
-		this.drawClsFilters();
-		this.drawClasses();
-		this.drawSynergy();
-		if (this.selAnc) this.drawHeritages(this.selAnc);
-		if (this.selCls) this.drawSubclasses(this.selCls);
-	},
-	drawCurrent() {
-		const a = ANCESTRIES.find((x) => x.id === this.selAnc),
-			c = CLASSES.find((x) => x.id === this.selCls);
-		const h = a ? a.heritages.find((x) => x.id === this.selHer) : null,
-			s = c ? c.subclasses.find((x) => x.id === this.selSub) : null;
-		document.getElementById('char-current').innerHTML =
-			`<div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center"><div style="text-align:center"><div style="font-size:3rem">${a ? a.icon : '❓'}</div><div style="font-size:.82rem;font-weight:700;color:var(--accent)">${a ? a.name : '種族未選択'}</div><div style="font-size:.68rem;color:var(--gold)">${h ? h.name : '-'}</div></div><div style="font-size:1.5rem;color:var(--text3)">×</div><div style="text-align:center"><div style="font-size:3rem">${c ? c.icon : '❓'}</div><div style="font-size:.82rem;font-weight:700;color:var(--accent)">${c ? c.name : '職業未選択'}</div><div style="font-size:.68rem;color:var(--gold)">${s ? s.name : '-'}</div></div><div style="margin-left:auto;text-align:right"><div style="font-size:.72rem;color:var(--text3)">LV ${App.getLv()} ${App.getTitle()}</div><div style="font-size:.72rem;color:var(--text3)">💎${App.getCry()} ⭐${App.getPts()}</div></div></div>`;
-	},
-	drawAncFilters() {
-		const cats = ['All', 'Core', 'Uncommon', 'Rare'];
-		document.getElementById('ancestry-filters').innerHTML = cats
-			.map(
-				(c) =>
-					`<button class="${c === this.ancFilter ? 'active' : ''}" onclick="CharApp.fAnc('${c}')">${c}</button>`,
-			)
-			.join('');
-	},
-	fAnc(c) {
-		this.ancFilter = c;
-		this.drawAncFilters();
-		this.drawAncs();
-	},
-	drawAncs() {
-		const f =
-			this.ancFilter === 'All'
-				? ANCESTRIES
-				: ANCESTRIES.filter((a) => a.category === this.ancFilter);
-		document.getElementById('ancestry-grid').innerHTML = f
-			.map(
-				(a) =>
-					`<div class="char-card ${a.id === this.selAnc ? 'selected' : ''}" onclick="CharApp.pickAnc('${a.id}')"><span class="cat-badge ${a.category.toLowerCase()}">${a.category}</span><div class="icon">${a.icon}</div><div class="name">${a.name}</div><div class="desc">${a.desc}</div></div>`,
-			)
-			.join('');
-	},
-	pickAnc(id) {
-		this.selAnc = id;
-		this.selHer = null;
-		this.save();
-		this.drawAncs();
-		this.drawCurrent();
-		this.drawHeritages(id);
-		this.drawSynergy();
-	},
-	drawHeritages(aid) {
-		const a = ANCESTRIES.find((x) => x.id === aid);
-		if (!a) {
-			document.getElementById('heritage-section').style.display = 'none';
-			return;
-		}
-		document.getElementById('heritage-section').style.display = 'block';
-		document.getElementById('heritage-list').innerHTML = a.heritages
-			.map(
-				(h) =>
-					`<div class="heritage-item ${h.id === this.selHer ? 'selected' : ''}" onclick="CharApp.pickHer('${h.id}')"><div class="h-name">${h.name}</div><div class="h-desc">${h.desc}</div></div>`,
-			)
-			.join('');
-	},
-	pickHer(id) {
-		this.selHer = id;
-		this.save();
-		this.drawHeritages(this.selAnc);
-		this.drawCurrent();
-	},
-	drawClsFilters() {
-		const cats = ['All', 'Martial', 'Caster', 'Hybrid'];
-		document.getElementById('class-filters').innerHTML = cats
-			.map(
-				(c) =>
-					`<button class="${c === this.clsFilter ? 'active' : ''}" onclick="CharApp.fCls('${c}')">${c}</button>`,
-			)
-			.join('');
-	},
-	fCls(c) {
-		this.clsFilter = c;
-		this.drawClsFilters();
-		this.drawClasses();
-	},
-	drawClasses() {
-		const f =
-			this.clsFilter === 'All'
-				? CLASSES
-				: CLASSES.filter((c) => c.category === this.clsFilter);
-		document.getElementById('class-grid').innerHTML = f
-			.map(
-				(c) =>
-					`<div class="char-card ${c.id === this.selCls ? 'selected' : ''}" onclick="CharApp.pickCls('${c.id}')"><span class="cat-badge ${c.category.toLowerCase()}">${c.category}</span><div class="icon">${c.icon}</div><div class="name">${c.name}</div><div class="desc">${c.desc}</div></div>`,
-			)
-			.join('');
-	},
-	pickCls(id) {
-		this.selCls = id;
-		this.selSub = null;
-		this.save();
-		this.drawClasses();
-		this.drawCurrent();
-		this.drawSubclasses(id);
-		this.drawSynergy();
-	},
-	drawSubclasses(cid) {
-		const c = CLASSES.find((x) => x.id === cid);
-		if (!c) {
-			document.getElementById('subclass-section').style.display = 'none';
-			return;
-		}
-		document.getElementById('subclass-section').style.display = 'block';
-		document.getElementById('subclass-list').innerHTML = c.subclasses
-			.map(
-				(s) =>
-					`<div class="heritage-item ${s.id === this.selSub ? 'selected' : ''}" onclick="CharApp.pickSub('${s.id}')"><div class="h-name">${s.name}</div><div class="h-desc">${s.desc}</div></div>`,
-			)
-			.join('');
-	},
-	pickSub(id) {
-		this.selSub = id;
-		this.save();
-		this.drawSubclasses(this.selCls);
-		this.drawCurrent();
-	},
-	save() {
-		App.saveChar({
-			ancestry: this.selAnc,
-			heritage: this.selHer,
-			cls: this.selCls,
-			subclass: this.selSub,
-		});
-	},
-	drawSynergy() {
-		const syn = App.getClassSynergy(),
-			labels = {
-				speaking: '🔥 Speaking',
-				listening: '💧 Listening',
-				vocab: '⚡ Vocab',
-				grammar: '🌙 Grammar',
-				writing: '🌿 Writing',
-			};
-		let rows = '';
-		for (const [k, label] of Object.entries(labels)) {
-			const v = syn[k] || 0;
-			rows += `<tr><td>${label}</td><td class="${v < 0 ? 'positive' : v > 0 ? 'negative' : 'neutral'}">${v < 0 ? 'コスト' + v : v > 0 ? 'コスト+' + v : '±0'}</td></tr>`;
-		}
-		document.getElementById('synergy-display').innerHTML =
-			`<div style="font-size:.78rem;color:var(--text2);margin-bottom:8px">職業によりスフィア盤コストが変動</div><table class="synergy-table"><thead><tr><th>スキル分岐</th><th>コスト修正</th></tr></thead><tbody>${rows}</tbody></table>`;
-	},
-};
-
-// === SPHERE GRID (Placeholder — Part 2で拡張) ===
-const SphereGrid = {
-	init() {
-		const c = document.getElementById('sphere-canvas'),
-			ctx = c.getContext('2d');
-		const container = document.getElementById('sphere-container');
-		c.width = container.clientWidth;
-		c.height = container.clientHeight;
-		ctx.fillStyle = '#0c1a0e';
-		ctx.fillRect(0, 0, c.width, c.height);
-		ctx.fillStyle = '#d4a843';
-		ctx.font = 'bold 16px Orbitron, sans-serif';
-		ctx.textAlign = 'center';
-		ctx.fillText(
-			'スフィア盤 — Part 2 で完全版を追加',
-			c.width / 2,
-			c.height / 2 - 10,
-		);
-		ctx.fillStyle = '#8fb5a6';
-		ctx.font = '13px sans-serif';
-		ctx.fillText(
-			'💎 結晶: ' + App.getCry() + ' | ⭐ ポイント: ' + App.getPts(),
-			c.width / 2,
-			c.height / 2 + 20,
-		);
-		document.getElementById('sphere-crystals').textContent =
-			'💎 ' + App.getCry();
-		document.getElementById('sphere-points').textContent = '⭐ ' + App.getPts();
-	},
-};
-
-// === REPORT ===
-const ReportApp = {
-	days: 7,
-	render() {
-		document.querySelectorAll('#report-period button').forEach((b) => {
-			b.addEventListener('click', () => {
-				this.days = parseInt(b.dataset.days);
-				document
-					.querySelectorAll('#report-period button')
-					.forEach((x) => x.classList.remove('active'));
-				b.classList.add('active');
-				this.render();
-			});
-		});
-		const log = App.getLog(),
-			data = [];
-		let totalEN = 0,
-			totalYUE = 0;
-		for (let i = this.days - 1; i >= 0; i--) {
-			const d = new Date();
-			d.setDate(d.getDate() - i);
-			const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-			const e = log[k] || { EN: 0, YUE: 0 };
-			totalEN += e.EN || 0;
-			totalYUE += e.YUE || 0;
-			data.push({
-				date: k.slice(5),
-				en: e.EN || 0,
-				yue: e.YUE || 0,
-				total: (e.EN || 0) + (e.YUE || 0),
-			});
-		}
-		const maxT = Math.max(...data.map((d) => d.total), 1);
-		document.getElementById('report-summary').innerHTML =
-			`<div style="display:flex;gap:24px;flex-wrap:wrap"><div style="text-align:center"><div style="font-family:var(--font2);font-size:1.5rem;font-weight:900;color:var(--accent)">${totalEN + totalYUE}</div><div style="font-size:.68rem;color:var(--text3)">合計(分)</div></div><div style="text-align:center"><div style="font-family:var(--font2);font-size:1.5rem;font-weight:900;color:var(--accent)">${totalEN}</div><div style="font-size:.68rem;color:var(--text3)">🇺🇸 EN</div></div><div style="text-align:center"><div style="font-family:var(--font2);font-size:1.5rem;font-weight:900;color:var(--accent)">${totalYUE}</div><div style="font-size:.68rem;color:var(--text3)">🇭🇰 YUE</div></div></div>`;
-		document.getElementById('report-bar').innerHTML = data
-			.map(
-				(d) =>
-					`<div class="report-bar-item" style="height:${Math.max(4, (d.total / maxT) * 100)}%"><span class="bar-value">${d.total}</span><span class="bar-label">${d.date}</span></div>`,
-			)
-			.join('');
-		const vocab = App.getVocab();
-		document.getElementById('report-skills').innerHTML =
-			`<div style="font-size:.82rem;color:var(--text2);line-height:2"><div>📚 総単語数: ${vocab.length}</div><div>🇺🇸 EN: ${vocab.filter((v) => v.language === 'EN').length}語</div><div>🇭🇰 YUE: ${vocab.filter((v) => v.language === 'YUE').length}語</div><div>🔥 LV: ${App.getLv()}</div><div>⭐ 総EXP: ${App.getExp()}</div></div>`;
-		const streak = App.getStreak(),
-			best = App.getBest(),
-			achievements = [
-				{
-					icon: '🔥',
-					name: '初めの一歩',
-					desc: '初回学習完了',
-					done: totalEN + totalYUE > 0,
+var ANCESTRIES = [
+	{
+		id: 'human',
+		name: 'ヒューマン',
+		icon: '🧑',
+		rarity: 1,
+		category: 'CORE',
+		desc: '適応力に優れた汎用種族',
+		heritages: [
+			{
+				id: 'versatile',
+				name: '万能',
+				bonus: {
+					vocab: 5,
+					grammar: 5,
+					listening: 5,
+					speaking: 5,
+					reading: 5,
+					writing: 5,
 				},
-				{ icon: '📅', name: '3日連続', desc: '3日連続学習', done: best >= 3 },
-				{ icon: '🗓️', name: '7日連続', desc: '1週間連続', done: best >= 7 },
-				{ icon: '🏆', name: '30日連続', desc: '1ヶ月連続', done: best >= 30 },
-				{
-					icon: '📖',
-					name: '語彙10',
-					desc: '10単語登録',
-					done: vocab.length >= 10,
-				},
-				{
-					icon: '📚',
-					name: '語彙50',
-					desc: '50単語登録',
-					done: vocab.length >= 50,
-				},
-				{
-					icon: '⚔️',
-					name: 'LV10到達',
-					desc: 'レベル10',
-					done: App.getLv() >= 10,
-				},
-				{
-					icon: '👑',
-					name: 'LV25到達',
-					desc: 'レベル25',
-					done: App.getLv() >= 25,
-				},
-			];
-		document.getElementById('report-achievements').innerHTML = achievements
-			.map(
-				(a) =>
-					`<div class="achievement-item ${a.done ? 'unlocked' : 'locked'}"><div class="a-icon">${a.icon}</div><div><div class="a-name">${a.name}</div><div class="a-desc">${a.desc}</div></div></div>`,
-			)
-			.join('');
+				desc: '全スキル均等ボーナス',
+			},
+			{
+				id: 'skilled',
+				name: '熟練',
+				bonus: { vocab: 15, grammar: 15 },
+				desc: '語彙と文法に特化',
+			},
+			{
+				id: 'ambitious',
+				name: '野心家',
+				bonus: { speaking: 20, writing: 10 },
+				desc: '表現力重視',
+			},
+		],
 	},
+	{
+		id: 'elf',
+		name: 'エルフ',
+		icon: '🧝',
+		rarity: 2,
+		category: 'CORE',
+		desc: '長命で芸術と言語に秀でる',
+		heritages: [
+			{
+				id: 'ancient',
+				name: '古エルフ',
+				bonus: { reading: 20, grammar: 15 },
+				desc: '古典言語の理解力',
+			},
+			{
+				id: 'woodland',
+				name: '森エルフ',
+				bonus: { listening: 20, vocab: 10 },
+				desc: '自然音の聞き分け',
+			},
+			{
+				id: 'high',
+				name: 'ハイエルフ',
+				bonus: { writing: 15, grammar: 15 },
+				desc: '優雅な文章力',
+			},
+		],
+	},
+	{
+		id: 'dwarf',
+		name: 'ドワーフ',
+		icon: '⛏️',
+		rarity: 1,
+		category: 'CORE',
+		desc: '頑強で記憶力に優れる',
+		heritages: [
+			{
+				id: 'forge',
+				name: '鍛冶',
+				bonus: { vocab: 20, writing: 10 },
+				desc: '専門用語の記憶力',
+			},
+			{
+				id: 'deep',
+				name: '深淵',
+				bonus: { reading: 15, listening: 15 },
+				desc: '暗所での集中力',
+			},
+		],
+	},
+	{
+		id: 'gnome',
+		name: 'ノーム',
+		icon: '🍄',
+		rarity: 2,
+		category: 'CORE',
+		desc: '好奇心旺盛な小型種族',
+		heritages: [
+			{
+				id: 'rock',
+				name: '岩ノーム',
+				bonus: { grammar: 20, reading: 10 },
+				desc: '論理的思考',
+			},
+			{
+				id: 'fey',
+				name: '妖精ノーム',
+				bonus: { speaking: 15, listening: 15 },
+				desc: '音声模倣能力',
+			},
+		],
+	},
+	{
+		id: 'halfling',
+		name: 'ハーフリング',
+		icon: '🦶',
+		rarity: 1,
+		category: 'CORE',
+		desc: '幸運と順応性を持つ',
+		heritages: [
+			{
+				id: 'gutsy',
+				name: '豪胆',
+				bonus: { speaking: 20, vocab: 10 },
+				desc: '臆さず話す勇気',
+			},
+			{
+				id: 'hillock',
+				name: '丘陵',
+				bonus: { listening: 15, reading: 15 },
+				desc: '穏やかな学習',
+			},
+		],
+	},
+	{
+		id: 'goblin',
+		name: 'ゴブリン',
+		icon: '👺',
+		rarity: 1,
+		category: 'CORE',
+		desc: '素早い学習と応用力',
+		heritages: [
+			{
+				id: 'razortooth',
+				name: '鋭歯',
+				bonus: { speaking: 20, vocab: 10 },
+				desc: '素早い発話',
+			},
+			{
+				id: 'unbreakable',
+				name: '不屈',
+				bonus: { grammar: 15, writing: 15 },
+				desc: '粘り強い反復学習',
+			},
+		],
+	},
+	{
+		id: 'orc',
+		name: 'オーク',
+		icon: '💪',
+		rarity: 1,
+		category: 'CORE',
+		desc: '力強い意志と記憶力',
+		heritages: [
+			{
+				id: 'hold',
+				name: '砦育ち',
+				bonus: { vocab: 20, speaking: 10 },
+				desc: '力強い暗記力',
+			},
+			{
+				id: 'badlands',
+				name: '荒野育ち',
+				bonus: { listening: 15, grammar: 15 },
+				desc: 'サバイバル語彙',
+			},
+		],
+	},
+	{
+		id: 'halfelf',
+		name: 'ハーフエルフ',
+		icon: '🌿',
+		rarity: 2,
+		category: 'CORE',
+		desc: '二つの血統からの恩恵',
+		heritages: [
+			{
+				id: 'sociable',
+				name: '社交的',
+				bonus: { speaking: 15, listening: 15 },
+				desc: '会話の達人',
+			},
+			{
+				id: 'lorekeeper',
+				name: '伝承',
+				bonus: { reading: 20, vocab: 10 },
+				desc: '歴史的知識',
+			},
+		],
+	},
+	{
+		id: 'halforc',
+		name: 'ハーフオーク',
+		icon: '🗡️',
+		rarity: 1,
+		category: 'CORE',
+		desc: '強靭さと適応力の融合',
+		heritages: [
+			{
+				id: 'mightymaw',
+				name: '猛顎',
+				bonus: { speaking: 20, grammar: 10 },
+				desc: '声量と発声力',
+			},
+			{
+				id: 'keen',
+				name: '鋭敏',
+				bonus: { listening: 20, reading: 10 },
+				desc: '細部への注意力',
+			},
+		],
+	},
+	{
+		id: 'leshy',
+		name: 'レシー',
+		icon: '🌱',
+		rarity: 2,
+		category: 'CORE',
+		desc: '自然から生まれた植物種族',
+		heritages: [
+			{
+				id: 'leaf',
+				name: '葉',
+				bonus: { listening: 20, speaking: 10 },
+				desc: '風の言葉を聞く',
+			},
+			{
+				id: 'fungus',
+				name: '菌糸',
+				bonus: { vocab: 15, grammar: 15 },
+				desc: 'ネットワーク思考',
+			},
+		],
+	},
+	{
+		id: 'catfolk',
+		name: 'キャットフォーク',
+		icon: '🐱',
+		rarity: 2,
+		category: 'UNCOMMON',
+		desc: '猫の優雅さと好奇心',
+		heritages: [
+			{
+				id: 'clawed',
+				name: '爪持ち',
+				bonus: { writing: 20, vocab: 10 },
+				desc: '素早い筆記',
+			},
+			{
+				id: 'hunting',
+				name: '狩猟',
+				bonus: { listening: 20, speaking: 10 },
+				desc: '音声追跡能力',
+			},
+		],
+	},
+	{
+		id: 'lizardfolk',
+		name: 'リザードフォーク',
+		icon: '🦎',
+		rarity: 2,
+		category: 'UNCOMMON',
+		desc: '冷静な判断力と忍耐',
+		heritages: [
+			{
+				id: 'swamp',
+				name: '沼地',
+				bonus: { reading: 15, grammar: 15 },
+				desc: '集中持続力',
+			},
+			{
+				id: 'sand',
+				name: '砂漠',
+				bonus: { vocab: 20, listening: 10 },
+				desc: '環境適応語彙',
+			},
+		],
+	},
+	{
+		id: 'tengu',
+		name: 'テング',
+		icon: '🐦',
+		rarity: 3,
+		category: 'UNCOMMON',
+		desc: '声帯模倣の達人',
+		heritages: [
+			{
+				id: 'skyborn',
+				name: '天生',
+				bonus: { speaking: 25, listening: 10 },
+				desc: '完璧な発音模倣',
+			},
+			{
+				id: 'stormwing',
+				name: '嵐翼',
+				bonus: { vocab: 15, writing: 15 },
+				desc: '詩的表現力',
+			},
+		],
+	},
+	{
+		id: 'ratfolk',
+		name: 'ラットフォーク',
+		icon: '🐀',
+		rarity: 1,
+		category: 'UNCOMMON',
+		desc: '情報収集と暗記の達人',
+		heritages: [
+			{
+				id: 'sewer',
+				name: '下水道',
+				bonus: { vocab: 25, reading: 5 },
+				desc: '雑多な語彙力',
+			},
+			{
+				id: 'longsnout',
+				name: '長鼻',
+				bonus: { listening: 20, grammar: 10 },
+				desc: '鋭い聴覚',
+			},
+		],
+	},
+	{
+		id: 'kobold',
+		name: 'コボルド',
+		icon: '🐲',
+		rarity: 2,
+		category: 'UNCOMMON',
+		desc: '竜の血を引く小種族',
+		heritages: [
+			{
+				id: 'dragonscale',
+				name: '竜鱗',
+				bonus: { grammar: 20, vocab: 10 },
+				desc: '竜語の残滓',
+			},
+			{
+				id: 'tunnelflame',
+				name: '坑道炎',
+				bonus: { reading: 15, writing: 15 },
+				desc: '暗所筆写能力',
+			},
+		],
+	},
+	{
+		id: 'kitsune',
+		name: 'キツネ',
+		icon: '🦊',
+		rarity: 3,
+		category: 'UNCOMMON',
+		desc: '変化と多言語の才能',
+		heritages: [
+			{
+				id: 'shapechanger',
+				name: '変化',
+				bonus: { speaking: 20, listening: 15 },
+				desc: 'アクセント変化自在',
+			},
+			{
+				id: 'celestial',
+				name: '天狐',
+				bonus: { reading: 20, writing: 15 },
+				desc: '古文書の理解',
+			},
+		],
+	},
+	{
+		id: 'automaton',
+		name: 'オートマトン',
+		icon: '🤖',
+		rarity: 3,
+		category: 'UNCOMMON',
+		desc: '機械仕掛けの学習者',
+		heritages: [
+			{
+				id: 'hunter',
+				name: '狩猟型',
+				bonus: { listening: 25, vocab: 10 },
+				desc: '音声認識精度',
+			},
+			{
+				id: 'mage',
+				name: '魔導型',
+				bonus: { grammar: 20, writing: 15 },
+				desc: '構文解析能力',
+			},
+		],
+	},
+	{
+		id: 'fetchling',
+		name: 'フェッチリング',
+		icon: '🌑',
+		rarity: 3,
+		category: 'UNCOMMON',
+		desc: '影界から来た存在',
+		heritages: [
+			{
+				id: 'bright',
+				name: '光影',
+				bonus: { reading: 20, listening: 15 },
+				desc: '暗号解読能力',
+			},
+			{
+				id: 'deep',
+				name: '深影',
+				bonus: { writing: 20, speaking: 15 },
+				desc: '暗示的表現力',
+			},
+		],
+	},
+	{
+		id: 'sprite',
+		name: 'スプライト',
+		icon: '✨',
+		rarity: 3,
+		category: 'UNCOMMON',
+		desc: '妖精界の極小種族',
+		heritages: [
+			{
+				id: 'dragonfly',
+				name: '蜻蛉',
+				bonus: { listening: 20, speaking: 15 },
+				desc: '高速言語処理',
+			},
+			{
+				id: 'luminous',
+				name: '発光',
+				bonus: { vocab: 15, grammar: 15, reading: 5 },
+				desc: '知識照射',
+			},
+		],
+	},
+	{
+		id: 'grippli',
+		name: 'グリプリ',
+		icon: '🐸',
+		rarity: 2,
+		category: 'UNCOMMON',
+		desc: '樹上生活の蛙人族',
+		heritages: [
+			{
+				id: 'poisonhide',
+				name: '毒皮',
+				bonus: { vocab: 20, grammar: 10 },
+				desc: '薬学用語',
+			},
+			{
+				id: 'windweb',
+				name: '風網',
+				bonus: { listening: 15, speaking: 15 },
+				desc: '遠距離聴覚',
+			},
+		],
+	},
+	{
+		id: 'android',
+		name: 'アンドロイド',
+		icon: '🤖',
+		rarity: 4,
+		category: 'RARE',
+		desc: '古代文明の合成存在',
+		heritages: [
+			{
+				id: 'polyglot',
+				name: '多言語',
+				bonus: { vocab: 20, grammar: 20 },
+				desc: '言語DB搭載',
+			},
+			{
+				id: 'artisan',
+				name: '工匠',
+				bonus: { writing: 25, reading: 10 },
+				desc: '精密な文字出力',
+			},
+		],
+	},
+	{
+		id: 'fleshwarp',
+		name: 'フレッシュワープ',
+		icon: '🧬',
+		rarity: 4,
+		category: 'RARE',
+		desc: '魔法で変容した存在',
+		heritages: [
+			{
+				id: 'created',
+				name: '被造',
+				bonus: { listening: 20, speaking: 15 },
+				desc: '適応的発声器官',
+			},
+			{
+				id: 'mutated',
+				name: '変異',
+				bonus: { vocab: 15, grammar: 15, writing: 5 },
+				desc: '変容する理解力',
+			},
+		],
+	},
+	{
+		id: 'strix',
+		name: 'ストリックス',
+		icon: '🦅',
+		rarity: 4,
+		category: 'RARE',
+		desc: '翼を持つ空の民',
+		heritages: [
+			{
+				id: 'nightglider',
+				name: '夜翔',
+				bonus: { listening: 25, reading: 10 },
+				desc: '夜間学習効率UP',
+			},
+			{
+				id: 'predator',
+				name: '捕食者',
+				bonus: { speaking: 20, vocab: 15 },
+				desc: '鋭い発声と語彙',
+			},
+		],
+	},
+	{
+		id: 'anadi',
+		name: 'アナディ',
+		icon: '🕷️',
+		rarity: 4,
+		category: 'RARE',
+		desc: '蜘蛛と人の二重形態',
+		heritages: [
+			{
+				id: 'snaring',
+				name: '捕縛',
+				bonus: { grammar: 25, writing: 10 },
+				desc: '構文の網を張る',
+			},
+			{
+				id: 'adaptive',
+				name: '適応',
+				bonus: { vocab: 15, listening: 15, speaking: 5 },
+				desc: '環境言語吸収',
+			},
+		],
+	},
+	{
+		id: 'conrasu',
+		name: 'コンラス',
+		icon: '🌀',
+		rarity: 5,
+		category: 'RARE',
+		desc: '宇宙意志の結晶体',
+		heritages: [
+			{
+				id: 'rite',
+				name: '儀式',
+				bonus: { grammar: 20, reading: 20 },
+				desc: '宇宙の文法体系',
+			},
+			{
+				id: 'grove',
+				name: '聖林',
+				bonus: { listening: 20, writing: 15, vocab: 5 },
+				desc: '自然言語共鳴',
+			},
+		],
+	},
+	{
+		id: 'goloma',
+		name: 'ゴロマ',
+		icon: '👁️',
+		rarity: 4,
+		category: 'RARE',
+		desc: '全身に目を持つ種族',
+		heritages: [
+			{
+				id: 'overlooked',
+				name: '看過',
+				bonus: { reading: 30 },
+				desc: '超速読能力',
+			},
+			{
+				id: 'visionguard',
+				name: '視護',
+				bonus: { vocab: 15, listening: 15, grammar: 5 },
+				desc: '全方位情報収集',
+			},
+		],
+	},
+	{
+		id: 'kashrishi',
+		name: 'カシュリシ',
+		icon: '🔮',
+		rarity: 4,
+		category: 'RARE',
+		desc: '水晶角のテレパス種族',
+		heritages: [
+			{
+				id: 'empathic',
+				name: '共感',
+				bonus: { listening: 25, speaking: 10 },
+				desc: '感情言語の理解',
+			},
+			{
+				id: 'shielded',
+				name: '遮蔽',
+				bonus: { grammar: 20, reading: 15 },
+				desc: '雑念排除集中',
+			},
+		],
+	},
+	{
+		id: 'poppet',
+		name: 'ポペット',
+		icon: '🪆',
+		rarity: 5,
+		category: 'RARE',
+		desc: '魂を宿した人形',
+		heritages: [
+			{
+				id: 'stuffed',
+				name: '綿詰め',
+				bonus: { vocab: 20, writing: 15 },
+				desc: '知識を詰め込む',
+			},
+			{
+				id: 'windup',
+				name: 'ゼンマイ',
+				bonus: { grammar: 15, speaking: 15, listening: 5 },
+				desc: '正確な反復練習',
+			},
+		],
+	},
+	{
+		id: 'shisk',
+		name: 'シスク',
+		icon: '🦔',
+		rarity: 5,
+		category: 'RARE',
+		desc: '知識を守護する隠者種族',
+		heritages: [
+			{
+				id: 'loremaster',
+				name: '伝承師',
+				bonus: { reading: 25, vocab: 15 },
+				desc: '究極の読書家',
+			},
+			{
+				id: 'quillcoat',
+				name: '棘衣',
+				bonus: { writing: 25, grammar: 10 },
+				desc: '鋭い筆致',
+			},
+		],
+	},
+	{
+		id: 'skeleton',
+		name: 'スケルトン',
+		icon: '💀',
+		rarity: 5,
+		category: 'RARE',
+		desc: '不死の学習者',
+		heritages: [
+			{
+				id: 'fodder',
+				name: '量産',
+				bonus: { vocab: 15, grammar: 15, reading: 5 },
+				desc: '無限の反復耐性',
+			},
+			{
+				id: 'sturdy',
+				name: '頑丈',
+				bonus: { writing: 20, speaking: 15 },
+				desc: '不眠の学習',
+			},
+		],
+	},
+];
+
+var CLASSES = [
+	{
+		id: 'wizard',
+		name: 'ウィザード',
+		icon: '🧙',
+		desc: '文法の達人',
+		subclasses: [
+			{
+				id: 'grammarian',
+				name: '文法魔導士',
+				bonus: { grammar: 30 },
+				desc: '構文解析のエキスパート',
+			},
+			{
+				id: 'etymologist',
+				name: '語源学者',
+				bonus: { vocab: 20, reading: 10 },
+				desc: '言葉のルーツを追求',
+			},
+		],
+	},
+	{
+		id: 'bard',
+		name: 'バード',
+		icon: '🎵',
+		desc: '聴覚と発話に秀でる',
+		subclasses: [
+			{
+				id: 'maestro',
+				name: 'マエストロ',
+				bonus: { listening: 25, speaking: 10 },
+				desc: '音の指揮者',
+			},
+			{
+				id: 'polyglot',
+				name: 'ポリグロット',
+				bonus: { speaking: 20, vocab: 15 },
+				desc: '多言語の語り部',
+			},
+		],
+	},
+	{
+		id: 'rogue',
+		name: 'ローグ',
+		icon: '🗡️',
+		desc: '実践的スキル習得者',
+		subclasses: [
+			{
+				id: 'thief',
+				name: 'シーフ',
+				bonus: { vocab: 25, listening: 10 },
+				desc: '言葉を盗む才能',
+			},
+			{
+				id: 'mastermind',
+				name: 'マスターマインド',
+				bonus: { grammar: 15, reading: 15, writing: 5 },
+				desc: '戦略的学習者',
+			},
+		],
+	},
+	{
+		id: 'cleric',
+		name: 'クレリック',
+		icon: '⛪',
+		desc: '読解と精神力の守護者',
+		subclasses: [
+			{
+				id: 'warpriest',
+				name: '戦神官',
+				bonus: { reading: 20, speaking: 15 },
+				desc: '声高き朗読者',
+			},
+			{
+				id: 'cloister',
+				name: '隠修士',
+				bonus: { reading: 25, writing: 10 },
+				desc: '静寂の中の精読',
+			},
+		],
+	},
+	{
+		id: 'fighter',
+		name: 'ファイター',
+		icon: '⚔️',
+		desc: '反復練習の鬼',
+		subclasses: [
+			{
+				id: 'drillmaster',
+				name: '教練士',
+				bonus: { vocab: 20, grammar: 15 },
+				desc: '反復暗記の達人',
+			},
+			{
+				id: 'shield',
+				name: '盾衛',
+				bonus: { listening: 15, speaking: 15, reading: 5 },
+				desc: '防御的学習',
+			},
+		],
+	},
+	{
+		id: 'ranger',
+		name: 'レンジャー',
+		icon: '🏹',
+		desc: '独学と探索の達人',
+		subclasses: [
+			{
+				id: 'hunter',
+				name: 'ハンター',
+				bonus: { listening: 25, vocab: 10 },
+				desc: '言葉を狩る者',
+			},
+			{
+				id: 'guide',
+				name: 'ガイド',
+				bonus: { speaking: 20, reading: 10, writing: 5 },
+				desc: '言語の道案内',
+			},
+		],
+	},
+	{
+		id: 'monk',
+		name: 'モンク',
+		icon: '🥋',
+		desc: '規律ある反復修行者',
+		subclasses: [
+			{
+				id: 'stance',
+				name: '構え師',
+				bonus: { grammar: 20, writing: 15 },
+				desc: '形式の追求',
+			},
+			{
+				id: 'meditation',
+				name: '瞑想師',
+				bonus: { listening: 20, reading: 15 },
+				desc: '深い理解',
+			},
+		],
+	},
+	{
+		id: 'druid',
+		name: 'ドルイド',
+		icon: '🌿',
+		desc: '自然言語との対話者',
+		subclasses: [
+			{
+				id: 'storm',
+				name: '嵐',
+				bonus: { listening: 25, speaking: 10 },
+				desc: '自然音声学習',
+			},
+			{
+				id: 'wild',
+				name: '野性',
+				bonus: { vocab: 20, grammar: 10, listening: 5 },
+				desc: '直感的言語習得',
+			},
+		],
+	},
+	{
+		id: 'sorcerer',
+		name: 'ソーサラー',
+		icon: '🔥',
+		desc: '直感と天賦の才',
+		subclasses: [
+			{
+				id: 'imperial',
+				name: '帝血',
+				bonus: { speaking: 25, grammar: 10 },
+				desc: '支配的な弁舌',
+			},
+			{
+				id: 'fey',
+				name: '妖精血',
+				bonus: { listening: 20, vocab: 15 },
+				desc: '直感的語彙習得',
+			},
+		],
+	},
+	{
+		id: 'alchemist',
+		name: 'アルケミスト',
+		icon: '⚗️',
+		desc: '学習法の研究者',
+		subclasses: [
+			{
+				id: 'bomber',
+				name: '爆弾師',
+				bonus: { vocab: 25, writing: 10 },
+				desc: '爆発的暗記',
+			},
+			{
+				id: 'chirurgeon',
+				name: '外科師',
+				bonus: { reading: 20, grammar: 15 },
+				desc: '精密な読解',
+			},
+		],
+	},
+	{
+		id: 'barbarian',
+		name: 'バーバリアン',
+		icon: '🪓',
+		desc: 'パッションで学ぶ',
+		subclasses: [
+			{
+				id: 'fury',
+				name: '激怒',
+				bonus: { speaking: 30 },
+				desc: '情熱的な会話力',
+			},
+			{
+				id: 'giant',
+				name: '巨人の血',
+				bonus: { vocab: 20, listening: 15 },
+				desc: '豪快な語彙力',
+			},
+		],
+	},
+	{
+		id: 'champion',
+		name: 'チャンピオン',
+		icon: '🛡️',
+		desc: '正道の学習者',
+		subclasses: [
+			{
+				id: 'paladin',
+				name: 'パラディン',
+				bonus: { grammar: 20, speaking: 15 },
+				desc: '正しい言葉遣い',
+			},
+			{
+				id: 'liberator',
+				name: '解放者',
+				bonus: { reading: 15, writing: 15, vocab: 5 },
+				desc: '自由な表現',
+			},
+		],
+	},
+	{
+		id: 'witch',
+		name: 'ウィッチ',
+		icon: '🧹',
+		desc: '秘術と暗記の専門家',
+		subclasses: [
+			{
+				id: 'hex',
+				name: '呪術師',
+				bonus: { vocab: 20, grammar: 15 },
+				desc: '呪文詠唱記憶',
+			},
+			{
+				id: 'ley',
+				name: '地脈使い',
+				bonus: { reading: 20, listening: 15 },
+				desc: '地脈の知識',
+			},
+		],
+	},
+	{
+		id: 'oracle',
+		name: 'オラクル',
+		icon: '🔮',
+		desc: '予知と言語直感',
+		subclasses: [
+			{
+				id: 'flames',
+				name: '炎の神託',
+				bonus: { speaking: 20, writing: 15 },
+				desc: '熱き予言',
+			},
+			{
+				id: 'lore',
+				name: '伝承の神託',
+				bonus: { reading: 25, vocab: 10 },
+				desc: '知識の神託',
+			},
+		],
+	},
+	{
+		id: 'investigator',
+		name: 'インベスティゲーター',
+		icon: '🔍',
+		desc: '分析的な学習者',
+		subclasses: [
+			{
+				id: 'forensic',
+				name: '法医学',
+				bonus: { reading: 20, grammar: 15 },
+				desc: '証拠から学ぶ',
+			},
+			{
+				id: 'empiricism',
+				name: '経験主義',
+				bonus: { listening: 20, vocab: 15 },
+				desc: '実践的検証',
+			},
+		],
+	},
+	{
+		id: 'swashbuckler',
+		name: 'スワッシュバックラー',
+		icon: '🤺',
+		desc: '華麗な話術の使い手',
+		subclasses: [
+			{
+				id: 'braggart',
+				name: '自慢屋',
+				bonus: { speaking: 25, vocab: 10 },
+				desc: '堂々たる弁舌',
+			},
+			{
+				id: 'fencer',
+				name: '剣士',
+				bonus: { grammar: 20, writing: 15 },
+				desc: '鋭い言葉の剣',
+			},
+		],
+	},
+	{
+		id: 'magus',
+		name: 'メイガス',
+		icon: '⚡',
+		desc: '理論と実践の融合',
+		subclasses: [
+			{
+				id: 'sparkling',
+				name: '閃光',
+				bonus: { grammar: 20, speaking: 15 },
+				desc: '即興文法運用',
+			},
+			{
+				id: 'starlit',
+				name: '星光',
+				bonus: { reading: 20, writing: 15 },
+				desc: '読み書きの融合',
+			},
+		],
+	},
+	{
+		id: 'summoner',
+		name: 'サモナー',
+		icon: '👻',
+		desc: '分身で多角的に学ぶ',
+		subclasses: [
+			{
+				id: 'beast',
+				name: 'ビースト',
+				bonus: { listening: 20, speaking: 15 },
+				desc: '本能的聞き取り',
+			},
+			{
+				id: 'construct',
+				name: 'コンストラクト',
+				bonus: { grammar: 25, reading: 10 },
+				desc: '構造的理解',
+			},
+		],
+	},
+	{
+		id: 'gunslinger',
+		name: 'ガンスリンガー',
+		icon: '🔫',
+		desc: '速射暗記の名手',
+		subclasses: [
+			{
+				id: 'sniper',
+				name: 'スナイパー',
+				bonus: { vocab: 25, reading: 10 },
+				desc: '精密な単語射撃',
+			},
+			{
+				id: 'drifter',
+				name: 'ドリフター',
+				bonus: { listening: 15, speaking: 15, writing: 5 },
+				desc: '流浪の会話術',
+			},
+		],
+	},
+	{
+		id: 'inventor',
+		name: 'インベンター',
+		icon: '🔧',
+		desc: '学習ツール発明家',
+		subclasses: [
+			{
+				id: 'armor',
+				name: '装甲型',
+				bonus: { grammar: 20, writing: 15 },
+				desc: '堅牢な文法基盤',
+			},
+			{
+				id: 'weapon',
+				name: '武器型',
+				bonus: { vocab: 25, speaking: 10 },
+				desc: '切れ味鋭い語彙',
+			},
+		],
+	},
+	{
+		id: 'thaumaturge',
+		name: 'ソーマターグ',
+		icon: '📿',
+		desc: '万物の知識を操る',
+		subclasses: [
+			{
+				id: 'tome',
+				name: '聖典',
+				bonus: { reading: 25, grammar: 10 },
+				desc: '書物の理解者',
+			},
+			{
+				id: 'amulet',
+				name: '護符',
+				bonus: { vocab: 20, listening: 15 },
+				desc: '記憶のお守り',
+			},
+		],
+	},
+	{
+		id: 'psychic',
+		name: 'サイキック',
+		icon: '🧠',
+		desc: '精神力で言語を操る',
+		subclasses: [
+			{
+				id: 'tangible',
+				name: '有形思念',
+				bonus: { writing: 25, grammar: 10 },
+				desc: '思考を文字に',
+			},
+			{
+				id: 'oscillating',
+				name: '波動',
+				bonus: { listening: 25, speaking: 10 },
+				desc: '言語波の受信',
+			},
+		],
+	},
+	{
+		id: 'kineticist',
+		name: 'キネティシスト',
+		icon: '🌊',
+		desc: '元素力で学習を加速',
+		subclasses: [
+			{
+				id: 'fire',
+				name: '炎素',
+				bonus: { speaking: 20, writing: 15 },
+				desc: '燃える表現力',
+			},
+			{
+				id: 'water',
+				name: '水素',
+				bonus: { listening: 20, reading: 15 },
+				desc: '流れるように理解',
+			},
+		],
+	},
+];
+
+var SPHERE_NODES = [
+	{
+		id: 'hub',
+		zone: 'center',
+		x: 400,
+		y: 300,
+		label: '出発点',
+		type: 'hub',
+		rarity: 1,
+		icon: '🌟',
+		prereq: [],
+		reward: { exp: 0 },
+		desc: '冒険の始まり',
+	},
+	{
+		id: 'v1',
+		zone: 'vocab',
+		x: 250,
+		y: 150,
+		label: '基礎単語50',
+		type: 'skill',
+		rarity: 1,
+		icon: '📝',
+		prereq: ['hub'],
+		reward: { exp: 20, vocab: 5 },
+		desc: '最初の50語',
+	},
+	{
+		id: 'v2',
+		zone: 'vocab',
+		x: 180,
+		y: 100,
+		label: '日常単語100',
+		type: 'skill',
+		rarity: 2,
+		icon: '📖',
+		prereq: ['v1'],
+		reward: { exp: 40, vocab: 10 },
+		desc: '日常会話の基本語彙',
+	},
+	{
+		id: 'v3',
+		zone: 'vocab',
+		x: 120,
+		y: 60,
+		label: '単語マスター',
+		type: 'skill',
+		rarity: 3,
+		icon: '🏆',
+		prereq: ['v2'],
+		reward: { exp: 80, vocab: 20 },
+		desc: '語彙力の飛躍',
+	},
+	{
+		id: 'v_boss',
+		zone: 'vocab',
+		x: 60,
+		y: 30,
+		label: '語彙の番人',
+		type: 'boss',
+		rarity: 4,
+		icon: '🐉',
+		prereq: ['v3'],
+		reward: { exp: 200, vocab: 30, gold: 100 },
+		desc: 'BOSS: 語彙テスト',
+	},
+	{
+		id: 'v_chest',
+		zone: 'vocab',
+		x: 200,
+		y: 50,
+		label: '宝箱: レア単語集',
+		type: 'chest',
+		rarity: 3,
+		icon: '🎁',
+		prereq: ['v2'],
+		reward: { exp: 50, gold: 50 },
+		desc: '珍しい単語を入手',
+	},
+	{
+		id: 'g1',
+		zone: 'grammar',
+		x: 550,
+		y: 150,
+		label: '基礎文法',
+		type: 'skill',
+		rarity: 1,
+		icon: '📐',
+		prereq: ['hub'],
+		reward: { exp: 20, grammar: 5 },
+		desc: '品詞と語順の基本',
+	},
+	{
+		id: 'g2',
+		zone: 'grammar',
+		x: 620,
+		y: 100,
+		label: '時制マスター',
+		type: 'skill',
+		rarity: 2,
+		icon: '⏰',
+		prereq: ['g1'],
+		reward: { exp: 40, grammar: 10 },
+		desc: '過去・現在・未来',
+	},
+	{
+		id: 'g3',
+		zone: 'grammar',
+		x: 680,
+		y: 60,
+		label: '複文構造',
+		type: 'skill',
+		rarity: 3,
+		icon: '🔗',
+		prereq: ['g2'],
+		reward: { exp: 80, grammar: 20 },
+		desc: '従属節と複合文',
+	},
+	{
+		id: 'g_boss',
+		zone: 'grammar',
+		x: 740,
+		y: 30,
+		label: '文法の守護者',
+		type: 'boss',
+		rarity: 4,
+		icon: '🐉',
+		prereq: ['g3'],
+		reward: { exp: 200, grammar: 30, gold: 100 },
+		desc: 'BOSS: 文法総合テスト',
+	},
+	{
+		id: 'g_event',
+		zone: 'grammar',
+		x: 600,
+		y: 50,
+		label: '文法チャレンジ',
+		type: 'event',
+		rarity: 2,
+		icon: '⚡',
+		prereq: ['g1'],
+		reward: { exp: 60, grammar: 8 },
+		desc: 'ランダム文法イベント',
+	},
+	{
+		id: 'l1',
+		zone: 'listening',
+		x: 250,
+		y: 400,
+		label: '聞き取り入門',
+		type: 'skill',
+		rarity: 1,
+		icon: '👂',
+		prereq: ['hub'],
+		reward: { exp: 20, listening: 5 },
+		desc: 'ゆっくり音声に慣れる',
+	},
+	{
+		id: 'l2',
+		zone: 'listening',
+		x: 180,
+		y: 450,
+		label: '自然速度',
+		type: 'skill',
+		rarity: 2,
+		icon: '🎧',
+		prereq: ['l1'],
+		reward: { exp: 40, listening: 10 },
+		desc: 'ネイティブスピード',
+	},
+	{
+		id: 'l3',
+		zone: 'listening',
+		x: 120,
+		y: 500,
+		label: '多方言理解',
+		type: 'skill',
+		rarity: 3,
+		icon: '🌍',
+		prereq: ['l2'],
+		reward: { exp: 80, listening: 20 },
+		desc: '様々なアクセント',
+	},
+	{
+		id: 'l_boss',
+		zone: 'listening',
+		x: 60,
+		y: 540,
+		label: '聴覚の試練',
+		type: 'boss',
+		rarity: 4,
+		icon: '🐉',
+		prereq: ['l3'],
+		reward: { exp: 200, listening: 30, gold: 100 },
+		desc: 'BOSS: リスニング試験',
+	},
+	{
+		id: 's1',
+		zone: 'speaking',
+		x: 550,
+		y: 400,
+		label: '発声練習',
+		type: 'skill',
+		rarity: 1,
+		icon: '🗣️',
+		prereq: ['hub'],
+		reward: { exp: 20, speaking: 5 },
+		desc: '基本の発声と発音',
+	},
+	{
+		id: 's2',
+		zone: 'speaking',
+		x: 620,
+		y: 450,
+		label: '会話実践',
+		type: 'skill',
+		rarity: 2,
+		icon: '💬',
+		prereq: ['s1'],
+		reward: { exp: 40, speaking: 10 },
+		desc: '日常会話の練習',
+	},
+	{
+		id: 's3',
+		zone: 'speaking',
+		x: 680,
+		y: 500,
+		label: 'プレゼン力',
+		type: 'skill',
+		rarity: 3,
+		icon: '🎤',
+		prereq: ['s2'],
+		reward: { exp: 80, speaking: 20 },
+		desc: 'スピーチ力',
+	},
+	{
+		id: 's_boss',
+		zone: 'speaking',
+		x: 740,
+		y: 540,
+		label: '弁論の覇者',
+		type: 'boss',
+		rarity: 4,
+		icon: '🐉',
+		prereq: ['s3'],
+		reward: { exp: 200, speaking: 30, gold: 100 },
+		desc: 'BOSS: スピーキング試験',
+	},
+	{
+		id: 's_chest',
+		zone: 'speaking',
+		x: 600,
+		y: 520,
+		label: '宝箱: 慣用句集',
+		type: 'chest',
+		rarity: 3,
+		icon: '🎁',
+		prereq: ['s2'],
+		reward: { exp: 50, gold: 50 },
+		desc: '実用的な慣用句',
+	},
+	{
+		id: 'r1',
+		zone: 'reading',
+		x: 300,
+		y: 250,
+		label: '文字認識',
+		type: 'skill',
+		rarity: 1,
+		icon: '🔤',
+		prereq: ['hub'],
+		reward: { exp: 20, reading: 5 },
+		desc: '文字と記号を学ぶ',
+	},
+	{
+		id: 'r2',
+		zone: 'reading',
+		x: 230,
+		y: 280,
+		label: '短文読解',
+		type: 'skill',
+		rarity: 2,
+		icon: '📄',
+		prereq: ['r1'],
+		reward: { exp: 40, reading: 10 },
+		desc: '短い文章を読む',
+	},
+	{
+		id: 'r3',
+		zone: 'reading',
+		x: 160,
+		y: 310,
+		label: '長文読解',
+		type: 'skill',
+		rarity: 3,
+		icon: '📚',
+		prereq: ['r2'],
+		reward: { exp: 80, reading: 20 },
+		desc: 'まとまった文章の理解',
+	},
+	{
+		id: 'r_boss',
+		zone: 'reading',
+		x: 90,
+		y: 340,
+		label: '書物の守護竜',
+		type: 'boss',
+		rarity: 5,
+		icon: '🐉',
+		prereq: ['r3'],
+		reward: { exp: 250, reading: 35, gold: 150 },
+		desc: 'BOSS: 読解力の究極試練',
+	},
+	{
+		id: 'w1',
+		zone: 'writing',
+		x: 500,
+		y: 250,
+		label: '筆記入門',
+		type: 'skill',
+		rarity: 1,
+		icon: '✏️',
+		prereq: ['hub'],
+		reward: { exp: 20, writing: 5 },
+		desc: '基本的な筆記練習',
+	},
+	{
+		id: 'w2',
+		zone: 'writing',
+		x: 570,
+		y: 280,
+		label: '短文作成',
+		type: 'skill',
+		rarity: 2,
+		icon: '📝',
+		prereq: ['w1'],
+		reward: { exp: 40, writing: 10 },
+		desc: '短い文章を書く',
+	},
+	{
+		id: 'w3',
+		zone: 'writing',
+		x: 640,
+		y: 310,
+		label: 'エッセイ',
+		type: 'skill',
+		rarity: 3,
+		icon: '📜',
+		prereq: ['w2'],
+		reward: { exp: 80, writing: 20 },
+		desc: '論理的な文章を書く',
+	},
+	{
+		id: 'w_boss',
+		zone: 'writing',
+		x: 710,
+		y: 340,
+		label: '文筆の大賢者',
+		type: 'boss',
+		rarity: 5,
+		icon: '🐉',
+		prereq: ['w3'],
+		reward: { exp: 250, writing: 35, gold: 150 },
+		desc: 'BOSS: 筆記力の究極試練',
+	},
+	{
+		id: 'w_event',
+		zone: 'writing',
+		x: 560,
+		y: 330,
+		label: '創作イベント',
+		type: 'event',
+		rarity: 2,
+		icon: '⚡',
+		prereq: ['w1'],
+		reward: { exp: 60, writing: 8 },
+		desc: 'ランダム創作チャレンジ',
+	},
+];
+
+var JOB_SYNERGY = {
+	wizard: ['grammar', 'reading'],
+	bard: ['listening', 'speaking'],
+	rogue: ['vocab', 'listening'],
+	cleric: ['reading', 'writing'],
+	fighter: ['vocab', 'grammar'],
+	ranger: ['listening', 'vocab'],
+	monk: ['grammar', 'writing'],
+	druid: ['listening', 'reading'],
+	sorcerer: ['speaking', 'grammar'],
+	alchemist: ['vocab', 'writing'],
+	barbarian: ['speaking', 'vocab'],
+	champion: ['grammar', 'speaking'],
+	witch: ['vocab', 'grammar'],
+	oracle: ['speaking', 'reading'],
+	investigator: ['reading', 'grammar'],
+	swashbuckler: ['speaking', 'vocab'],
+	magus: ['grammar', 'speaking'],
+	summoner: ['listening', 'speaking'],
+	gunslinger: ['vocab', 'reading'],
+	inventor: ['grammar', 'writing'],
+	thaumaturge: ['reading', 'vocab'],
+	psychic: ['writing', 'listening'],
+	kineticist: ['speaking', 'reading'],
 };
 
-// === BOOT ===
-document.addEventListener('DOMContentLoaded', () => {
-	App.init();
-	Router.init();
-	HomePage.render();
-});
-// ============================================================
-//  LinguaQuest — app.js (Complete Application Logic)
-//  Home / Timer / Calendar / Vocab / Review / Character / Sphere / Report
-// ============================================================
-
-// ============================================================
-//  STATE MANAGEMENT
-// ============================================================
-const DEFAULT_STATE = {
-	// Character
-	playerName: 'Adventurer',
-	ancestry: null,
-	heritage: null,
-	playerClass: null,
-	subclass: null,
+console.log(
+	'✅ Data loaded:',
+	ANCESTRIES.length,
+	'ancestries,',
+	CLASSES.length,
+	'classes,',
+	SPHERE_NODES.length,
+	'nodes',
+);
+/* ==================== STATE ==================== */
+var DEFAULT_STATE = {
+	name: '冒険者',
+	ancestry: 'human',
+	heritage: 'versatile',
+	cls: 'wizard',
+	subclass: 'grammarian',
 	level: 1,
 	exp: 0,
+	gold: 0,
 	hp: 100,
 	maxHp: 100,
-	gold: 0,
-	// Skills
 	skills: {
-		vocab: { exp: 0, level: 1 },
-		grammar: { exp: 0, level: 1 },
-		listening: { exp: 0, level: 1 },
-		speaking: { exp: 0, level: 1 },
-		reading: { exp: 0, level: 1 },
-		writing: { exp: 0, level: 1 },
+		vocab: 0,
+		grammar: 0,
+		listening: 0,
+		speaking: 0,
+		reading: 0,
+		writing: 0,
 	},
-	// Vocab
-	vocabList: [],
-	// Timer
-	timerSessions: [],
-	todayStudyMinutes: 0,
-	// Calendar
-	calendarData: {},
-	streak: 0,
-	bestStreak: 0,
-	// Sphere
-	unlockedNodes: [],
-	spherePoints: 0,
-	// Stats
-	totalStudyMinutes: 0,
-	totalReviews: 0,
-	totalCorrect: 0,
-	daysActive: 0,
-	// Settings
-	createdAt: new Date().toISOString(),
+	timer: { logs: [], todayTotal: 0, target: 30 },
+	calendar: {},
+	vocab: { words: [], nextId: 1 },
+	review: { queue: [], history: [] },
+	sphere: { unlocked: ['hub'], activated: ['hub'] },
+	settings: {},
 };
-
-let state = {};
-
+var state = {};
 function loadState() {
 	try {
-		const saved = localStorage.getItem('linguaquest_state');
-		if (saved) {
-			state = JSON.parse(saved);
-			// Merge missing keys from default
-			for (const k in DEFAULT_STATE) {
+		var s = localStorage.getItem('linguaquest_state');
+		if (s) {
+			state = JSON.parse(s);
+			for (var k in DEFAULT_STATE)
 				if (!(k in state))
 					state[k] = JSON.parse(JSON.stringify(DEFAULT_STATE[k]));
-			}
 			if (!state.skills)
-				state.skills = JSON.parse(JSON.stringify(DEFAULT_STATE.skills));
-		} else {
-			state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-		}
+				state.skills = {
+					vocab: 0,
+					grammar: 0,
+					listening: 0,
+					speaking: 0,
+					reading: 0,
+					writing: 0,
+				};
+			if (!state.sphere)
+				state.sphere = { unlocked: ['hub'], activated: ['hub'] };
+			if (!state.sphere.activated) state.sphere.activated = ['hub'];
+		} else state = JSON.parse(JSON.stringify(DEFAULT_STATE));
 	} catch (e) {
 		state = JSON.parse(JSON.stringify(DEFAULT_STATE));
 	}
 }
-
 function saveState() {
-	localStorage.setItem('linguaquest_state', JSON.stringify(state));
+	try {
+		localStorage.setItem('linguaquest_state', JSON.stringify(state));
+	} catch (e) {}
 }
-
-// ============================================================
-//  UTILITY
-// ============================================================
-function $(sel) {
-	return document.querySelector(sel);
-}
-function $$(sel) {
-	return document.querySelectorAll(sel);
-}
-function el(tag, cls, html) {
-	const e = document.createElement(tag);
-	if (cls) e.className = cls;
-	if (html !== undefined) e.innerHTML = html;
-	return e;
-}
-
-function getTitle(lv) {
-	let t = TITLES[0];
-	for (const ti of TITLES) {
-		if (lv >= ti.lv) t = ti;
+function resetState() {
+	if (confirm('本当にすべてのデータをリセットしますか？')) {
+		state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+		saveState();
+		location.reload();
 	}
-	return t.name;
 }
 
-function getAncestryById(id) {
-	return ANCESTRIES.find((a) => a.id === id);
-}
-function getClassById(id) {
-	return CLASSES.find((c) => c.id === id);
-}
-function getHeritageById(ancestryId, herId) {
-	const a = getAncestryById(ancestryId);
-	return a ? a.heritages.find((h) => h.id === herId) : null;
-}
-function getSubclassById(classId, subId) {
-	const c = getClassById(classId);
-	return c ? c.subclasses.find((s) => s.id === subId) : null;
-}
-
-function calcBonuses() {
-	const bonuses = {};
-	const add = (eff) => {
-		if (!eff) return;
-		for (const k in eff) bonuses[k] = (bonuses[k] || 0) + eff[k];
-	};
-	if (state.ancestry) {
-		const a = getAncestryById(state.ancestry);
-		if (a) add(a.baseBonus);
-	}
-	if (state.ancestry && state.heritage) {
-		const h = getHeritageById(state.ancestry, state.heritage);
-		if (h) add(h.effect);
-	}
-	if (state.playerClass) {
-		const c = getClassById(state.playerClass);
-		if (c) add(c.baseBonus);
-	}
-	if (state.playerClass && state.subclass) {
-		const s = getSubclassById(state.playerClass, state.subclass);
-		if (s) add(s.effect);
-	}
-	return bonuses;
-}
-
-function addExp(skill, amount) {
-	const bonuses = calcBonuses();
-	let mult = 1;
-	mult += bonuses.expAll || 0;
-	if (
-		skill &&
-		bonuses['exp' + skill.charAt(0).toUpperCase() + skill.slice(1)]
-	) {
-		mult += bonuses['exp' + skill.charAt(0).toUpperCase() + skill.slice(1)];
-	}
-	// Night bonus
-	const hour = new Date().getHours();
-	if ((hour >= 22 || hour < 5) && bonuses.nightBonus)
-		mult += bonuses.nightBonus;
-	// Streak bonus
-	if (state.streak > 0 && bonuses.streakBonus) mult += bonuses.streakBonus;
-
-	const finalExp = Math.round(amount * mult);
-
-	// Add to skill
-	if (skill && state.skills[skill]) {
-		state.skills[skill].exp += finalExp;
-		while (state.skills[skill].exp >= expForLevel(state.skills[skill].level)) {
-			state.skills[skill].exp -= expForLevel(state.skills[skill].level);
-			state.skills[skill].level++;
-		}
-	}
-
-	// Add to total
-	state.exp += finalExp;
-	while (state.exp >= expForLevel(state.level)) {
-		state.exp -= expForLevel(state.level);
-		state.level++;
-	}
-
-	// Sphere points every 2 levels
-	state.spherePoints = Math.floor(state.level / 2);
-
-	saveState();
-	return finalExp;
-}
-
-function todayKey() {
-	const d = new Date();
-	return (
-		d.getFullYear() +
-		'-' +
-		String(d.getMonth() + 1).padStart(2, '0') +
-		'-' +
-		String(d.getDate()).padStart(2, '0')
-	);
-}
-
-// ============================================================
-//  NAVIGATION
-// ============================================================
-let currentTab = 'home';
-
-function initNav() {
-	$$('.nav-item').forEach((item) => {
-		item.addEventListener('click', () => {
-			const tab = item.dataset.tab;
-			if (tab) switchTab(tab);
-		});
+/* ==================== UTILITIES ==================== */
+function getAncestry(id) {
+	return ANCESTRIES.find(function (a) {
+		return a.id === (id || state.ancestry);
 	});
 }
+function getHeritage(aId, hId) {
+	var a = getAncestry(aId);
+	return a
+		? a.heritages.find(function (h) {
+				return h.id === (hId || state.heritage);
+			})
+		: null;
+}
+function getClass(id) {
+	return CLASSES.find(function (c) {
+		return c.id === (id || state.cls);
+	});
+}
+function getSubclass(cId, sId) {
+	var c = getClass(cId);
+	return c
+		? c.subclasses.find(function (s) {
+				return s.id === (sId || state.subclass);
+			})
+		: null;
+}
+function getTitle() {
+	var t = TITLES[0].title;
+	for (var i = 0; i < TITLES.length; i++)
+		if (state.level >= TITLES[i].lv) t = TITLES[i].title;
+	return t;
+}
+function calcBonuses() {
+	var b = {
+		vocab: 0,
+		grammar: 0,
+		listening: 0,
+		speaking: 0,
+		reading: 0,
+		writing: 0,
+	};
+	var h = getHeritage(state.ancestry, state.heritage);
+	var sc = getSubclass(state.cls, state.subclass);
+	if (h && h.bonus) for (var k in h.bonus) b[k] = (b[k] || 0) + h.bonus[k];
+	if (sc && sc.bonus) for (var k in sc.bonus) b[k] = (b[k] || 0) + sc.bonus[k];
+	return b;
+}
+function skillLabel(k) {
+	var m = {
+		vocab: '語彙',
+		grammar: '文法',
+		listening: '聴解',
+		speaking: '会話',
+		reading: '読解',
+		writing: '筆記',
+	};
+	return m[k] || k;
+}
+function todayKey(d) {
+	var x = d || new Date();
+	return (
+		x.getFullYear() +
+		'-' +
+		String(x.getMonth() + 1).padStart(2, '0') +
+		'-' +
+		String(x.getDate()).padStart(2, '0')
+	);
+}
+function isNightTime() {
+	var h = new Date().getHours();
+	return h >= 22 || h < 5;
+}
+function getStreak() {
+	var s = 0,
+		d = new Date();
+	for (var i = 0; i < 365; i++) {
+		var k = todayKey(d);
+		if (state.calendar[k] && state.calendar[k].studied) {
+			s++;
+			d.setDate(d.getDate() - 1);
+		} else if (i === 0) {
+			d.setDate(d.getDate() - 1);
+		} else break;
+	}
+	return s;
+}
+function getStreakBonus() {
+	var s = getStreak();
+	if (s >= 30) return 0.15;
+	if (s >= 14) return 0.1;
+	if (s >= 7) return 0.05;
+	return 0;
+}
+function logStudyToday(min) {
+	var k = todayKey();
+	if (!state.calendar[k]) state.calendar[k] = { studied: false, minutes: 0 };
+	state.calendar[k].studied = true;
+	state.calendar[k].minutes += min;
+	saveState();
+}
+function esc(s) {
+	if (!s) return '';
+	var d = document.createElement('div');
+	d.textContent = s;
+	return d.innerHTML;
+}
+function addExp(skill, amount) {
+	var bn = calcBonuses();
+	var bp = (bn[skill] || 0) / 100;
+	var nb = isNightTime() ? 0.1 : 0;
+	var sb = getStreakBonus();
+	var total = Math.floor(amount * (1 + bp + nb + sb));
+	if (skill && state.skills[skill] !== undefined) state.skills[skill] += total;
+	state.exp += total;
+	var needed = expForLevel(state.level);
+	while (state.exp >= needed && state.level < 99) {
+		state.exp -= needed;
+		state.level++;
+		needed = expForLevel(state.level);
+		state.maxHp = 100 + (state.level - 1) * 5;
+		state.hp = state.maxHp;
+		showToast('🎉 レベルアップ！ Lv.' + state.level, 'gold');
+	}
+	saveState();
+	updateHUD();
+	return total;
+}
 
+/* ==================== TOAST / HUD ==================== */
+function showToast(msg, type) {
+	var c = document.querySelector('.toast-container');
+	if (!c) {
+		c = document.createElement('div');
+		c.className = 'toast-container';
+		document.body.appendChild(c);
+	}
+	var t = document.createElement('div');
+	t.className = 'toast' + (type ? ' ' + type : '');
+	t.textContent = msg;
+	c.appendChild(t);
+	setTimeout(function () {
+		t.remove();
+	}, 4000);
+}
+function updateHUD() {
+	var l = document.getElementById('header-level');
+	var g = document.getElementById('header-gold');
+	if (l) l.textContent = 'Lv.' + state.level;
+	if (g) g.textContent = '💰 ' + state.gold + ' G';
+}
+function updateClock() {
+	var el = document.getElementById('header-clock');
+	if (el)
+		el.textContent = new Date().toLocaleTimeString('ja-JP', {
+			hour: '2-digit',
+			minute: '2-digit',
+		});
+}
+function initParticles() {
+	var c = document.getElementById('particles');
+	if (!c) return;
+	for (var i = 0; i < 30; i++) {
+		var p = document.createElement('div');
+		p.className = 'particle';
+		p.style.left = Math.random() * 100 + '%';
+		p.style.animationDelay = Math.random() * 8 + 's';
+		p.style.animationDuration = 6 + Math.random() * 6 + 's';
+		c.appendChild(p);
+	}
+}
+
+/* ==================== NAV ==================== */
+var currentTab = 'home';
+function initNav() {
+	var btns = document.querySelectorAll('.nav-btn');
+	for (var i = 0; i < btns.length; i++) {
+		(function (b) {
+			b.addEventListener('click', function () {
+				if (b.dataset.tab) switchTab(b.dataset.tab);
+			});
+		})(btns[i]);
+	}
+}
 function switchTab(tab) {
 	currentTab = tab;
-
-	$$('.nav-item').forEach((n) =>
-		n.classList.toggle('active', n.dataset.tab === tab),
-	);
-
-	$$('.section').forEach((s) =>
-		s.classList.toggle('active', s.id === 'section-' + tab),
-	);
-	// Render
-	switch (tab) {
-		case 'home':
-			renderHome();
-			break;
-		case 'timer':
-			renderTimer();
-			break;
-		case 'calendar':
-			renderCalendar();
-			break;
-		case 'vocab':
-			renderVocab();
-			break;
-		case 'review':
-			renderReview();
-			break;
-		case 'character':
-			renderCharacter();
-			break;
-		case 'sphere':
-			renderSphere();
-			break;
-		case 'report':
-			renderReport();
-			break;
-	}
+	var btns = document.querySelectorAll('.nav-btn');
+	for (var i = 0; i < btns.length; i++)
+		btns[i].classList.toggle('active', btns[i].dataset.tab === tab);
+	var secs = document.querySelectorAll('.tab-content');
+	for (var i = 0; i < secs.length; i++)
+		secs[i].classList.toggle('active', secs[i].id === 'tab-' + tab);
+	var r = {
+		home: renderHome,
+		timer: renderTimer,
+		calendar: renderCalendar,
+		vocab: renderVocab,
+		review: renderReview,
+		character: renderCharacter,
+		sphere: renderSphere,
+		report: renderReport,
+	};
+	if (r[tab]) r[tab]();
 }
 
-// ============================================================
-//  HOME
-// ============================================================
+/* ==================== HOME ==================== */
 function renderHome() {
-	const sec = $('#section-home');
-	if (!sec) return;
-
-	const a = state.ancestry ? getAncestryById(state.ancestry) : null;
-	const c = state.playerClass ? getClassById(state.playerClass) : null;
-	const title = getTitle(state.level);
-	const expNeeded = expForLevel(state.level);
-	const expPct = Math.min(100, Math.round((state.exp / expNeeded) * 100));
-
-	// Today info
-	const today = todayKey();
-	const todayMin = state.calendarData[today] || 0;
-
-	sec.innerHTML = `
-    <div class="card">
-      <h2>${a ? a.icon : '⚔️'} ${state.playerName}</h2>
-      <p style="opacity:0.7">${title}</p>
-      <p>Lv. ${state.level} ${c ? c.name : '未選択'}</p>
-      <div class="progress-bar"><div class="progress-fill" style="width:${expPct}%"></div></div>
-      <p style="font-size:0.85rem;opacity:0.7">EXP: ${state.exp} / ${expNeeded}</p>
-    </div>
-    <div class="card">
-      <h3>Today's Activity</h3>
-      <p>Study Time: ${todayMin} min</p>
-      <p>Streak: ${state.streak} days (Best: ${state.bestStreak})</p>
-      <p>Gold: ${state.gold} G</p>
-    </div>
-    <div class="card">
-      <h3>Skills</h3>
-      ${Object.entries(state.skills)
-				.map(([k, v]) => {
-					const sExpNeeded = expForLevel(v.level);
-					const sPct = Math.min(100, Math.round((v.exp / sExpNeeded) * 100));
-					return `<div style="margin-bottom:8px">
-          <div style="display:flex;justify-content:space-between;font-size:0.9rem">
-            <span>${k.charAt(0).toUpperCase() + k.slice(1)}</span>
-            <span>Lv.${v.level}</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${sPct}%"></div></div>
-        </div>`;
-				})
-				.join('')}
-    </div>
-    <div class="card">
-      <h3>Quick Actions</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn" onclick="switchTab('timer')">Start Timer</button>
-        <button class="btn" onclick="switchTab('review')">Review</button>
-        <button class="btn" onclick="switchTab('vocab')">Vocab</button>
-      </div>
-    </div>
-  `;
-}
-
-// ============================================================
-//  TIMER
-// ============================================================
-let timerInterval = null;
-let timerSeconds = 0;
-let timerRunning = false;
-let timerTargetMinutes = 25;
-
-function renderTimer() {
-	const sec = $('#section-timer');
-	if (!sec) return;
-
-	const mm = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
-	const ss = String(timerSeconds % 60).padStart(2, '0');
-
-	sec.innerHTML = `
-    <div class="card" style="text-align:center">
-      <h2>Study Timer</h2>
-      <div style="font-size:4rem;font-family:'Orbitron',monospace;margin:20px 0" id="timer-display">${mm}:${ss}</div>
-      <div style="margin-bottom:16px">
-        <label>Target: <select id="timer-target" style="background:#1a2e28;color:#e8dcc8;border:1px solid #50e3a4;padding:4px 8px;border-radius:4px">
-          ${[15, 25, 30, 45, 60, 90].map((m) => `<option value="${m}" ${m === timerTargetMinutes ? 'selected' : ''}>${m} min</option>`).join('')}
-        </select></label>
-      </div>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <button class="btn" id="btn-timer-start">${timerRunning ? 'Pause' : 'Start'}</button>
-        <button class="btn btn-secondary" id="btn-timer-reset">Reset</button>
-        <button class="btn" id="btn-timer-finish">Finish & Log</button>
-      </div>
-      <div style="margin-top:16px">
-        <label>Skill: <select id="timer-skill" style="background:#1a2e28;color:#e8dcc8;border:1px solid #50e3a4;padding:4px 8px;border-radius:4px">
-          <option value="vocab">Vocab</option>
-          <option value="grammar">Grammar</option>
-          <option value="listening">Listening</option>
-          <option value="speaking">Speaking</option>
-          <option value="reading">Reading</option>
-          <option value="writing">Writing</option>
-        </select></label>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Recent Sessions</h3>
-      <div id="timer-history"></div>
-    </div>
-  `;
-
-	// Event listeners
-	$('#btn-timer-start').addEventListener('click', toggleTimer);
-	$('#btn-timer-reset').addEventListener('click', resetTimer);
-	$('#btn-timer-finish').addEventListener('click', finishTimer);
-	$('#timer-target').addEventListener('change', (e) => {
-		timerTargetMinutes = parseInt(e.target.value);
-	});
-
-	renderTimerHistory();
-}
-
-function toggleTimer() {
-	if (timerRunning) {
-		clearInterval(timerInterval);
-		timerRunning = false;
-	} else {
-		timerRunning = true;
-		timerInterval = setInterval(() => {
-			timerSeconds++;
-			updateTimerDisplay();
-		}, 1000);
+	var el = document.getElementById('tab-home');
+	if (!el) return;
+	var needed = expForLevel(state.level);
+	var pct = Math.min(100, Math.floor((state.exp / needed) * 100));
+	var streak = getStreak();
+	var bonuses = calcBonuses();
+	var anc = getAncestry();
+	var skillsHtml = '';
+	var keys = [
+		'vocab',
+		'grammar',
+		'listening',
+		'speaking',
+		'reading',
+		'writing',
+	];
+	for (var i = 0; i < keys.length; i++) {
+		var k = keys[i];
+		var v = state.skills[k] || 0;
+		var b = bonuses[k] || 0;
+		skillsHtml +=
+			'<div class="stat-row"><span class="stat-label">' +
+			skillLabel(k) +
+			(b > 0 ? ' <span class="badge rarity-2">+' + b + '%</span>' : '') +
+			'</span><span class="stat-value">' +
+			v +
+			'</span></div>';
 	}
-	const btn = $('#btn-timer-start');
-	if (btn) btn.textContent = timerRunning ? 'Pause' : 'Start';
+	var cal = state.calendar[todayKey()] || {};
+	el.innerHTML =
+		'<div class="card-grid"><div class="card"><h2>⚔️ 冒険者ステータス</h2><div class="char-portrait">' +
+		(anc ? anc.icon : '🧑') +
+		'</div><div class="char-name">' +
+		state.name +
+		'</div><div class="char-title">' +
+		getTitle() +
+		'</div><div class="stat-row"><span class="stat-label">レベル</span><span class="stat-value">Lv.' +
+		state.level +
+		'</span></div><div class="stat-row"><span class="stat-label">EXP</span><span class="stat-value">' +
+		state.exp +
+		' / ' +
+		needed +
+		'</span></div><div class="progress-bar"><div class="progress-fill" style="width:' +
+		pct +
+		'%"></div></div><div class="stat-row"><span class="stat-label">HP</span><span class="stat-value">' +
+		state.hp +
+		' / ' +
+		state.maxHp +
+		'</span></div><div class="stat-row"><span class="stat-label">ゴールド</span><span class="stat-value gold">💰 ' +
+		state.gold +
+		' G</span></div><div class="stat-row"><span class="stat-label">連続学習</span><span class="stat-value">' +
+		streak +
+		'日 🔥</span></div></div><div class="card"><h2>📊 スキル一覧</h2>' +
+		skillsHtml +
+		'</div><div class="card"><h2>🏠 クイックアクション</h2><p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:12px">今日も冒険を始めましょう！</p><div style="display:flex;flex-direction:column;gap:8px"><button class="btn-primary" onclick="switchTab(\'timer\')">⏱️ 学習タイマーを開始</button><button class="btn-secondary" onclick="switchTab(\'vocab\')">📖 単語帳を開く</button><button class="btn-secondary" onclick="switchTab(\'review\')">🔄 復習を始める</button><button class="btn-gold" onclick="document.getElementById(\'ai-tutor-toggle\').click()">🤖 AIチューターに質問</button></div></div><div class="card"><h2>📈 今日の学習</h2><div class="stat-row"><span class="stat-label">学習時間</span><span class="stat-value">' +
+		(cal.minutes || 0) +
+		'分</span></div><div class="stat-row"><span class="stat-label">登録単語数</span><span class="stat-value">' +
+		state.vocab.words.length +
+		'</span></div><div class="stat-row"><span class="stat-label">スフィア解放</span><span class="stat-value">' +
+		state.sphere.unlocked.length +
+		' / ' +
+		SPHERE_NODES.length +
+		'</span></div><div class="stat-row"><span class="stat-label">夜間ボーナス</span><span class="stat-value">' +
+		(isNightTime() ? '✅ +10%' : '—') +
+		'</span></div><div class="stat-row"><span class="stat-label">連続ボーナス</span><span class="stat-value">+' +
+		Math.floor(getStreakBonus() * 100) +
+		'%</span></div></div></div>';
 }
 
-function resetTimer() {
-	clearInterval(timerInterval);
+/* ==================== TIMER ==================== */
+var timerInterval = null,
+	timerSeconds = 0,
 	timerRunning = false;
+function renderTimer() {
+	var el = document.getElementById('tab-timer');
+	if (!el) return;
+	el.innerHTML =
+		'<div class="card"><h2>⏱️ 学習タイマー</h2><div class="timer-display" id="timer-display">00:00:00</div><div class="timer-controls"><button class="btn-primary" onclick="startTimer()">▶ 開始</button><button class="btn-secondary" onclick="pauseTimer()">⏸ 一時停止</button><button class="btn-danger" onclick="stopTimer()">⏹ 終了＆記録</button></div><div class="form-group" style="margin-top:16px"><label>学習スキル:</label><select id="timer-skill"><option value="vocab">語彙</option><option value="grammar">文法</option><option value="listening">聴解</option><option value="speaking">会話</option><option value="reading">読解</option><option value="writing">筆記</option></select></div><div class="form-group"><label>目標 (分):</label><input type="number" id="timer-target" value="' +
+		state.timer.target +
+		'" min="1" max="480" onchange="state.timer.target=parseInt(this.value)||30;saveState()"></div></div><div class="card"><h2>📋 今日のログ</h2><div id="timer-logs">' +
+		renderTimerLogs() +
+		'</div></div>';
+	updateTimerDisplay();
+}
+function updateTimerDisplay() {
+	var el = document.getElementById('timer-display');
+	if (!el) return;
+	var h = Math.floor(timerSeconds / 3600);
+	var m = Math.floor((timerSeconds % 3600) / 60);
+	var s = timerSeconds % 60;
+	el.textContent =
+		String(h).padStart(2, '0') +
+		':' +
+		String(m).padStart(2, '0') +
+		':' +
+		String(s).padStart(2, '0');
+}
+function startTimer() {
+	if (timerRunning) return;
+	timerRunning = true;
+	timerInterval = setInterval(function () {
+		timerSeconds++;
+		updateTimerDisplay();
+	}, 1000);
+	showToast('⏱️ タイマー開始！', '');
+}
+function pauseTimer() {
+	if (!timerRunning) return;
+	timerRunning = false;
+	clearInterval(timerInterval);
+	showToast('⏸ 一時停止', '');
+}
+function stopTimer() {
+	if (timerSeconds < 10) {
+		showToast('⚠️ 10秒以上学習してから記録', 'danger');
+		return;
+	}
+	pauseTimer();
+	var min = Math.ceil(timerSeconds / 60);
+	var skill = (document.getElementById('timer-skill') || {}).value || 'vocab';
+	var expG = addExp(skill, min * 2);
+	var goldG = Math.floor(min / 5) * 10;
+	state.gold += goldG;
+	state.timer.logs.push({
+		time: new Date().toISOString(),
+		skill: skill,
+		minutes: min,
+		exp: expG,
+		gold: goldG,
+	});
+	logStudyToday(min);
+	saveState();
+	showToast('✅ ' + min + '分記録！ +' + expG + 'EXP +' + goldG + 'G', 'gold');
 	timerSeconds = 0;
 	updateTimerDisplay();
-	const btn = $('#btn-timer-start');
-	if (btn) btn.textContent = 'Start';
-}
-
-function updateTimerDisplay() {
-	const disp = $('#timer-display');
-	if (!disp) return;
-	const mm = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
-	const ss = String(timerSeconds % 60).padStart(2, '0');
-	disp.textContent = mm + ':' + ss;
-}
-
-function finishTimer() {
-	clearInterval(timerInterval);
-	timerRunning = false;
-
-	const minutes = Math.floor(timerSeconds / 60);
-	if (minutes < 1) {
-		alert('At least 1 minute needed!');
-		return;
-	}
-
-	const skillSel = $('#timer-skill');
-	const skill = skillSel ? skillSel.value : 'vocab';
-
-	// Log session
-	const session = {
-		date: new Date().toISOString(),
-		minutes: minutes,
-		skill: skill,
-	};
-	state.timerSessions.unshift(session);
-	if (state.timerSessions.length > 50) state.timerSessions.pop();
-
-	// Update calendar
-	const today = todayKey();
-	state.calendarData[today] = (state.calendarData[today] || 0) + minutes;
-	state.totalStudyMinutes += minutes;
-
-	// Update streak
-	updateStreak();
-
-	// Grant EXP
-	const expGained = addExp(skill, minutes * 10);
-	state.gold += Math.floor(minutes * 2);
-
-	timerSeconds = 0;
-	saveState();
 	renderTimer();
-	alert(`Session logged! +${expGained} EXP, +${Math.floor(minutes * 2)} Gold`);
+}
+function renderTimerLogs() {
+	var today = todayKey();
+	var logs = [];
+	for (var i = 0; i < state.timer.logs.length; i++) {
+		var l = state.timer.logs[i];
+		if (l.time && l.time.indexOf(today) === 0) logs.push(l);
+	}
+	if (!logs.length)
+		return '<p style="color:var(--text-dim);font-size:.85rem">まだ記録がありません</p>';
+	var html =
+		'<table class="styled-table"><thead><tr><th>時刻</th><th>スキル</th><th>時間</th><th>EXP</th><th>G</th></tr></thead><tbody>';
+	for (var i = 0; i < logs.length; i++) {
+		var l = logs[i];
+		html +=
+			'<tr><td>' +
+			new Date(l.time).toLocaleTimeString('ja-JP', {
+				hour: '2-digit',
+				minute: '2-digit',
+			}) +
+			'</td><td>' +
+			skillLabel(l.skill) +
+			'</td><td>' +
+			l.minutes +
+			'分</td><td>+' +
+			l.exp +
+			'</td><td>+' +
+			l.gold +
+			'</td></tr>';
+	}
+	return html + '</tbody></table>';
 }
 
-function updateStreak() {
-	const today = new Date();
-	const yesterday = new Date(today);
-	yesterday.setDate(yesterday.getDate() - 1);
-	const yKey =
-		yesterday.getFullYear() +
-		'-' +
-		String(yesterday.getMonth() + 1).padStart(2, '0') +
-		'-' +
-		String(yesterday.getDate()).padStart(2, '0');
-
-	if (state.calendarData[todayKey()] && state.calendarData[todayKey()] > 0) {
-		if (state.calendarData[yKey] && state.calendarData[yKey] > 0) {
-			// Continue streak (already counted)
-		} else {
-			// Check if streak was already incremented today
-		}
-	}
-
-	// Recalculate streak from today backwards
-	let streak = 0;
-	const d = new Date();
-	while (true) {
-		const k =
-			d.getFullYear() +
-			'-' +
-			String(d.getMonth() + 1).padStart(2, '0') +
-			'-' +
-			String(d.getDate()).padStart(2, '0');
-		if (state.calendarData[k] && state.calendarData[k] > 0) {
-			streak++;
-			d.setDate(d.getDate() - 1);
-		} else {
-			break;
-		}
-	}
-	state.streak = streak;
-	if (streak > state.bestStreak) state.bestStreak = streak;
-}
-
-function renderTimerHistory() {
-	const cont = $('#timer-history');
-	if (!cont) return;
-	if (!state.timerSessions.length) {
-		cont.innerHTML = "<p style='opacity:0.5'>No sessions yet</p>";
-		return;
-	}
-	cont.innerHTML = state.timerSessions
-		.slice(0, 10)
-		.map((s) => {
-			const d = new Date(s.date);
-			return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(80,227,164,0.1)">
-      <span>${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}</span>
-      <span>${s.skill}</span>
-      <span>${s.minutes} min</span>
-    </div>`;
-		})
-		.join('');
-}
-
-// ============================================================
-//  CALENDAR
-// ============================================================
+/* ==================== CALENDAR ==================== */
 function renderCalendar() {
-	const sec = $('#section-calendar');
-	if (!sec) return;
-
-	const now = new Date();
-	const year = now.getFullYear();
-	const month = now.getMonth();
-	const firstDay = new Date(year, month, 1).getDay();
-	const daysInMonth = new Date(year, month + 1, 0).getDate();
-	const monthNames = [
-		'January',
-		'February',
-		'March',
-		'April',
-		'May',
-		'June',
-		'July',
-		'August',
-		'September',
-		'October',
-		'November',
-		'December',
-	];
-
-	let calGrid = '';
-	const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-	calGrid += dayLabels
-		.map(
-			(d) =>
-				`<div style="text-align:center;font-size:0.75rem;opacity:0.5;padding:4px">${d}</div>`,
-		)
-		.join('');
-
-	// Empty cells
-	for (let i = 0; i < firstDay; i++) {
-		calGrid += `<div></div>`;
-	}
-
-	for (let d = 1; d <= daysInMonth; d++) {
-		const key =
-			year +
+	var el = document.getElementById('tab-calendar');
+	if (!el) return;
+	var now = new Date();
+	var yr = now.getFullYear();
+	var mo = now.getMonth();
+	var dim = new Date(yr, mo + 1, 0).getDate();
+	var fd = new Date(yr, mo, 1).getDay();
+	var streak = getStreak();
+	var hd = ['日', '月', '火', '水', '木', '金', '土'];
+	var g = '';
+	for (var i = 0; i < 7; i++)
+		g += '<div class="calendar-cell header">' + hd[i] + '</div>';
+	for (var i = 0; i < fd; i++) g += '<div class="calendar-cell"></div>';
+	for (var d = 1; d <= dim; d++) {
+		var k =
+			yr +
 			'-' +
-			String(month + 1).padStart(2, '0') +
+			String(mo + 1).padStart(2, '0') +
 			'-' +
 			String(d).padStart(2, '0');
-		const mins = state.calendarData[key] || 0;
-		const isToday = d === now.getDate();
-		let bg = 'transparent';
-		if (mins > 0)
-			bg =
-				mins >= 60
-					? 'rgba(80,227,164,0.4)'
-					: mins >= 30
-						? 'rgba(80,227,164,0.25)'
-						: 'rgba(80,227,164,0.12)';
-		const border = isToday ? 'border:2px solid #f0c040' : '';
-		calGrid += `<div style="text-align:center;padding:8px;border-radius:6px;background:${bg};${border};font-size:0.85rem" title="${mins} min">
-      ${d}${mins > 0 ? `<div style="font-size:0.65rem;opacity:0.6">${mins}m</div>` : ''}
-    </div>`;
+		var isT = d === now.getDate();
+		var hasS = state.calendar[k] && state.calendar[k].studied;
+		var mins = (state.calendar[k] && state.calendar[k].minutes) || 0;
+		g +=
+			'<div class="calendar-cell' +
+			(isT ? ' today' : '') +
+			(hasS ? ' has-study' : '') +
+			'" title="' +
+			k +
+			': ' +
+			mins +
+			'分">' +
+			d +
+			'</div>';
 	}
-
-	sec.innerHTML = `
-    <div class="card">
-      <h2>${monthNames[month]} ${year}</h2>
-      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:16px">
-        ${calGrid}
-      </div>
-    </div>
-    <div class="card">
-      <h3>Monthly Stats</h3>
-      <p>Total this month: ${Object.entries(state.calendarData)
-				.filter(([k]) =>
-					k.startsWith(year + '-' + String(month + 1).padStart(2, '0')),
-				)
-				.reduce((sum, [, v]) => sum + v, 0)} min</p>
-      <p>Active days: ${Object.entries(state.calendarData).filter(([k, v]) => k.startsWith(year + '-' + String(month + 1).padStart(2, '0')) && v > 0).length}</p>
-      <p>Current streak: ${state.streak} days</p>
-    </div>
-  `;
+	var mStudy = 0;
+	for (var d = 1; d <= dim; d++) {
+		var k =
+			yr +
+			'-' +
+			String(mo + 1).padStart(2, '0') +
+			'-' +
+			String(d).padStart(2, '0');
+		if (state.calendar[k] && state.calendar[k].studied) mStudy++;
+	}
+	el.innerHTML =
+		'<div class="card"><h2>📅 ' +
+		yr +
+		'年' +
+		(mo + 1) +
+		'月</h2><div class="stat-row"><span class="stat-label">連続学習</span><span class="stat-value">' +
+		streak +
+		'日 🔥</span></div><div class="stat-row"><span class="stat-label">今月の学習日数</span><span class="stat-value">' +
+		mStudy +
+		'日</span></div><div class="calendar-grid">' +
+		g +
+		'</div></div>';
 }
 
-// ============================================================
-//  VOCAB
-// ============================================================
+/* ==================== VOCAB ==================== */
 function renderVocab() {
-	const sec = $('#section-vocab');
-	if (!sec) return;
-
-	sec.innerHTML = `
-    <div class="card">
-      <h2>Vocabulary List</h2>
-      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-        <input type="text" id="vocab-word" placeholder="Word / 単語" style="flex:1;min-width:120px;background:#1a2e28;color:#e8dcc8;border:1px solid #50e3a4;padding:8px 12px;border-radius:6px">
-        <input type="text" id="vocab-meaning" placeholder="Meaning / 意味" style="flex:1;min-width:120px;background:#1a2e28;color:#e8dcc8;border:1px solid #50e3a4;padding:8px 12px;border-radius:6px">
-        <button class="btn" id="btn-vocab-add">Add</button>
-      </div>
-      <div id="vocab-list-container"></div>
-    </div>
-    <div class="card">
-      <p>Total words: ${state.vocabList.length}</p>
-      <p>Mastered: ${state.vocabList.filter((v) => v.mastered).length}</p>
-    </div>
-  `;
-
-	$('#btn-vocab-add').addEventListener('click', addVocabWord);
-	renderVocabList();
+	var el = document.getElementById('tab-vocab');
+	if (!el) return;
+	var w = state.vocab.words || [];
+	el.innerHTML =
+		'<div class="card"><h2>📖 単語帳 (' +
+		w.length +
+		'語)</h2><div class="form-row" style="margin-bottom:12px"><input type="text" id="vocab-word" placeholder="単語"><input type="text" id="vocab-meaning" placeholder="意味"><input type="text" id="vocab-example" placeholder="例文 (任意)"><button class="btn-primary btn-sm" onclick="addVocab()">追加</button></div><div id="vocab-list">' +
+		renderVL(w) +
+		'</div></div>';
 }
-
-function addVocabWord() {
-	const wordEl = $('#vocab-word');
-	const meaningEl = $('#vocab-meaning');
-	if (!wordEl || !meaningEl) return;
-	const word = wordEl.value.trim();
-	const meaning = meaningEl.value.trim();
-	if (!word || !meaning) return;
-
-	state.vocabList.push({
-		id: Date.now(),
-		word: word,
-		meaning: meaning,
-		mastered: false,
+function renderVL(w) {
+	if (!w.length)
+		return '<p style="color:var(--text-dim);font-size:.85rem">単語を追加しましょう！</p>';
+	var html =
+		'<table class="styled-table"><thead><tr><th>単語</th><th>意味</th><th>例文</th><th>復習</th><th></th></tr></thead><tbody>';
+	var start = Math.max(0, w.length - 50);
+	for (var i = w.length - 1; i >= start; i--) {
+		var v = w[i];
+		html +=
+			'<tr><td><strong>' +
+			esc(v.word) +
+			'</strong></td><td>' +
+			esc(v.meaning) +
+			'</td><td style="font-size:.78rem;color:var(--text-dim)">' +
+			esc(v.example || '') +
+			'</td><td>' +
+			(v.reviewCount || 0) +
+			'回</td><td><button class="btn-danger btn-sm" onclick="deleteVocab(' +
+			v.id +
+			')">✕</button></td></tr>';
+	}
+	return html + '</tbody></table>';
+}
+function addVocab() {
+	var wi = document.getElementById('vocab-word');
+	var mi = document.getElementById('vocab-meaning');
+	var ei = document.getElementById('vocab-example');
+	var w = wi ? wi.value.trim() : '';
+	var m = mi ? mi.value.trim() : '';
+	var ex = ei ? ei.value.trim() : '';
+	if (!w || !m) {
+		showToast('⚠️ 単語と意味を入力', 'danger');
+		return;
+	}
+	state.vocab.words.push({
+		id: state.vocab.nextId++,
+		word: w,
+		meaning: m,
+		example: ex,
 		reviewCount: 0,
-		correctCount: 0,
-		nextReview: new Date().toISOString(),
-		addedAt: new Date().toISOString(),
+		added: new Date().toISOString(),
 	});
-
 	addExp('vocab', 5);
+	state.gold += 2;
 	saveState();
-	wordEl.value = '';
-	meaningEl.value = '';
-	renderVocabList();
+	showToast('📝 "' + w + '" を追加！ +5EXP +2G', '');
+	renderVocab();
 }
-
-function renderVocabList() {
-	const cont = $('#vocab-list-container');
-	if (!cont) return;
-	if (!state.vocabList.length) {
-		cont.innerHTML =
-			"<p style='opacity:0.5'>No words added yet. Add some above!</p>";
-		return;
-	}
-
-	cont.innerHTML = state.vocabList
-		.slice()
-		.reverse()
-		.slice(0, 50)
-		.map(
-			(v) => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(80,227,164,0.1)">
-      <div>
-        <strong>${v.word}</strong>
-        <span style="opacity:0.6;margin-left:8px">${v.meaning}</span>
-      </div>
-      <div style="display:flex;gap:6px;align-items:center">
-        ${v.mastered ? '<span style="color:#50e3a4;font-size:0.8rem">Mastered</span>' : ''}
-        <button class="btn btn-secondary" style="padding:4px 8px;font-size:0.75rem" onclick="deleteVocab(${v.id})">Del</button>
-      </div>
-    </div>
-  `,
-		)
-		.join('');
-}
-
 function deleteVocab(id) {
-	state.vocabList = state.vocabList.filter((v) => v.id !== id);
+	var nw = [];
+	for (var i = 0; i < state.vocab.words.length; i++)
+		if (state.vocab.words[i].id !== id) nw.push(state.vocab.words[i]);
+	state.vocab.words = nw;
 	saveState();
-	renderVocabList();
+	renderVocab();
 }
 
-// ============================================================
-//  REVIEW (Flashcard)
-// ============================================================
-let reviewQueue = [];
-let reviewIndex = 0;
-let reviewFlipped = false;
-
+/* ==================== REVIEW ==================== */
 function renderReview() {
-	const sec = $('#section-review');
-	if (!sec) return;
-
-	// Build review queue from words due for review
-	if (reviewQueue.length === 0) {
-		reviewQueue = state.vocabList.filter((v) => !v.mastered).slice(0, 20);
-		reviewIndex = 0;
-		reviewFlipped = false;
-		// Shuffle
-		for (let i = reviewQueue.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[reviewQueue[i], reviewQueue[j]] = [reviewQueue[j], reviewQueue[i]];
-		}
-	}
-
-	if (reviewQueue.length === 0) {
-		sec.innerHTML = `<div class="card"><h2>Review</h2><p>No words to review! Add vocab first.</p>
-      <button class="btn" onclick="switchTab('vocab')">Go to Vocab</button></div>`;
+	var el = document.getElementById('tab-review');
+	if (!el) return;
+	var w = state.vocab.words;
+	if (!w || !w.length) {
+		el.innerHTML =
+			'<div class="card"><h2>🔄 復習</h2><p style="color:var(--text-dim)">まず単語帳に単語を追加してください。</p></div>';
 		return;
 	}
-
-	const current = reviewQueue[reviewIndex];
-	if (!current) {
-		sec.innerHTML = `<div class="card" style="text-align:center">
-      <h2>Review Complete!</h2>
-      <p>You reviewed ${reviewQueue.length} words.</p>
-      <button class="btn" id="btn-review-restart">Review Again</button>
-    </div>`;
-		$('#btn-review-restart').addEventListener('click', () => {
-			reviewQueue = [];
-			renderReview();
-		});
-		return;
-	}
-
-	sec.innerHTML = `
-    <div class="card" style="text-align:center">
-      <h2>Review — ${reviewIndex + 1} / ${reviewQueue.length}</h2>
-      <div class="progress-bar" style="margin-bottom:16px"><div class="progress-fill" style="width:${Math.round((reviewIndex / reviewQueue.length) * 100)}%"></div></div>
-      <div id="flashcard" style="background:rgba(10,30,25,0.6);border-radius:12px;padding:40px 20px;margin:20px 0;cursor:pointer;min-height:120px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(80,227,164,0.2)">
-        <div style="font-size:1.8rem">${reviewFlipped ? current.meaning : current.word}</div>
-      </div>
-      <p style="opacity:0.5;font-size:0.85rem">${reviewFlipped ? 'Showing meaning' : 'Tap to reveal meaning'}</p>
-      ${
-				reviewFlipped
-					? `
-        <div style="display:flex;gap:12px;justify-content:center;margin-top:16px">
-          <button class="btn" id="btn-review-correct" style="background:#10b981">Correct</button>
-          <button class="btn" id="btn-review-wrong" style="background:#ef4444">Wrong</button>
-        </div>
-      `
-					: ''
-			}
-    </div>
-  `;
-
-	$('#flashcard').addEventListener('click', () => {
-		if (!reviewFlipped) {
-			reviewFlipped = true;
-			renderReview();
-		}
-	});
-
-	if (reviewFlipped) {
-		$('#btn-review-correct').addEventListener('click', () =>
-			reviewAnswer(true),
-		);
-		$('#btn-review-wrong').addEventListener('click', () => reviewAnswer(false));
-	}
+	var word = w[Math.floor(Math.random() * w.length)];
+	el.innerHTML =
+		'<div class="card" style="text-align:center"><h2>🔄 復習クイズ</h2><p style="font-size:.85rem;color:var(--text-dim);margin-bottom:20px">単語の意味を思い出してください</p><div style="font-size:2rem;margin:20px 0;color:var(--accent-gold);font-weight:700">' +
+		esc(word.word) +
+		'</div><div id="review-answer" style="display:none;margin:16px 0"><p style="font-size:1.2rem;color:var(--accent-emerald);font-weight:600">' +
+		esc(word.meaning) +
+		'</p>' +
+		(word.example
+			? '<p style="font-size:.85rem;color:var(--text-dim);margin-top:8px">例: ' +
+				esc(word.example) +
+				'</p>'
+			: '') +
+		'</div><div id="review-buttons"><button class="btn-primary" onclick="showRevAns()">答えを見る</button></div><div id="review-result-buttons" style="display:none;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn-primary" onclick="revResult(' +
+		word.id +
+		',true)">✅ 覚えてた！</button><button class="btn-danger" onclick="revResult(' +
+		word.id +
+		',false)">❌ 忘れてた…</button><button class="btn-secondary" onclick="renderReview()">⏭ 次の単語</button></div><p style="font-size:.75rem;color:var(--text-dim);margin-top:16px">復習回数: ' +
+		(word.reviewCount || 0) +
+		'回</p></div>';
 }
-
-function reviewAnswer(correct) {
-	const current = reviewQueue[reviewIndex];
-	if (current) {
-		// Update in state
-		const item = state.vocabList.find((v) => v.id === current.id);
-		if (item) {
-			item.reviewCount++;
-			if (correct) {
-				item.correctCount++;
-				if (item.correctCount >= 5) item.mastered = true;
-			}
+function showRevAns() {
+	document.getElementById('review-answer').style.display = 'block';
+	document.getElementById('review-buttons').style.display = 'none';
+	document.getElementById('review-result-buttons').style.display = 'flex';
+}
+function revResult(id, ok) {
+	var w = null;
+	for (var i = 0; i < state.vocab.words.length; i++)
+		if (state.vocab.words[i].id === id) {
+			w = state.vocab.words[i];
+			break;
 		}
-		state.totalReviews++;
-		if (correct) state.totalCorrect++;
-		addExp('vocab', correct ? 15 : 5);
-		saveState();
-	}
-	reviewIndex++;
-	reviewFlipped = false;
+	if (w) w.reviewCount = (w.reviewCount || 0) + 1;
+	if (ok) {
+		addExp('vocab', 3);
+		showToast('✅ 正解！', '');
+	} else showToast('📖 次は覚えよう！', '');
+	saveState();
 	renderReview();
 }
 
-// ============================================================
-//  CHARACTER
-// ============================================================
+/* ==================== CHARACTER ==================== */
 function renderCharacter() {
-	const sec = $('#section-character');
-	if (!sec) return;
-
-	const a = state.ancestry ? getAncestryById(state.ancestry) : null;
-	const c = state.playerClass ? getClassById(state.playerClass) : null;
-	const h =
-		state.ancestry && state.heritage
-			? getHeritageById(state.ancestry, state.heritage)
-			: null;
-	const s =
-		state.playerClass && state.subclass
-			? getSubclassById(state.playerClass, state.subclass)
-			: null;
-	const title = getTitle(state.level);
-	const bonuses = calcBonuses();
-
-	sec.innerHTML = `
-    <div class="card">
-      <h2>Character Sheet</h2>
-      <div style="margin-bottom:12px">
-        <label style="font-size:0.85rem;opacity:0.7">Name</label>
-        <input type="text" id="char-name" value="${state.playerName}" style="width:100%;background:#1a2e28;color:#e8dcc8;border:1px solid #50e3a4;padding:8px 12px;border-radius:6px;margin-top:4px">
-      </div>
-      <p><strong>Level:</strong> ${state.level} — ${title}</p>
-      <p><strong>HP:</strong> ${state.hp} / ${state.maxHp + (bonuses.hpPlus || 0)}</p>
-      <p><strong>Gold:</strong> ${state.gold} G</p>
-      <p><strong>Sphere Points:</strong> ${state.spherePoints - state.unlockedNodes.length} available</p>
-    </div>
-
-    <!-- Ancestry Selection -->
-    <div class="card">
-      <h3>Ancestry / 種族 ${a ? '— ' + a.icon + ' ' + a.name : ''}</h3>
-      ${a ? `<p style="opacity:0.7;font-size:0.85rem">${a.desc}</p>` : ''}
-      <div style="margin-top:8px">
-        <select id="sel-ancestry" style="width:100%;background:#1a2e28;color:#e8dcc8;border:1px solid #50e3a4;padding:8px;border-radius:6px">
-          <option value="">— Select Ancestry —</option>
-          ${buildAncestryOptions()}
-        </select>
-      </div>
-      ${
-				a
-					? `
-        <h4 style="margin-top:12px">Heritage / 系譜 ${h ? '— ' + h.name : ''}</h4>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          ${a.heritages
-						.map(
-							(hr) => `
-            <button class="btn ${state.heritage === hr.id ? '' : 'btn-secondary'}" onclick="selectHeritage('${hr.id}')" style="font-size:0.8rem">
-              ${hr.name}<br><span style="font-size:0.7rem;opacity:0.7">${hr.desc}</span>
-            </button>
-          `,
-						)
-						.join('')}
-        </div>
-      `
-					: ''
-			}
-    </div>
-
-    <!-- Class Selection -->
-    <div class="card">
-      <h3>Class / 職業 ${c ? '— ' + c.icon + ' ' + c.name : ''}</h3>
-      ${c ? `<p style="opacity:0.7;font-size:0.85rem">${c.desc}</p>` : ''}
-      <div style="margin-top:8px">
-        <select id="sel-class" style="width:100%;background:#1a2e28;color:#e8dcc8;border:1px solid #50e3a4;padding:8px;border-radius:6px">
-          <option value="">— Select Class —</option>
-          ${buildClassOptions()}
-        </select>
-      </div>
-      ${
-				c
-					? `
-        <h4 style="margin-top:12px">Subclass / 専門 ${s ? '— ' + s.name : ''}</h4>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-          ${c.subclasses
-						.map(
-							(sc) => `
-            <button class="btn ${state.subclass === sc.id ? '' : 'btn-secondary'}" onclick="selectSubclass('${sc.id}')" style="font-size:0.8rem">
-              ${sc.name}<br><span style="font-size:0.7rem;opacity:0.7">${sc.desc}</span>
-            </button>
-          `,
-						)
-						.join('')}
-        </div>
-      `
-					: ''
-			}
-    </div>
-
-    <!-- Active Bonuses -->
-    <div class="card">
-      <h3>Active Bonuses / 効果一覧</h3>
-      <div id="bonus-list">
-        ${
-					Object.entries(bonuses).length > 0
-						? Object.entries(bonuses)
-								.map(([k, v]) => {
-									const label = bonusLabel(k);
-									const sign = v > 0 ? '+' : '';
-									const display =
-										k.includes('Plus') || k.includes('Regen')
-											? sign + v
-											: sign + Math.round(v * 100) + '%';
-									return `<div style="display:flex;justify-content:space-between;padding:4px 0"><span>${label}</span><span style="color:#50e3a4">${display}</span></div>`;
-								})
-								.join('')
-						: "<p style='opacity:0.5'>Select ancestry and class to see bonuses</p>"
-				}
-      </div>
-    </div>
-  `;
-
-	// Events
-	$('#char-name').addEventListener('change', (e) => {
-		state.playerName = e.target.value.trim() || 'Adventurer';
-		saveState();
-	});
-	$('#sel-ancestry').addEventListener('change', (e) => {
-		state.ancestry = e.target.value || null;
-		state.heritage = null;
-		saveState();
-		renderCharacter();
-	});
-	$('#sel-class').addEventListener('change', (e) => {
-		state.playerClass = e.target.value || null;
-		state.subclass = null;
-		saveState();
-		renderCharacter();
-	});
-}
-
-function buildAncestryOptions() {
-	const cats = ['Core', 'Uncommon', 'Rare'];
-	let html = '';
-	for (const cat of cats) {
-		html += `<optgroup label="── ${cat} ──">`;
-		for (const a of ANCESTRIES.filter((x) => x.cat === cat)) {
-			html += `<option value="${a.id}" ${state.ancestry === a.id ? 'selected' : ''}>${a.icon} ${a.name}</option>`;
-		}
-		html += `</optgroup>`;
+	var el = document.getElementById('tab-character');
+	if (!el) return;
+	var anc = getAncestry();
+	var her = getHeritage(state.ancestry, state.heritage);
+	var cls = getClass();
+	var sc = getSubclass(state.cls, state.subclass);
+	var bn = calcBonuses();
+	var ancOpts = '';
+	for (var i = 0; i < ANCESTRIES.length; i++) {
+		var a = ANCESTRIES[i];
+		var stars = '';
+		for (var j = 0; j < a.rarity; j++) stars += '★';
+		ancOpts +=
+			'<option value="' +
+			a.id +
+			'"' +
+			(a.id === state.ancestry ? ' selected' : '') +
+			'>' +
+			a.icon +
+			' ' +
+			a.name +
+			' ' +
+			stars +
+			'</option>';
 	}
-	return html;
-}
-
-function buildClassOptions() {
-	const cats = ['Martial', 'Caster'];
-	let html = '';
-	for (const cat of cats) {
-		html += `<optgroup label="── ${cat} ──">`;
-		for (const c of CLASSES.filter((x) => x.cat === cat)) {
-			html += `<option value="${c.id}" ${state.playerClass === c.id ? 'selected' : ''}>${c.icon} ${c.name}</option>`;
+	var herOpts = '';
+	if (anc)
+		for (var i = 0; i < anc.heritages.length; i++) {
+			var h = anc.heritages[i];
+			herOpts +=
+				'<option value="' +
+				h.id +
+				'"' +
+				(h.id === state.heritage ? ' selected' : '') +
+				'>' +
+				h.name +
+				'</option>';
 		}
-		html += `</optgroup>`;
+	var clsOpts = '';
+	for (var i = 0; i < CLASSES.length; i++) {
+		var c = CLASSES[i];
+		clsOpts +=
+			'<option value="' +
+			c.id +
+			'"' +
+			(c.id === state.cls ? ' selected' : '') +
+			'>' +
+			c.icon +
+			' ' +
+			c.name +
+			'</option>';
 	}
-	return html;
+	var scOpts = '';
+	if (cls)
+		for (var i = 0; i < cls.subclasses.length; i++) {
+			var s = cls.subclasses[i];
+			scOpts +=
+				'<option value="' +
+				s.id +
+				'"' +
+				(s.id === state.subclass ? ' selected' : '') +
+				'>' +
+				s.name +
+				'</option>';
+		}
+	var bonusHtml = '';
+	var bkeys = [
+		'vocab',
+		'grammar',
+		'listening',
+		'speaking',
+		'reading',
+		'writing',
+	];
+	for (var i = 0; i < bkeys.length; i++) {
+		var k = bkeys[i];
+		if (bn[k] > 0)
+			bonusHtml +=
+				'<div class="stat-row"><span class="stat-label">' +
+				skillLabel(k) +
+				'</span><span class="stat-value" style="color:var(--rarity2)">+' +
+				bn[k] +
+				'%</span></div>';
+	}
+	if (!bonusHtml)
+		bonusHtml =
+			'<p style="color:var(--text-dim);font-size:.8rem">ボーナスなし</p>';
+	var synergyHtml = '';
+	if (JOB_SYNERGY[state.cls]) {
+		var zones = JOB_SYNERGY[state.cls];
+		var zNames = [];
+		for (var i = 0; i < zones.length; i++) zNames.push(skillLabel(zones[i]));
+		synergyHtml =
+			'<h3 style="margin-top:16px">🌐 スフィア適性ゾーン</h3><p style="font-size:.85rem;color:var(--accent-teal)">' +
+			zNames.join('、') +
+			'</p>';
+	}
+	var detailHtml = '';
+	if (anc)
+		detailHtml +=
+			'<div class="stat-row"><span class="stat-label">種族</span><span class="stat-value">' +
+			anc.icon +
+			' ' +
+			anc.name +
+			'</span></div><div class="stat-row"><span class="stat-label">カテゴリ</span><span class="stat-value"><span class="badge rarity-' +
+			anc.rarity +
+			'">' +
+			anc.category +
+			' ★' +
+			anc.rarity +
+			'</span></span></div><p style="font-size:.8rem;color:var(--text-dim);margin:6px 0">' +
+			anc.desc +
+			'</p>';
+	if (her)
+		detailHtml +=
+			'<div class="stat-row"><span class="stat-label">ヘリテージ</span><span class="stat-value">' +
+			her.name +
+			'</span></div><p style="font-size:.8rem;color:var(--text-dim);margin:6px 0">' +
+			her.desc +
+			'</p>';
+	if (cls)
+		detailHtml +=
+			'<div class="stat-row"><span class="stat-label">職業</span><span class="stat-value">' +
+			cls.icon +
+			' ' +
+			cls.name +
+			'</span></div><p style="font-size:.8rem;color:var(--text-dim);margin:6px 0">' +
+			cls.desc +
+			'</p>';
+	if (sc)
+		detailHtml +=
+			'<div class="stat-row"><span class="stat-label">サブクラス</span><span class="stat-value">' +
+			sc.name +
+			'</span></div><p style="font-size:.8rem;color:var(--text-dim);margin:6px 0">' +
+			sc.desc +
+			'</p>';
+	el.innerHTML =
+		'<div class="card-grid"><div class="card"><h2>🧝 キャラクターシート</h2><div class="char-portrait">' +
+		(anc ? anc.icon : '🧑') +
+		'</div><div class="char-name">' +
+		state.name +
+		'</div><div class="char-title">' +
+		getTitle() +
+		'</div><div class="form-group"><label>冒険者名:</label><input type="text" value="' +
+		esc(state.name) +
+		'" onchange="state.name=this.value;saveState();renderCharacter()" maxlength="20"></div><div class="char-select-group"><div class="form-group"><label>種族:</label><select onchange="chAnc(this.value)">' +
+		ancOpts +
+		'</select></div><div class="form-group"><label>ヘリテージ:</label><select onchange="state.heritage=this.value;saveState();renderCharacter()">' +
+		herOpts +
+		'</select></div><div class="form-group"><label>職業:</label><select onchange="chCls(this.value)">' +
+		clsOpts +
+		'</select></div><div class="form-group"><label>サブクラス:</label><select onchange="state.subclass=this.value;saveState();renderCharacter()">' +
+		scOpts +
+		'</select></div></div></div><div class="card"><h2>📋 詳細情報</h2>' +
+		detailHtml +
+		'<h3 style="margin-top:16px">🎯 学習ボーナス</h3>' +
+		bonusHtml +
+		synergyHtml +
+		'</div></div>';
 }
-
-function selectHeritage(id) {
-	state.heritage = id;
+function chAnc(id) {
+	state.ancestry = id;
+	var a = getAncestry(id);
+	if (a && a.heritages.length) state.heritage = a.heritages[0].id;
+	saveState();
+	renderCharacter();
+}
+function chCls(id) {
+	state.cls = id;
+	var c = getClass(id);
+	if (c && c.subclasses.length) state.subclass = c.subclasses[0].id;
 	saveState();
 	renderCharacter();
 }
 
-function selectSubclass(id) {
-	state.subclass = id;
-	saveState();
-	renderCharacter();
-}
-
-function bonusLabel(key) {
-	const map = {
-		expAll: 'All EXP',
-		expVocab: 'Vocab EXP',
-		expGrammar: 'Grammar EXP',
-		expListening: 'Listening EXP',
-		expSpeaking: 'Speaking EXP',
-		expReading: 'Reading EXP',
-		expWriting: 'Writing EXP',
-		hpPlus: 'HP',
-		hpRegen: 'HP Regen',
-		critRate: 'Critical Rate',
-		streakBonus: 'Streak Bonus',
-		nightBonus: 'Night Bonus',
-		timerBonus: 'Timer Bonus',
-		shortSessionBonus: 'Short Session Bonus',
-		vocabCost: 'Vocab Cost',
-		reviewBonus: 'Review Bonus',
-	};
-	return map[key] || key;
-}
-
-// ============================================================
-//  SPHERE GRID
-// ============================================================
-function renderSphere() {
-	const sec = $('#section-sphere');
-	if (!sec) return;
-
-	const available = state.spherePoints - state.unlockedNodes.length;
-
-	sec.innerHTML = `
-    <div class="card">
-      <h2>Sphere Grid / スフィア盤</h2>
-      <p>Sphere Points: <strong style="color:#50e3a4">${available}</strong> available (Total: ${state.spherePoints})</p>
-      <p style="font-size:0.8rem;opacity:0.6">Click a node to unlock. Nodes require prerequisites and sphere points.</p>
-    </div>
-    <div class="card" style="overflow:auto;padding:0">
-      <canvas id="sphere-canvas" width="1120" height="800" style="display:block;cursor:pointer;max-width:100%;height:auto"></canvas>
-    </div>
-    <div id="sphere-tooltip" style="display:none;position:fixed;background:#0f1f1b;border:1px solid #50e3a4;border-radius:8px;padding:12px;z-index:999;max-width:260px;pointer-events:none"></div>
-  `;
-
-	drawSphereGrid();
-}
-
-const ATTR_COLORS = {
-	fire: '#ef4444',
-	water: '#3b82f6',
-	wind: '#22c55e',
-	earth: '#a78b5a',
-	light: '#f0c040',
+/* ==================== SPHERE GRID ==================== */
+var ZONE_COLORS = {
+	vocab: '#22c55e',
+	grammar: '#3b82f6',
+	listening: '#a855f7',
+	speaking: '#ef4444',
+	reading: '#f59e0b',
+	writing: '#06b6d4',
+	center: '#ffd700',
 };
-
-const RARITY_COLORS = {
+var RARITY_COLORS = {
 	1: '#9ca3af',
 	2: '#22c55e',
 	3: '#3b82f6',
 	4: '#a855f7',
 	5: '#f59e0b',
 };
-
-function drawSphereGrid() {
-	const canvas = $('#sphere-canvas');
-	if (!canvas) return;
-	const ctx = canvas.getContext('2d');
-
-	ctx.fillStyle = '#0a1210';
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-	// Draw connections
-	ctx.lineWidth = 2;
-	for (const node of SPHERE_NODES) {
-		if (node.requires) {
-			for (const reqId of node.requires) {
-				const reqNode = SPHERE_NODES.find((n) => n.id === reqId);
-				if (reqNode) {
-					const bothUnlocked =
-						state.unlockedNodes.includes(node.id) &&
-						state.unlockedNodes.includes(reqId);
-					ctx.strokeStyle = bothUnlocked ? '#50e3a4' : 'rgba(80,227,164,0.15)';
-					ctx.beginPath();
-					ctx.moveTo(reqNode.x, reqNode.y);
-					ctx.lineTo(node.x, node.y);
-					ctx.stroke();
+function renderSphere() {
+	var el = document.getElementById('tab-sphere');
+	if (!el) return;
+	var ulArr = state.sphere.unlocked || [];
+	var acArr = state.sphere.activated || [];
+	var ulSet = {};
+	for (var i = 0; i < ulArr.length; i++) ulSet[ulArr[i]] = true;
+	var acSet = {};
+	for (var i = 0; i < acArr.length; i++) acSet[acArr[i]] = true;
+	var lines = '';
+	var nodes = '';
+	for (var i = 0; i < SPHERE_NODES.length; i++) {
+		var n = SPHERE_NODES[i];
+		for (var j = 0; j < n.prereq.length; j++) {
+			var pid = n.prereq[j];
+			var p = null;
+			for (var k = 0; k < SPHERE_NODES.length; k++)
+				if (SPHERE_NODES[k].id === pid) {
+					p = SPHERE_NODES[k];
+					break;
 				}
+			if (p) {
+				var active = acSet[n.id] && acSet[pid];
+				lines +=
+					'<line x1="' +
+					p.x +
+					'" y1="' +
+					p.y +
+					'" x2="' +
+					n.x +
+					'" y2="' +
+					n.y +
+					'" stroke="' +
+					(active
+						? ZONE_COLORS[n.zone] || '#22c55e'
+						: 'rgba(255,255,255,0.1)') +
+					'" stroke-width="' +
+					(active ? 2 : 1) +
+					'"/>';
 			}
 		}
 	}
-
-	// Draw nodes
-	for (const node of SPHERE_NODES) {
-		const unlocked = state.unlockedNodes.includes(node.id);
-		const canUnlock = canUnlockNode(node);
-		const r =
-			node.type === 'boss'
-				? 22
-				: node.type === 'chest'
-					? 18
-					: node.type === 'event'
-						? 18
-						: 16;
-
-		// Glow for unlocked
-		if (unlocked) {
-			ctx.shadowColor = ATTR_COLORS[node.attr] || '#50e3a4';
-			ctx.shadowBlur = 15;
+	for (var i = 0; i < SPHERE_NODES.length; i++) {
+		var n = SPHERE_NODES[i];
+		var isA = !!acSet[n.id];
+		var isU = !!ulSet[n.id];
+		var canU = false;
+		if (!isA) {
+			var allMet = true;
+			for (var j = 0; j < n.prereq.length; j++)
+				if (!acSet[n.prereq[j]]) {
+					allMet = false;
+					break;
+				}
+			canU = allMet;
 		}
-
-		ctx.beginPath();
-		if (node.type === 'boss') {
-			// Octagon
-			for (let i = 0; i < 8; i++) {
-				const angle = (Math.PI / 4) * i - Math.PI / 8;
-				const x = node.x + r * Math.cos(angle);
-				const y = node.y + r * Math.sin(angle);
-				i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-			}
-			ctx.closePath();
-		} else if (node.type === 'chest') {
-			// Diamond
-			ctx.moveTo(node.x, node.y - r);
-			ctx.lineTo(node.x + r, node.y);
-			ctx.lineTo(node.x, node.y + r);
-			ctx.lineTo(node.x - r, node.y);
-			ctx.closePath();
-		} else if (node.type === 'event') {
-			// Triangle
-			ctx.moveTo(node.x, node.y - r);
-			ctx.lineTo(node.x + r, node.y + r * 0.7);
-			ctx.lineTo(node.x - r, node.y + r * 0.7);
-			ctx.closePath();
-		} else {
-			ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
-		}
-
-		if (unlocked) {
-			ctx.fillStyle = ATTR_COLORS[node.attr] || '#50e3a4';
-		} else if (canUnlock) {
-			ctx.fillStyle = 'rgba(80,227,164,0.3)';
-		} else {
-			ctx.fillStyle = 'rgba(40,60,50,0.5)';
-		}
-		ctx.fill();
-
-		ctx.shadowBlur = 0;
-
-		// Border
-		ctx.strokeStyle = unlocked
-			? '#fff'
-			: canUnlock
-				? RARITY_COLORS[node.rarity] || '#50e3a4'
-				: 'rgba(80,227,164,0.2)';
-		ctx.lineWidth = unlocked ? 2.5 : 1.5;
-		ctx.stroke();
-
-		// Stars (rarity)
-		if (node.rarity >= 3) {
-			ctx.fillStyle = RARITY_COLORS[node.rarity];
-			ctx.font = '10px sans-serif';
-			ctx.textAlign = 'center';
-			ctx.fillText(
-				'★'.repeat(Math.min(node.rarity, 5)),
-				node.x,
-				node.y - r - 5,
-			);
-		}
-
-		// Label
-		ctx.fillStyle = unlocked ? '#fff' : 'rgba(232,220,200,0.6)';
-		ctx.font = "10px 'Noto Sans JP', sans-serif";
-		ctx.textAlign = 'center';
-		ctx.fillText(node.label, node.x, node.y + r + 14);
-
-		// Type icon
-		ctx.font = '12px sans-serif';
-		ctx.textAlign = 'center';
-		ctx.textBaseline = 'middle';
-		if (node.type === 'boss') ctx.fillText('💀', node.x, node.y);
-		else if (node.type === 'chest') ctx.fillText('🎁', node.x, node.y);
-		else if (node.type === 'event') ctx.fillText('⚡', node.x, node.y);
+		var col = isA
+			? ZONE_COLORS[n.zone] || '#22c55e'
+			: isU
+				? 'rgba(255,255,255,0.5)'
+				: 'rgba(255,255,255,0.15)';
+		var bc = canU
+			? '#ffd700'
+			: isA
+				? RARITY_COLORS[n.rarity] || '#22c55e'
+				: 'rgba(255,255,255,0.1)';
+		var bg = isA
+			? 'radial-gradient(circle,' + col + '33,' + col + '11)'
+			: 'rgba(0,0,0,0.3)';
+		var extra = '';
+		if (canU)
+			extra =
+				'animation:pulse 1.5s infinite;box-shadow:0 0 12px rgba(255,215,0,0.4);';
+		else if (isA) extra = 'box-shadow:0 0 10px ' + col + '44;';
+		nodes +=
+			'<div style="position:absolute;left:' +
+			(n.x - 22) +
+			'px;top:' +
+			(n.y - 22) +
+			'px;width:44px;height:44px;border-radius:50%;background:' +
+			bg +
+			';border:2px solid ' +
+			bc +
+			';display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:' +
+			(canU || isA ? 'pointer' : 'default') +
+			';transition:all .3s;' +
+			extra +
+			'" title="' +
+			n.label +
+			': ' +
+			n.desc +
+			'" onclick="sphereClick(\'' +
+			n.id +
+			'\')">' +
+			n.icon +
+			'</div>';
 	}
-
-	// Click handler
-	canvas.onclick = (e) => {
-		const rect = canvas.getBoundingClientRect();
-		const scaleX = canvas.width / rect.width;
-		const scaleY = canvas.height / rect.height;
-		const mx = (e.clientX - rect.left) * scaleX;
-		const my = (e.clientY - rect.top) * scaleY;
-
-		for (const node of SPHERE_NODES) {
-			const dist = Math.hypot(mx - node.x, my - node.y);
-			if (dist < 24) {
-				handleNodeClick(node);
-				return;
-			}
-		}
-	};
-
-	// Hover tooltip
-	canvas.onmousemove = (e) => {
-		const rect = canvas.getBoundingClientRect();
-		const scaleX = canvas.width / rect.width;
-		const scaleY = canvas.height / rect.height;
-		const mx = (e.clientX - rect.left) * scaleX;
-		const my = (e.clientY - rect.top) * scaleY;
-		const tip = $('#sphere-tooltip');
-
-		for (const node of SPHERE_NODES) {
-			const dist = Math.hypot(mx - node.x, my - node.y);
-			if (dist < 24) {
-				const unlocked = state.unlockedNodes.includes(node.id);
-				tip.style.display = 'block';
-				tip.style.left = e.clientX + 16 + 'px';
-				tip.style.top = e.clientY - 10 + 'px';
-				tip.innerHTML = `
-          <strong style="color:${RARITY_COLORS[node.rarity]}">${'★'.repeat(node.rarity)} ${node.label}</strong><br>
-          <span style="font-size:0.8rem">Skill: ${node.skill} | Attr: ${node.attr}</span><br>
-          <span style="font-size:0.8rem">Type: ${node.type} | EXP: ${node.exp}</span><br>
-          <span style="font-size:0.8rem;color:${unlocked ? '#50e3a4' : '#ef4444'}">${unlocked ? 'UNLOCKED' : 'LOCKED'}</span>
-        `;
-				return;
-			}
-		}
-		tip.style.display = 'none';
-	};
-
-	canvas.onmouseleave = () => {
-		const tip = $('#sphere-tooltip');
-		if (tip) tip.style.display = 'none';
-	};
+	var legendHtml = '';
+	var zkeys = [
+		'vocab',
+		'grammar',
+		'listening',
+		'speaking',
+		'reading',
+		'writing',
+		'center',
+	];
+	for (var i = 0; i < zkeys.length; i++) {
+		var zk = zkeys[i];
+		legendHtml +=
+			'<div class="sphere-legend-item"><div class="sphere-legend-color" style="background:' +
+			(ZONE_COLORS[zk] || '#fff') +
+			'"></div><span>' +
+			(skillLabel(zk) || zk) +
+			'</span></div>';
+	}
+	el.innerHTML =
+		'<div class="card"><h2>🌐 スフィア盤</h2><div class="stat-row"><span class="stat-label">解放済み</span><span class="stat-value">' +
+		ulArr.length +
+		' / ' +
+		SPHERE_NODES.length +
+		'</span></div><div class="stat-row"><span class="stat-label">有効化済み</span><span class="stat-value">' +
+		acArr.length +
+		'</span></div><div class="sphere-legend">' +
+		legendHtml +
+		'</div><div class="sphere-container" style="height:600px;position:relative"><svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">' +
+		lines +
+		'</svg>' +
+		nodes +
+		'</div></div>';
 }
-
-function canUnlockNode(node) {
-	if (state.unlockedNodes.includes(node.id)) return false;
-	if (state.spherePoints - state.unlockedNodes.length <= 0) return false;
-	if (!node.requires || node.requires.length === 0) return true;
-	return node.requires.every((r) => state.unlockedNodes.includes(r));
-}
-
-function handleNodeClick(node) {
-	if (state.unlockedNodes.includes(node.id)) {
-		alert(`Already unlocked: ${node.label}`);
+function sphereClick(id) {
+	var n = null;
+	for (var i = 0; i < SPHERE_NODES.length; i++)
+		if (SPHERE_NODES[i].id === id) {
+			n = SPHERE_NODES[i];
+			break;
+		}
+	if (!n) return;
+	var acArr = state.sphere.activated || [];
+	var acSet = {};
+	for (var i = 0; i < acArr.length; i++) acSet[acArr[i]] = true;
+	if (acSet[id]) {
+		showToast('ℹ️ ' + n.label + ': ' + n.desc, '');
 		return;
 	}
-	if (!canUnlockNode(node)) {
-		if (state.spherePoints - state.unlockedNodes.length <= 0) {
-			alert('Not enough Sphere Points! Level up to earn more.');
-		} else {
-			alert('Prerequisites not met. Unlock required nodes first.');
+	var allMet = true;
+	for (var i = 0; i < n.prereq.length; i++)
+		if (!acSet[n.prereq[i]]) {
+			allMet = false;
+			break;
 		}
+	if (!allMet) {
+		showToast('🔒 前提ノードを先に有効化してください', 'danger');
 		return;
 	}
-
-	// Handle different node types
-	if (node.type === 'boss') {
-		if (
-			!confirm(
-				`BOSS NODE: ${node.label}\nThis requires passing a challenge. Unlock and gain ${node.exp} EXP?\n\n(In full version, a quiz would appear here)`,
-			)
-		)
-			return;
-	} else if (node.type === 'chest') {
-		alert(
-			`TREASURE! You found: +${node.reward.gold} Gold, +${node.reward.exp} Bonus EXP`,
-		);
-		state.gold += node.reward.gold;
-		addExp(node.skill === 'all' ? null : node.skill, node.reward.exp);
-	} else if (node.type === 'event') {
-		const events = [
-			{ text: 'A mysterious traveler teaches you a secret!', exp: 50 },
-			{ text: 'You find an ancient scroll!', exp: 75 },
-			{ text: 'A spirit tests your knowledge... and you pass!', exp: 100 },
-			{ text: 'You meditate and gain insight.', exp: 40 },
+	var ulSet = {};
+	for (var i = 0; i < state.sphere.unlocked.length; i++)
+		ulSet[state.sphere.unlocked[i]] = true;
+	if (!ulSet[id]) state.sphere.unlocked.push(id);
+	state.sphere.activated.push(id);
+	if (n.reward) {
+		var zone = n.zone === 'center' ? 'vocab' : n.zone;
+		if (n.reward.exp) addExp(zone, n.reward.exp);
+		if (n.reward.gold) state.gold += n.reward.gold;
+		var sks = [
+			'vocab',
+			'grammar',
+			'listening',
+			'speaking',
+			'reading',
+			'writing',
 		];
-		const ev = events[Math.floor(Math.random() * events.length)];
-		alert(`EVENT: ${ev.text}\n+${ev.exp} bonus EXP`);
-		addExp(node.skill === 'all' ? null : node.skill, ev.exp);
-	}
-
-	// Unlock
-	state.unlockedNodes.push(node.id);
-	if (node.exp > 0) {
-		addExp(node.skill === 'all' ? null : node.skill, node.exp);
+		for (var i = 0; i < sks.length; i++) {
+			var sk = sks[i];
+			if (n.reward[sk]) state.skills[sk] += n.reward[sk];
+		}
 	}
 	saveState();
-	drawSphereGrid();
+	updateHUD();
+	var msgs = {
+		boss: '🐉 BOSS撃破！',
+		chest: '🎁 宝箱を開けた！',
+		event: '⚡ イベントクリア！',
+		skill: '⭐ スキル習得！',
+		hub: '🌟 出発！',
+	};
+	showToast((msgs[n.type] || '✅') + ' ' + n.label, 'gold');
+	renderSphere();
 }
 
-// ============================================================
-//  REPORT
-// ============================================================
+/* ==================== REPORT ==================== */
 function renderReport() {
-	const sec = $('#section-report');
-	if (!sec) return;
-
-	const bonuses = calcBonuses();
-
-	sec.innerHTML = `
-    <div class="card">
-      <h2>Adventure Report</h2>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
-        <div style="text-align:center;padding:12px;background:rgba(80,227,164,0.08);border-radius:8px">
-          <div style="font-size:2rem;font-weight:bold;color:#50e3a4">${state.level}</div>
-          <div style="font-size:0.8rem;opacity:0.6">Level</div>
-        </div>
-        <div style="text-align:center;padding:12px;background:rgba(80,227,164,0.08);border-radius:8px">
-          <div style="font-size:2rem;font-weight:bold;color:#f0c040">${state.gold}</div>
-          <div style="font-size:0.8rem;opacity:0.6">Gold</div>
-        </div>
-        <div style="text-align:center;padding:12px;background:rgba(80,227,164,0.08);border-radius:8px">
-          <div style="font-size:2rem;font-weight:bold;color:#50e3a4">${state.totalStudyMinutes}</div>
-          <div style="font-size:0.8rem;opacity:0.6">Total Minutes</div>
-        </div>
-        <div style="text-align:center;padding:12px;background:rgba(80,227,164,0.08);border-radius:8px">
-          <div style="font-size:2rem;font-weight:bold;color:#50e3a4">${state.streak}</div>
-          <div style="font-size:0.8rem;opacity:0.6">Streak</div>
-        </div>
-        <div style="text-align:center;padding:12px;background:rgba(80,227,164,0.08);border-radius:8px">
-          <div style="font-size:2rem;font-weight:bold;color:#50e3a4">${state.vocabList.length}</div>
-          <div style="font-size:0.8rem;opacity:0.6">Words</div>
-        </div>
-        <div style="text-align:center;padding:12px;background:rgba(80,227,164,0.08);border-radius:8px">
-          <div style="font-size:2rem;font-weight:bold;color:#50e3a4">${state.totalReviews > 0 ? Math.round((state.totalCorrect / state.totalReviews) * 100) : 0}%</div>
-          <div style="font-size:0.8rem;opacity:0.6">Accuracy</div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Skill Levels</h3>
-      ${Object.entries(state.skills)
-				.map(([k, v]) => {
-					const pct = Math.min(
-						100,
-						Math.round((v.exp / expForLevel(v.level)) * 100),
-					);
-					return `<div style="margin-bottom:10px">
-          <div style="display:flex;justify-content:space-between"><span>${k.charAt(0).toUpperCase() + k.slice(1)}</span><span>Lv.${v.level} (${pct}%)</span></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-        </div>`;
-				})
-				.join('')}
-    </div>
-    <div class="card">
-      <h3>Sphere Grid Progress</h3>
-      <p>Nodes unlocked: ${state.unlockedNodes.length} / ${SPHERE_NODES.length}</p>
-      <div class="progress-bar"><div class="progress-fill" style="width:${Math.round((state.unlockedNodes.length / SPHERE_NODES.length) * 100)}%"></div></div>
-    </div>
-    <div class="card">
-      <h3>Data Management</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn" id="btn-export">Export Save</button>
-        <button class="btn btn-secondary" id="btn-import">Import Save</button>
-        <button class="btn" id="btn-reset" style="background:#ef4444">Reset All</button>
-      </div>
-      <input type="file" id="import-file" style="display:none" accept=".json">
-    </div>
-  `;
-
-	$('#btn-export').addEventListener('click', exportSave);
-	$('#btn-import').addEventListener('click', () => $('#import-file').click());
-	$('#import-file').addEventListener('change', importSave);
-	$('#btn-reset').addEventListener('click', () => {
-		if (confirm('Are you sure? This will delete ALL data!')) {
-			if (confirm('Really? This cannot be undone!')) {
-				localStorage.removeItem('linguaquest_state');
-				state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-				saveState();
-				switchTab('home');
-			}
-		}
-	});
+	var el = document.getElementById('tab-report');
+	if (!el) return;
+	var totalMin = 0;
+	var totalDays = 0;
+	var calKeys = Object.keys(state.calendar);
+	for (var i = 0; i < calKeys.length; i++) {
+		var v = state.calendar[calKeys[i]];
+		totalMin += v.minutes || 0;
+		if (v.studied) totalDays++;
+	}
+	var totalSkill = 0;
+	var sks = ['vocab', 'grammar', 'listening', 'speaking', 'reading', 'writing'];
+	for (var i = 0; i < sks.length; i++) totalSkill += state.skills[sks[i]] || 0;
+	el.innerHTML =
+		'<div class="card-grid"><div class="card"><h2>📊 総合レポート</h2><div class="stat-row"><span class="stat-label">総学習時間</span><span class="stat-value">' +
+		totalMin +
+		'分 (' +
+		(totalMin / 60).toFixed(1) +
+		'時間)</span></div><div class="stat-row"><span class="stat-label">学習日数</span><span class="stat-value">' +
+		totalDays +
+		'日</span></div><div class="stat-row"><span class="stat-label">総スキルポイント</span><span class="stat-value">' +
+		totalSkill +
+		'</span></div><div class="stat-row"><span class="stat-label">登録単語数</span><span class="stat-value">' +
+		state.vocab.words.length +
+		'</span></div><div class="stat-row"><span class="stat-label">スフィア解放率</span><span class="stat-value">' +
+		Math.floor((state.sphere.unlocked.length / SPHERE_NODES.length) * 100) +
+		'%</span></div></div><div class="card"><h2>🛠️ データ管理</h2><div style="display:flex;flex-direction:column;gap:8px"><button class="btn-secondary" onclick="exportData()">📤 データをエクスポート</button><button class="btn-secondary" onclick="document.getElementById(\'import-file\').click()">📥 データをインポート</button><input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"><button class="btn-danger" onclick="resetState()">🗑️ データをリセット</button></div></div></div>';
 }
-
-function exportSave() {
-	const blob = new Blob([JSON.stringify(state, null, 2)], {
-		type: 'application/json',
-	});
-	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
-	a.href = url;
-	a.download = 'linguaquest_save_' + todayKey() + '.json';
+function exportData() {
+	var d = JSON.stringify(state, null, 2);
+	var b = new Blob([d], { type: 'application/json' });
+	var u = URL.createObjectURL(b);
+	var a = document.createElement('a');
+	a.href = u;
+	a.download = 'linguaquest_' + todayKey() + '.json';
 	a.click();
-	URL.revokeObjectURL(url);
+	URL.revokeObjectURL(u);
+	showToast('📤 エクスポート完了！', '');
 }
-
-function importSave(e) {
-	const file = e.target.files[0];
-	if (!file) return;
-	const reader = new FileReader();
-	reader.onload = (ev) => {
+function importData(e) {
+	var f = e.target.files[0];
+	if (!f) return;
+	var r = new FileReader();
+	r.onload = function (ev) {
 		try {
-			const data = JSON.parse(ev.target.result);
-			state = data;
+			state = JSON.parse(ev.target.result);
 			saveState();
-			alert('Save imported successfully!');
-			switchTab('home');
+			location.reload();
 		} catch (err) {
-			alert('Invalid save file!');
+			showToast('⚠️ ファイルの読み込みに失敗', 'danger');
 		}
 	};
-	reader.readAsText(file);
+	r.readAsText(f);
 }
 
-// ============================================================
-//  CLOCK (Header)
-// ============================================================
-function updateClock() {
-	const clockEl = $('#header-clock');
-	if (!clockEl) return;
-	const now = new Date();
-	const h = String(now.getHours()).padStart(2, '0');
-	const m = String(now.getMinutes()).padStart(2, '0');
-	const s = String(now.getSeconds()).padStart(2, '0');
-	clockEl.textContent = h + ':' + m + ':' + s;
-}
+/* ==================== AI TUTOR ==================== */
+var AI_TUTOR = {
+	defaultLangs: [
+		{ code: 'en', name: '英語', flag: '🇬🇧', removable: false },
+		{ code: 'yue', name: '広東語', flag: '🇭🇰', removable: false },
+	],
+	histories: {},
+	currentLang: 'en',
+	isStreaming: false,
+	sidebarOpen: false,
+	defaultSettings: {
+		provider: 'gemini',
+		geminiKey: '',
+		geminiModel: 'gemini-2.5-flash',
+		openrouterKey: '',
+		openrouterModel: 'deepseek/deepseek-r1:free',
+		openaiKey: '',
+		openaiModel: 'gpt-4o',
+		customEndpoint: '',
+		customKey: '',
+		customModel: '',
+		languages: null,
+	},
+	buildSystemPrompt: function (langCode) {
+		var langObj = null;
+		var langs = this.getLangs();
+		for (var i = 0; i < langs.length; i++)
+			if (langs[i].code === langCode) {
+				langObj = langs[i];
+				break;
+			}
+		var langName = langObj ? langObj.name : langCode;
+		var extra = '';
+		if (langCode === 'yue')
+			extra =
+				'- 広東語の場合、粤拼（Jyutping）のローマ字表記と声調番号も必ず付けてください。\n- 例：「你好」(nei5 hou2) — こんにちは\n';
+		if (langCode === 'en')
+			extra =
+				'- 英語の場合、発音のカタカナ表記も適宜付けてください。\n- 例：「Hello」(ハロー) — こんにちは\n';
+		return (
+			'あなたは「LinguaQuest」というRPG風言語学習アプリのAIチューターです。\n\n【基本ルール】\n- 応答言語は常に「日本語」です。\n- 教える対象言語は「' +
+			langName +
+			'」です。\n- ユーザーは日本語話者で、' +
+			langName +
+			'を学習中です。\n- 説明はすべて日本語で行い、' +
+			langName +
+			'の原文と日本語訳を併記してください。\n' +
+			extra +
+			'\n【役割】\n- 文法説明、単語の使い方、例文作成、会話練習、作文添削、発音指導。\n- レベルに合わせて難易度を調整。\n- 間違いは優しく訂正。\n- RPGの冒険者に語りかけるトーンで。\n- 簡潔に、でも必要な情報は省略しない。'
+		);
+	},
+	getLangs: function () {
+		var s = this.loadSettings();
+		return s.languages || this.defaultLangs;
+	},
+	setLangs: function (langs) {
+		var s = this.loadSettings();
+		s.languages = langs;
+		this.saveSettings(s);
+	},
+	addLang: function (code, name, flag) {
+		if (!code || !name) return false;
+		var langs = this.getLangs();
+		for (var i = 0; i < langs.length; i++)
+			if (langs[i].code === code) return false;
+		langs.push({ code: code, name: name, flag: flag || '🌐', removable: true });
+		this.setLangs(langs);
+		return true;
+	},
+	removeLang: function (code) {
+		var langs = this.getLangs();
+		var nw = [];
+		for (var i = 0; i < langs.length; i++)
+			if (langs[i].code !== code || !langs[i].removable) nw.push(langs[i]);
+		this.setLangs(nw);
+		if (this.currentLang === code)
+			this.currentLang = nw.length ? nw[0].code : 'en';
+	},
+	loadSettings: function () {
+		try {
+			var s = localStorage.getItem('lq_ai_settings');
+			if (s) {
+				var p = JSON.parse(s);
+				for (var k in this.defaultSettings)
+					if (!(k in p)) p[k] = this.defaultSettings[k];
+				if (!p.languages)
+					p.languages = JSON.parse(JSON.stringify(this.defaultLangs));
+				return p;
+			}
+		} catch (e) {}
+		var def = JSON.parse(JSON.stringify(this.defaultSettings));
+		def.languages = JSON.parse(JSON.stringify(this.defaultLangs));
+		return def;
+	},
+	saveSettings: function (settings) {
+		try {
+			localStorage.setItem('lq_ai_settings', JSON.stringify(settings));
+		} catch (e) {}
+	},
+	loadHistory: function (lang) {
+		try {
+			var s = localStorage.getItem('lq_ai_hist_' + lang);
+			return s ? JSON.parse(s) : [];
+		} catch (e) {
+			return [];
+		}
+	},
+	saveHistory: function (lang, hist) {
+		try {
+			localStorage.setItem(
+				'lq_ai_hist_' + lang,
+				JSON.stringify(hist.slice(-100)),
+			);
+		} catch (e) {}
+	},
+	getEl: function (id) {
+		return document.getElementById(id);
+	},
+	appendMsg: function (role, text) {
+		var c = this.getEl('ai-chat-messages');
+		if (!c) return null;
+		var div = document.createElement('div');
+		div.className = 'ai-msg ' + role;
+		div.innerHTML = this.formatMsg(text);
+		c.appendChild(div);
+		c.scrollTop = c.scrollHeight;
+		return div;
+	},
+	formatMsg: function (text) {
+		if (!text) return '';
+		return text
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+			.replace(/\*(.+?)\*/g, '<em>$1</em>')
+			.replace(
+				/`(.+?)`/g,
+				"<code style='background:rgba(0,255,170,0.1);padding:1px 4px;border-radius:3px'>$1</code>",
+			)
+			.replace(/\n/g, '<br>');
+	},
+	setStatus: function (text) {
+		var el = this.getEl('ai-status');
+		if (el) el.textContent = text;
+	},
+	clearChat: function () {
+		var c = this.getEl('ai-chat-messages');
+		if (c) c.innerHTML = '';
+	},
+	callAPI: function (messages) {
+		var settings = this.loadSettings();
+		var provider = settings.provider || 'gemini';
+		switch (provider) {
+			case 'gemini':
+				return this.callGemini(settings, messages);
+			case 'openrouter':
+				return this.callOpenRouter(settings, messages);
+			case 'openai':
+				return this.callOpenAI(settings, messages);
+			case 'custom':
+				return this.callCustom(settings, messages);
+			default:
+				return Promise.reject(new Error('不明なプロバイダー'));
+		}
+	},
+	callGemini: function (settings, messages) {
+		var key = settings.geminiKey;
+		if (!key)
+			return Promise.reject(
+				new Error('Gemini APIキーが未設定です。⚙️設定から入力してください。'),
+			);
+		var model = settings.geminiModel || 'gemini-2.5-flash';
+		var url =
+			'https://generativelanguage.googleapis.com/v1beta/models/' +
+			model +
+			':generateContent?key=' +
+			key;
+		var systemText = '';
+		var contents = [];
+		for (var i = 0; i < messages.length; i++) {
+			var m = messages[i];
+			if (m.role === 'system') {
+				systemText += m.content + '\n';
+			} else {
+				contents.push({
+					role: m.role === 'assistant' ? 'model' : 'user',
+					parts: [{ text: m.content }],
+				});
+			}
+		}
+		var body = {
+			contents: contents,
+			generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
+		};
+		if (systemText) body.systemInstruction = { parts: [{ text: systemText }] };
+		return fetch(url, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(body),
+		})
+			.then(function (resp) {
+				if (!resp.ok)
+					return resp.text().then(function (t) {
+						throw new Error(
+							'Gemini エラー (' + resp.status + '): ' + t.substring(0, 200),
+						);
+					});
+				return resp.json();
+			})
+			.then(function (data) {
+				var text =
+					data &&
+					data.candidates &&
+					data.candidates[0] &&
+					data.candidates[0].content &&
+					data.candidates[0].content.parts &&
+					data.candidates[0].content.parts[0] &&
+					data.candidates[0].content.parts[0].text;
+				if (!text) throw new Error('Geminiから応答なし');
+				return text;
+			});
+	},
+	callOpenRouter: function (settings, messages) {
+		var key = settings.openrouterKey;
+		if (!key)
+			return Promise.reject(new Error('OpenRouter APIキーが未設定です。'));
+		var model = settings.openrouterModel || 'deepseek/deepseek-r1:free';
+		return fetch('https://openrouter.ai/api/v1/chat/completions', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + key,
+				'HTTP-Referer': location.href,
+				'X-Title': 'LinguaQuest',
+			},
+			body: JSON.stringify({
+				model: model,
+				messages: messages,
+				max_tokens: 1024,
+				temperature: 0.7,
+			}),
+		})
+			.then(function (resp) {
+				if (!resp.ok)
+					return resp.text().then(function (t) {
+						throw new Error(
+							'OpenRouter エラー (' + resp.status + '): ' + t.substring(0, 200),
+						);
+					});
+				return resp.json();
+			})
+			.then(function (data) {
+				return (
+					(data.choices &&
+						data.choices[0] &&
+						data.choices[0].message &&
+						data.choices[0].message.content) ||
+					'応答なし'
+				);
+			});
+	},
+	callOpenAI: function (settings, messages) {
+		var key = settings.openaiKey;
+		if (!key) return Promise.reject(new Error('OpenAI APIキーが未設定です。'));
+		var model = settings.openaiModel || 'gpt-4o';
+		return fetch('https://api.openai.com/v1/chat/completions', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + key,
+			},
+			body: JSON.stringify({
+				model: model,
+				messages: messages,
+				max_tokens: 1024,
+				temperature: 0.7,
+			}),
+		})
+			.then(function (resp) {
+				if (!resp.ok)
+					return resp.text().then(function (t) {
+						throw new Error(
+							'OpenAI エラー (' + resp.status + '): ' + t.substring(0, 200),
+						);
+					});
+				return resp.json();
+			})
+			.then(function (data) {
+				return (
+					(data.choices &&
+						data.choices[0] &&
+						data.choices[0].message &&
+						data.choices[0].message.content) ||
+					'応答なし'
+				);
+			});
+	},
+	callCustom: function (settings, messages) {
+		var ep = settings.customEndpoint;
+		if (!ep)
+			return Promise.reject(new Error('カスタムエンドポイントが未設定です。'));
+		var headers = { 'Content-Type': 'application/json' };
+		if (settings.customKey)
+			headers['Authorization'] = 'Bearer ' + settings.customKey;
+		return fetch(ep + '/chat/completions', {
+			method: 'POST',
+			headers: headers,
+			body: JSON.stringify({
+				model: settings.customModel || 'default',
+				messages: messages,
+				max_tokens: 1024,
+				temperature: 0.7,
+			}),
+		})
+			.then(function (resp) {
+				if (!resp.ok)
+					return resp.text().then(function (t) {
+						throw new Error(
+							'Custom エラー (' + resp.status + '): ' + t.substring(0, 200),
+						);
+					});
+				return resp.json();
+			})
+			.then(function (data) {
+				return (
+					(data.choices &&
+						data.choices[0] &&
+						data.choices[0].message &&
+						data.choices[0].message.content) ||
+					'応答なし'
+				);
+			});
+	},
+	sendMessage: function () {
+		var self = this;
+		var input = this.getEl('ai-input');
+		if (!input) return;
+		var text = input.value.trim();
+		if (!text || this.isStreaming) return;
+		input.value = '';
+		this.isStreaming = true;
+		var sendBtn = this.getEl('ai-send-btn');
+		if (sendBtn) sendBtn.disabled = true;
+		this.appendMsg('user', text);
+		if (!this.histories[this.currentLang])
+			this.histories[this.currentLang] = [];
+		var hist = this.histories[this.currentLang];
+		hist.push({ role: 'user', content: text });
+		var loadingDiv = this.appendMsg('assistant', '考え中...');
+		if (loadingDiv) loadingDiv.classList.add('loading');
+		this.setStatus('🔄 応答を生成中...');
+		var sp = this.buildSystemPrompt(this.currentLang);
+		var apiMsgs = [{ role: 'system', content: sp }].concat(hist.slice(-20));
+		this.callAPI(apiMsgs)
+			.then(function (reply) {
+				if (loadingDiv) loadingDiv.remove();
+				self.appendMsg('assistant', reply);
+				hist.push({ role: 'assistant', content: reply });
+				self.histories[self.currentLang] = hist;
+				self.saveHistory(self.currentLang, hist);
+				addExp(self.currentLang === 'en' ? 'speaking' : 'vocab', 5);
+				state.gold += 1;
+				saveState();
+				self.setStatus('✅ 応答完了 | +5 EXP +1 G');
+			})
+			.catch(function (err) {
+				if (loadingDiv) loadingDiv.remove();
+				self.appendMsg('system', '⚠️ エラー: ' + err.message);
+				self.setStatus('❌ エラーが発生しました');
+			})
+			.finally(function () {
+				self.isStreaming = false;
+				if (sendBtn) sendBtn.disabled = false;
+				input.focus();
+			});
+	},
+	testConnection: function () {
+		var self = this;
+		var resultEl = this.getEl('ai-test-result');
+		if (resultEl) {
+			resultEl.style.background = 'rgba(0,255,170,0.05)';
+			resultEl.style.color = 'var(--text-secondary)';
+			resultEl.textContent = '🔄 接続テスト中...';
+		}
+		this.callAPI([
+			{ role: 'system', content: 'テスト。一言だけ日本語で返して。' },
+			{ role: 'user', content: '接続テスト' },
+		])
+			.then(function (reply) {
+				if (resultEl) {
+					resultEl.style.background = 'rgba(0,255,170,0.1)';
+					resultEl.style.color = 'var(--accent-emerald)';
+					resultEl.textContent =
+						'✅ 接続成功: ' + (reply || '').substring(0, 80);
+				}
+			})
+			.catch(function (err) {
+				if (resultEl) {
+					resultEl.style.background = 'rgba(239,68,68,0.1)';
+					resultEl.style.color = 'var(--danger)';
+					resultEl.textContent = '❌ ' + err.message;
+				}
+			});
+	},
+	switchLang: function (code) {
+		this.currentLang = code;
+		this.histories[code] = this.loadHistory(code);
+		this.clearChat();
+		var hist = this.histories[code] || [];
+		if (!hist.length) {
+			var langObj = null;
+			var langs = this.getLangs();
+			for (var i = 0; i < langs.length; i++)
+				if (langs[i].code === code) {
+					langObj = langs[i];
+					break;
+				}
+			var langName = langObj ? langObj.name : code;
+			this.appendMsg(
+				'system',
+				(langObj ? langObj.flag : '🌐') +
+					' ' +
+					langName +
+					'チューターモードへようこそ！\n日本語で何でも質問してください。',
+			);
+		} else {
+			for (var i = 0; i < hist.length; i++)
+				this.appendMsg(hist[i].role, hist[i].content);
+		}
+		var lObj = null;
+		var ls = this.getLangs();
+		for (var i = 0; i < ls.length; i++)
+			if (ls[i].code === code) {
+				lObj = ls[i];
+				break;
+			}
+		this.setStatus(
+			(lObj ? lObj.flag : '🌐') + ' ' + (lObj ? lObj.name : code) + 'モード',
+		);
+	},
+	toggleSidebar: function () {
+		var sidebar = this.getEl('ai-tutor-sidebar');
+		var toggle = this.getEl('ai-tutor-toggle');
+		if (!sidebar) return;
+		this.sidebarOpen = !this.sidebarOpen;
+		if (this.sidebarOpen) sidebar.classList.add('open');
+		else sidebar.classList.remove('open');
+		if (toggle) {
+			if (this.sidebarOpen) toggle.classList.add('hidden');
+			else toggle.classList.remove('hidden');
+		}
+		if (
+			this.sidebarOpen &&
+			(!this.histories[this.currentLang] ||
+				!this.histories[this.currentLang].length)
+		)
+			this.switchLang(this.currentLang);
+	},
+	openSettings: function () {
+		var o = this.getEl('ai-settings-overlay');
+		if (o) o.classList.remove('hidden');
+		this.populateSettingsForm();
+	},
+	closeSettings: function () {
+		var o = this.getEl('ai-settings-overlay');
+		if (o) o.classList.add('hidden');
+	},
+	populateSettingsForm: function () {
+		var s = this.loadSettings();
+		var prov = this.getEl('ai-provider-select');
+		if (prov) prov.value = s.provider || 'gemini';
+		var fields = {
+			geminiKey: 'gemini-api-key',
+			geminiModel: 'gemini-model',
+			openrouterKey: 'openrouter-api-key',
+			openrouterModel: 'openrouter-model',
+			openaiKey: 'openai-api-key',
+			openaiModel: 'openai-model',
+			customEndpoint: 'custom-endpoint',
+			customKey: 'custom-api-key',
+			customModel: 'custom-model',
+		};
+		for (var k in fields) {
+			var el = this.getEl(fields[k]);
+			if (el) el.value = s[k] || '';
+		}
+		this.showProviderFields(s.provider || 'gemini');
+		this.renderLangList();
+	},
+	showProviderFields: function (provider) {
+		var ps = ['gemini', 'openrouter', 'openai', 'custom'];
+		for (var i = 0; i < ps.length; i++) {
+			var el = this.getEl('provider-fields-' + ps[i]);
+			if (el) {
+				if (ps[i] === provider) el.classList.remove('hidden');
+				else el.classList.add('hidden');
+			}
+		}
+	},
+	saveSettingsFromForm: function () {
+		var s = this.loadSettings();
+		s.provider = (this.getEl('ai-provider-select') || {}).value || 'gemini';
+		s.geminiKey = (this.getEl('gemini-api-key') || {}).value || '';
+		s.geminiModel =
+			(this.getEl('gemini-model') || {}).value || 'gemini-2.5-flash';
+		s.openrouterKey = (this.getEl('openrouter-api-key') || {}).value || '';
+		s.openrouterModel =
+			(this.getEl('openrouter-model') || {}).value ||
+			'deepseek/deepseek-r1:free';
+		s.openaiKey = (this.getEl('openai-api-key') || {}).value || '';
+		s.openaiModel = (this.getEl('openai-model') || {}).value || 'gpt-4o';
+		s.customEndpoint = (this.getEl('custom-endpoint') || {}).value || '';
+		s.customKey = (this.getEl('custom-api-key') || {}).value || '';
+		s.customModel = (this.getEl('custom-model') || {}).value || '';
+		this.saveSettings(s);
+		showToast('✅ AI設定を保存しました', '');
+		this.closeSettings();
+		this.populateLangSelect();
+	},
+	renderLangList: function () {
+		var c = this.getEl('lang-list');
+		if (!c) return;
+		var langs = this.getLangs();
+		var html = '';
+		for (var i = 0; i < langs.length; i++) {
+			var l = langs[i];
+			html +=
+				'<div class="lang-item"><span class="lang-flag">' +
+				l.flag +
+				'</span><span class="lang-name">' +
+				l.name +
+				' (' +
+				l.code +
+				')</span>' +
+				(l.removable
+					? '<button onclick="AI_TUTOR.removeLangUI(\'' +
+						l.code +
+						'\')">✕</button>'
+					: '<span class="lang-default">デフォルト</span>') +
+				'</div>';
+		}
+		c.innerHTML = html;
+	},
+	addLangUI: function () {
+		var codeEl = this.getEl('new-lang-code');
+		var nameEl = this.getEl('new-lang-name');
+		var flagEl = this.getEl('new-lang-flag');
+		var code = codeEl ? codeEl.value.trim().toLowerCase() : '';
+		var name = nameEl ? nameEl.value.trim() : '';
+		var flag = flagEl ? flagEl.value.trim() || '🌐' : '🌐';
+		if (!code || !name) {
+			showToast('⚠️ コードと表示名を入力', 'danger');
+			return;
+		}
+		if (this.addLang(code, name, flag)) {
+			showToast('✅ ' + flag + ' ' + name + ' を追加', '');
+			this.renderLangList();
+			this.populateLangSelect();
+			if (codeEl) codeEl.value = '';
+			if (nameEl) nameEl.value = '';
+			if (flagEl) flagEl.value = '';
+		} else showToast('⚠️ そのコードは既に存在', 'danger');
+	},
+	removeLangUI: function (code) {
+		if (!confirm('この言語を削除しますか？')) return;
+		this.removeLang(code);
+		showToast('🗑️ 言語を削除', '');
+		this.renderLangList();
+		this.populateLangSelect();
+	},
+	populateLangSelect: function () {
+		var sel = this.getEl('ai-lang-select');
+		if (!sel) return;
+		var langs = this.getLangs();
+		var html = '';
+		for (var i = 0; i < langs.length; i++) {
+			var l = langs[i];
+			html +=
+				'<option value="' +
+				l.code +
+				'"' +
+				(l.code === this.currentLang ? ' selected' : '') +
+				'>' +
+				l.flag +
+				' ' +
+				l.name +
+				'</option>';
+		}
+		sel.innerHTML = html;
+	},
+	init: function () {
+		var self = this;
+		var toggleBtn = this.getEl('ai-tutor-toggle');
+		if (toggleBtn)
+			toggleBtn.addEventListener('click', function () {
+				self.toggleSidebar();
+			});
+		var closeBtn = this.getEl('ai-close-btn');
+		if (closeBtn)
+			closeBtn.addEventListener('click', function () {
+				self.toggleSidebar();
+			});
+		var settingsBtn = this.getEl('ai-settings-btn');
+		if (settingsBtn)
+			settingsBtn.addEventListener('click', function () {
+				self.openSettings();
+			});
+		var sendBtn = this.getEl('ai-send-btn');
+		if (sendBtn)
+			sendBtn.addEventListener('click', function () {
+				self.sendMessage();
+			});
+		var input = this.getEl('ai-input');
+		if (input)
+			input.addEventListener('keydown', function (e) {
+				if (e.key === 'Enter' && !e.shiftKey) {
+					e.preventDefault();
+					self.sendMessage();
+				}
+			});
+		var langSel = this.getEl('ai-lang-select');
+		if (langSel)
+			langSel.addEventListener('change', function (e) {
+				self.switchLang(e.target.value);
+			});
+		var provSel = this.getEl('ai-provider-select');
+		if (provSel)
+			provSel.addEventListener('change', function (e) {
+				self.showProviderFields(e.target.value);
+			});
+		var saveBtn = this.getEl('ai-save-settings-btn');
+		if (saveBtn)
+			saveBtn.addEventListener('click', function () {
+				self.saveSettingsFromForm();
+			});
+		var cancelBtn = this.getEl('ai-cancel-settings-btn');
+		if (cancelBtn)
+			cancelBtn.addEventListener('click', function () {
+				self.closeSettings();
+			});
+		var testBtn = this.getEl('ai-test-btn');
+		if (testBtn)
+			testBtn.addEventListener('click', function () {
+				self.testConnection();
+			});
+		var addLangBtn = this.getEl('add-lang-btn');
+		if (addLangBtn)
+			addLangBtn.addEventListener('click', function () {
+				self.addLangUI();
+			});
+		this.populateLangSelect();
+		this.histories[this.currentLang] = this.loadHistory(this.currentLang);
+		console.log('✅ AI Tutor initialized');
+	},
+};
 
-// ============================================================
-//  PARTICLES (Background effect)
-// ============================================================
-function initParticles() {
-	const container = $('#particles');
-	if (!container) return;
-	for (let i = 0; i < 30; i++) {
-		const p = document.createElement('div');
-		p.className = 'particle';
-		p.style.cssText = `
-      position:absolute;
-      width:${2 + Math.random() * 4}px;
-      height:${2 + Math.random() * 4}px;
-      background:rgba(80,227,164,${0.1 + Math.random() * 0.3});
-      border-radius:50%;
-      left:${Math.random() * 100}%;
-      top:${Math.random() * 100}%;
-      animation:float ${8 + Math.random() * 12}s ease-in-out infinite;
-      animation-delay:${Math.random() * 5}s;
-    `;
-		container.appendChild(p);
-	}
-}
-
-// ============================================================
-//  INITIALIZATION
-// ============================================================
-function init() {
+/* ==================== INIT ==================== */
+document.addEventListener('DOMContentLoaded', function () {
+	console.log('🚀 LinguaQuest initializing...');
 	loadState();
-	initNav();
-	initParticles();
+	updateHUD();
 	updateClock();
-	setInterval(updateClock, 1000);
+	setInterval(updateClock, 30000);
+	initParticles();
+	initNav();
+	AI_TUTOR.init();
 	switchTab('home');
-	console.log(
-		'✅ LinguaQuest initialized — Lv.' +
-			state.level +
-			' ' +
-			(state.playerName || 'Adventurer'),
-	);
-}
-
-// Wait for DOM
-if (document.readyState === 'loading') {
-	document.addEventListener('DOMContentLoaded', init);
-} else {
-	init();
-}
+	console.log('✅ LinguaQuest ready! Lv.' + state.level + ' ' + getTitle());
+});
