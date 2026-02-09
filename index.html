@@ -2,457 +2,188 @@
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-		<title>LinguaQuest — 言霊の冒険</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>LinguaQuest — 言語冒険RPG</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Orbitron:wght@400;500;700;900&display=swap"
+			rel="stylesheet"
+		/>
 		<link rel="stylesheet" href="./style.css" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Orbitron:wght@400;700;900&display=swap"
-			rel="stylesheet"
-		/>
-		<link
-			href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap"
-			rel="stylesheet"
-		/>
 	</head>
 	<body>
+		<!-- ========== PARTICLES ========== -->
 		<div id="particles"></div>
 
-		<header class="header">
-			<div class="logo">LINGUAQUEST<span>言霊の冒険</span></div>
-			<div class="clocks">
-				<div>
-					<span class="city">TOKYO</span
-					><span class="time" id="clock-tokyo">--:--:--</span>
-				</div>
-				<div>
-					<span class="city">HONG KONG</span
-					><span class="time" id="clock-hk">--:--:--</span>
-				</div>
+		<!-- ========== HEADER ========== -->
+		<header id="app-header">
+			<div class="header-left">
+				<h1 class="logo-title">LinguaQuest</h1>
+				<span class="logo-subtitle">— 言語冒険RPG —</span>
+			</div>
+			<div class="header-right">
+				<span id="header-level" class="hud-badge">Lv.1</span>
+				<span id="header-gold" class="hud-badge gold">💰 0 G</span>
+				<span id="header-clock" class="hud-clock"></span>
 			</div>
 		</header>
 
-		<nav class="nav" id="main-nav">
-			<button data-page="home" class="active">🏠 Home</button>
-			<button data-page="timer">⏱️ Timer</button>
-			<button data-page="calendar">📅 Calendar</button>
-			<button data-page="vocab">📖 Vocab</button>
-			<button data-page="review">🔄 Review</button>
-			<button data-page="character">🧬 Character</button>
-			<button data-page="sphere">🔮 Sphere</button>
-			<button data-page="report">📊 Report</button>
+		<!-- ========== NAV ========== -->
+		<nav id="main-nav">
+			<button class="nav-btn active" data-tab="home">🏠 ホーム</button>
+			<button class="nav-btn" data-tab="timer">⏱️ タイマー</button>
+			<button class="nav-btn" data-tab="calendar">📅 カレンダー</button>
+			<button class="nav-btn" data-tab="vocab">📖 単語帳</button>
+			<button class="nav-btn" data-tab="review">🔄 復習</button>
+			<button class="nav-btn" data-tab="character">🧝 キャラクター</button>
+			<button class="nav-btn" data-tab="sphere">🌐 スフィア盤</button>
+			<button class="nav-btn" data-tab="report">📊 レポート</button>
 		</nav>
 
-		<main class="main">
-			<!-- HOME -->
-			<section class="page active" id="page-home">
-				<div class="card">
-					<div class="card-title">⚔️ 冒険者ステータス</div>
-					<div id="home-status"></div>
-				</div>
-				<div class="card-grid">
-					<div class="card">
-						<div class="card-title">🔥 今日の学習</div>
-						<div id="home-today"></div>
-					</div>
-					<div class="card">
-						<div class="card-title">📋 今日のスケジュール</div>
-						<div id="home-schedule"></div>
-					</div>
-				</div>
-				<div class="card">
-					<div class="card-title">📝 復習待ちの単語</div>
-					<div id="home-review-queue"></div>
-				</div>
-			</section>
-
-			<!-- TIMER -->
-			<section class="page" id="page-timer">
-				<div class="card">
-					<div class="card-title">⏱️ ポモドーロタイマー</div>
-					<div
-						style="
-							display: flex;
-							gap: 8px;
-							margin-bottom: 16px;
-							flex-wrap: wrap;
-						"
-					>
-						<button class="btn btn-secondary btn-sm" id="timer-mode-full">
-							Full（60分）
-						</button>
-						<button class="btn btn-secondary btn-sm" id="timer-mode-short">
-							Quick（15分）
-						</button>
-						<select
-							id="timer-lang"
-							style="
-								padding: 6px 12px;
-								background: var(--bg3);
-								border: 1px solid var(--bg4);
-								color: var(--text);
-								border-radius: 8px;
-								font-size: 0.8rem;
-							"
-						>
-							<option value="EN">English</option>
-							<option value="YUE">廣東話</option>
-						</select>
-					</div>
-					<div class="timer-container">
-						<div class="timer-ring">
-							<svg viewBox="0 0 260 260">
-								<circle class="bg" cx="130" cy="130" r="115" />
-								<circle
-									class="fg"
-									id="timer-progress"
-									cx="130"
-									cy="130"
-									r="115"
-									stroke-dasharray="722.57"
-									stroke-dashoffset="0"
-								/>
-							</svg>
-							<div class="timer-display">
-								<div class="time" id="timer-time">15:00</div>
-								<div class="label" id="timer-label">学習タイム</div>
-							</div>
-						</div>
-					</div>
-					<div class="timer-controls">
-						<button class="btn btn-primary" id="timer-start">▶ START</button>
-						<button class="btn btn-secondary" id="timer-pause" disabled>
-							⏸ PAUSE
-						</button>
-						<button class="btn btn-danger btn-sm" id="timer-reset">
-							↺ RESET
-						</button>
-					</div>
-					<div
-						id="timer-session-info"
-						style="
-							text-align: center;
-							margin-top: 16px;
-							font-size: 0.85rem;
-							color: var(--text2);
-						"
-					></div>
-				</div>
-			</section>
-
-			<!-- CALENDAR -->
-			<section class="page" id="page-calendar">
-				<div class="card">
-					<div class="card-title">📅 学習カレンダー</div>
-					<div
-						style="
-							display: flex;
-							justify-content: space-between;
-							align-items: center;
-							margin-bottom: 12px;
-						"
-					>
-						<button class="btn btn-secondary btn-sm" id="cal-prev">◀</button>
-						<span
-							id="cal-month"
-							style="
-								font-family: var(--font2);
-								font-weight: 700;
-								color: var(--accent);
-							"
-						></span>
-						<button class="btn btn-secondary btn-sm" id="cal-next">▶</button>
-					</div>
-					<div class="cal-grid" id="cal-grid"></div>
-				</div>
-				<div class="card">
-					<div class="card-title">📊 選択日の記録</div>
-					<div id="cal-detail"></div>
-				</div>
-			</section>
-
-			<!-- VOCAB -->
-			<section class="page" id="page-vocab">
-				<div class="card">
-					<div class="card-title">📖 単語帳</div>
-					<div class="vocab-tabs" id="vocab-tabs">
-						<button class="active" data-lang="EN">English</button>
-						<button data-lang="YUE">廣東話</button>
-					</div>
-					<div
-						style="
-							display: flex;
-							gap: 8px;
-							margin-bottom: 16px;
-							flex-wrap: wrap;
-						"
-					>
-						<button class="btn btn-primary btn-sm" id="vocab-add-btn">
-							+ 追加
-						</button>
-						<button class="btn btn-secondary btn-sm" id="vocab-csv-import">
-							📥 CSV
-						</button>
-						<button class="btn btn-secondary btn-sm" id="vocab-csv-export">
-							📤 CSV
-						</button>
-						<input
-							type="file"
-							id="vocab-csv-file"
-							accept=".csv"
-							style="display: none"
-						/>
-					</div>
-					<div class="vocab-list" id="vocab-list"></div>
-				</div>
-				<div class="modal-overlay" id="vocab-modal">
-					<div class="modal">
-						<h3>📝 新しい単語を追加</h3>
-						<div class="form-group">
-							<label>言語</label
-							><select id="v-lang">
-								<option value="EN">English</option>
-								<option value="YUE">廣東話</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label>単語</label
-							><input id="v-word" placeholder="hello / 你好" />
-						</div>
-						<div class="form-group">
-							<label>意味（日本語）</label
-							><input id="v-meaning" placeholder="こんにちは" />
-						</div>
-						<div class="form-group">
-							<label>発音 / Jyutping</label
-							><input id="v-pron" placeholder="nei5 hou2" />
-						</div>
-						<div class="form-group">
-							<label>例文</label
-							><textarea
-								id="v-example"
-								placeholder="Hello, how are you?"
-							></textarea>
-						</div>
-						<div style="display: flex; gap: 8px">
-							<button class="btn btn-primary" id="v-save">保存</button
-							><button class="btn btn-secondary" id="v-cancel">
-								キャンセル
-							</button>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- REVIEW -->
-			<section class="page" id="page-review">
-				<div class="card">
-					<div class="card-title">🔄 フラッシュカード復習</div>
-					<div id="review-status" style="margin-bottom: 16px"></div>
-					<div class="flashcard" id="flashcard">
-						<div class="flashcard-inner" id="flashcard-inner">
-							<div class="flashcard-front">
-								<div class="flashcard-word" id="fc-word">---</div>
-								<div class="flashcard-pron" id="fc-pron"></div>
-								<div
-									style="
-										font-size: 0.75rem;
-										color: var(--text3);
-										margin-top: 12px;
-									"
-								>
-									タップでめくる
-								</div>
-							</div>
-							<div class="flashcard-back">
-								<div class="flashcard-meaning" id="fc-meaning">---</div>
-								<div class="flashcard-example" id="fc-example"></div>
-							</div>
-						</div>
-					</div>
-					<div class="review-buttons" id="review-buttons" style="display: none">
-						<button class="btn btn-danger btn-sm" data-score="1">
-							😵 Again
-						</button>
-						<button class="btn btn-secondary btn-sm" data-score="2">
-							😟 Hard
-						</button>
-						<button class="btn btn-primary btn-sm" data-score="3">
-							😊 Good
-						</button>
-						<button class="btn btn-gold btn-sm" data-score="4">🤩 Easy</button>
-					</div>
-					<div style="text-align: center; margin-top: 16px">
-						<button class="btn btn-primary" id="review-start">
-							復習を開始
-						</button>
-					</div>
-				</div>
-			</section>
-
-			<!-- CHARACTER -->
-			<section class="page" id="page-character">
-				<div class="card">
-					<div class="card-title">🧬 キャラクターシート</div>
-					<div id="char-current"></div>
-				</div>
-				<div class="card">
-					<div class="card-title">🏛️ 種族（Ancestry）</div>
-					<div class="char-filters" id="ancestry-filters"></div>
-					<div class="char-grid" id="ancestry-grid"></div>
-					<div id="heritage-section" style="display: none; margin-top: 16px">
-						<h4 style="color: var(--gold); margin-bottom: 8px">
-							🏠 Heritage（亜種）を選択
-						</h4>
-						<div id="heritage-list"></div>
-					</div>
-				</div>
-				<div class="card">
-					<div class="card-title">⚔️ 職業（Class）</div>
-					<div class="char-filters" id="class-filters"></div>
-					<div class="char-grid" id="class-grid"></div>
-					<div id="subclass-section" style="display: none; margin-top: 16px">
-						<h4 style="color: var(--gold); margin-bottom: 8px">
-							📜 Subclass（専門）を選択
-						</h4>
-						<div id="subclass-list"></div>
-					</div>
-				</div>
-				<div class="card">
-					<div class="card-title">📊 シナジー効果</div>
-					<div id="synergy-display"></div>
-				</div>
-			</section>
-
-			<!-- SPHERE GRID -->
-			<section class="page" id="page-sphere">
-				<div class="card">
-					<div class="card-title">🔮 スフィア盤 — 言霊の結晶</div>
-					<div class="sphere-controls">
-						<button class="btn btn-secondary btn-sm" id="sphere-zoom-in">
-							🔍+
-						</button>
-						<button class="btn btn-secondary btn-sm" id="sphere-zoom-out">
-							🔍−
-						</button>
-						<button class="btn btn-secondary btn-sm" id="sphere-reset-view">
-							↺ View
-						</button>
-						<span
-							style="font-size: 0.8rem; color: var(--text2); margin-left: auto"
-							id="sphere-crystals"
-							>💎 0</span
-						>
-						<span
-							style="font-size: 0.8rem; color: var(--text2)"
-							id="sphere-points"
-							>⭐ 0</span
-						>
-					</div>
-					<div class="sphere-legend">
-						<span
-							><span class="dot" style="background: var(--fire)"></span>
-							火/Speaking</span
-						>
-						<span
-							><span class="dot" style="background: var(--water)"></span>
-							水/Listening</span
-						>
-						<span
-							><span class="dot" style="background: var(--wind)"></span>
-							風/Reading</span
-						>
-						<span
-							><span class="dot" style="background: var(--earth)"></span>
-							地/Writing</span
-						>
-						<span
-							><span class="dot" style="background: var(--thunder)"></span>
-							雷/Vocab</span
-						>
-						<span
-							><span class="dot" style="background: var(--purple)"></span>
-							闇/Grammar</span
-						>
-						<span
-							><span class="dot" style="background: var(--gold)"></span>
-							聖/Core</span
-						>
-						<span
-							><span class="dot" style="background: var(--red)"></span>
-							Boss</span
-						>
-						<span
-							><span class="dot" style="background: var(--gold2)"></span>
-							宝箱</span
-						>
-						<span
-							><span class="dot" style="background: var(--pink)"></span>
-							Event</span
-						>
-					</div>
-					<div class="sphere-container" id="sphere-container">
-						<canvas class="sphere-canvas" id="sphere-canvas"></canvas>
-						<div class="sphere-info" id="sphere-info"></div>
-					</div>
-				</div>
-			</section>
-
-			<!-- REPORT -->
-			<section class="page" id="page-report">
-				<div class="card">
-					<div class="card-title">📊 週間レポート</div>
-					<div class="report-period" id="report-period">
-						<button class="btn btn-secondary btn-sm active" data-days="7">
-							7日
-						</button>
-						<button class="btn btn-secondary btn-sm" data-days="14">
-							14日
-						</button>
-						<button class="btn btn-secondary btn-sm" data-days="30">
-							30日
-						</button>
-					</div>
-					<div id="report-summary"></div>
-					<div
-						class="report-bar"
-						id="report-bar"
-						style="margin-top: 20px"
-					></div>
-				</div>
-				<div class="card-grid">
-					<div class="card">
-						<div class="card-title">📈 スキル進捗</div>
-						<div id="report-skills"></div>
-					</div>
-					<div class="card">
-						<div class="card-title">🏆 実績</div>
-						<div id="report-achievements"></div>
-					</div>
-				</div>
-			</section>
+		<!-- ========== MAIN SECTIONS ========== -->
+		<main id="app-main">
+			<section id="tab-home" class="tab-content active"></section>
+			<section id="tab-timer" class="tab-content"></section>
+			<section id="tab-calendar" class="tab-content"></section>
+			<section id="tab-vocab" class="tab-content"></section>
+			<section id="tab-review" class="tab-content"></section>
+			<section id="tab-character" class="tab-content"></section>
+			<section id="tab-sphere" class="tab-content"></section>
+			<section id="tab-report" class="tab-content"></section>
 		</main>
 
-		<!-- Tooltip -->
-		<div class="node-tooltip" id="node-tooltip">
-			<div class="n-name" id="tt-name"></div>
-			<div class="n-desc" id="tt-desc"></div>
-			<div class="n-rarity" id="tt-rarity"></div>
-			<div class="n-cost" id="tt-cost"></div>
-		</div>
+		<!-- ========== AI TUTOR FLOATING BUTTON ========== -->
+		<button id="ai-tutor-toggle" title="AIチューター">🤖</button>
 
-		<!-- Boss Modal -->
-		<div class="modal-overlay" id="boss-modal">
-			<div class="modal">
-				<h3>💀 ボスチャレンジ</h3>
-				<div id="boss-content"></div>
+		<!-- ========== AI TUTOR SIDEBAR ========== -->
+		<aside id="ai-tutor-sidebar">
+			<div class="ai-sidebar-header">
+				<h3>🤖 AIチューター</h3>
+				<div class="ai-header-controls">
+					<select id="ai-lang-select" title="学習言語を選択"></select>
+					<button id="ai-settings-btn" title="設定">⚙️</button>
+					<button id="ai-close-btn" title="閉じる">✕</button>
+				</div>
 			</div>
-		</div>
+			<div id="ai-chat-messages"></div>
+			<div class="ai-input-area">
+				<textarea
+					id="ai-input"
+					placeholder="日本語で質問してください..."
+					rows="2"
+				></textarea>
+				<button id="ai-send-btn">送信</button>
+			</div>
+			<div id="ai-status" class="ai-status"></div>
+		</aside>
 
-		<!-- Event Modal -->
-		<div class="modal-overlay" id="event-modal">
-			<div class="modal">
-				<h3>🎭 イベント発生！</h3>
-				<div id="event-content"></div>
+		<!-- ========== AI SETTINGS MODAL ========== -->
+		<div id="ai-settings-overlay" class="modal-overlay hidden">
+			<div class="modal-content ai-settings-modal">
+				<h3>🤖 AIチューター設定</h3>
+
+				<label>プロバイダー:</label>
+				<select id="ai-provider-select">
+					<option value="gemini">Google Gemini（無料）</option>
+					<option value="openrouter">OpenRouter（無料枠あり）</option>
+					<option value="openai">OpenAI GPT（有料）</option>
+					<option value="custom">カスタムエンドポイント</option>
+				</select>
+
+				<div id="provider-fields-gemini" class="provider-fields">
+					<label>Gemini APIキー:</label>
+					<input type="password" id="gemini-api-key" placeholder="AIzaSy..." />
+					<small
+						><a href="https://aistudio.google.com/apikey" target="_blank"
+							>無料キーを取得 →</a
+						></small
+					>
+					<label>モデル:</label>
+					<input
+						type="text"
+						id="gemini-model"
+						value="gemini-2.5-flash"
+						placeholder="gemini-2.5-flash"
+					/>
+				</div>
+
+				<div id="provider-fields-openrouter" class="provider-fields hidden">
+					<label>OpenRouter APIキー:</label>
+					<input
+						type="password"
+						id="openrouter-api-key"
+						placeholder="sk-or-..."
+					/>
+					<small
+						><a href="https://openrouter.ai/keys" target="_blank"
+							>キーを取得 →</a
+						></small
+					>
+					<label>モデル:</label>
+					<input
+						type="text"
+						id="openrouter-model"
+						value="deepseek/deepseek-r1:free"
+						placeholder="deepseek/deepseek-r1:free"
+					/>
+				</div>
+
+				<div id="provider-fields-openai" class="provider-fields hidden">
+					<label>OpenAI APIキー:</label>
+					<input type="password" id="openai-api-key" placeholder="sk-..." />
+					<label>モデル:</label>
+					<input
+						type="text"
+						id="openai-model"
+						value="gpt-4o"
+						placeholder="gpt-4o"
+					/>
+				</div>
+
+				<div id="provider-fields-custom" class="provider-fields hidden">
+					<label>エンドポイントURL:</label>
+					<input
+						type="url"
+						id="custom-endpoint"
+						placeholder="https://your-api.example.com/v1"
+					/>
+					<label>APIキー:</label>
+					<input type="password" id="custom-api-key" placeholder="sk-..." />
+					<label>モデル:</label>
+					<input type="text" id="custom-model" placeholder="model-name" />
+				</div>
+
+				<h4>📚 学習言語の管理</h4>
+				<div id="lang-manager">
+					<div id="lang-list"></div>
+					<div class="lang-add-row">
+						<input
+							type="text"
+							id="new-lang-code"
+							placeholder="コード (例: ko)"
+						/>
+						<input
+							type="text"
+							id="new-lang-name"
+							placeholder="表示名 (例: 韓国語)"
+						/>
+						<input
+							type="text"
+							id="new-lang-flag"
+							placeholder="絵文字 (例: 🇰🇷)"
+						/>
+						<button id="add-lang-btn">追加</button>
+					</div>
+				</div>
+
+				<div class="modal-buttons">
+					<button id="ai-test-btn" class="btn-secondary">接続テスト</button>
+					<button id="ai-save-settings-btn" class="btn-primary">保存</button>
+					<button id="ai-cancel-settings-btn" class="btn-ghost">
+						キャンセル
+					</button>
+				</div>
+				<div id="ai-test-result"></div>
 			</div>
 		</div>
 	</body>
