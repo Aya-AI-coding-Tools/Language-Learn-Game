@@ -1,704 +1,648 @@
-/* ============================================================
-   LinguaQuest — app.js (ALL-IN-ONE: Data + Logic + AI Tutor)
-   ============================================================ */
+/* ============================================
+   LinguaQuest - app.js (Complete Combined File)
+   Part 1/3: Data + State + Utilities + Particles + HUD
+   ============================================ */
 
-/* ==================== DATA ==================== */
+// ========== DATA DEFINITIONS (formerly data.js) ==========
+
 function expForLevel(lv) {
-	return Math.floor(100 * Math.pow(1.15, lv - 1));
+	return Math.floor(80 * Math.pow(lv, 1.45));
 }
 
 var TITLES = [
-	{ lv: 1, title: '駆け出し冒険者' },
-	{ lv: 5, title: '見習い言語士' },
-	{ lv: 10, title: '言葉の旅人' },
-	{ lv: 15, title: '知識の探求者' },
-	{ lv: 20, title: '銀舌の語り部' },
-	{ lv: 25, title: '言霊の使い手' },
-	{ lv: 30, title: '多言語の賢者' },
-	{ lv: 40, title: '言語の守護者' },
-	{ lv: 50, title: '伝説の翻訳師' },
-	{ lv: 60, title: '万語の大魔導士' },
-	{ lv: 75, title: '言語神の代行者' },
-	{ lv: 99, title: '全知の言語王' },
+	{ level: 1, title: '見習い冒険者' },
+	{ level: 5, title: '駆け出しの学徒' },
+	{ level: 10, title: '言葉の探索者' },
+	{ level: 15, title: '知識の狩人' },
+	{ level: 20, title: '文法の守護者' },
+	{ level: 25, title: '語彙の魔術師' },
+	{ level: 30, title: '多言語の賢者' },
+	{ level: 40, title: '言霊の大魔導士' },
+	{ level: 50, title: '伝説の言語マスター' },
 ];
 
 var ANCESTRIES = [
 	{
 		id: 'human',
 		name: 'ヒューマン',
-		icon: '🧑',
-		rarity: 1,
-		category: 'CORE',
-		desc: '適応力に優れた汎用種族',
+		desc: '適応力に優れた万能種族',
 		heritages: [
 			{
 				id: 'versatile',
-				name: '万能',
-				bonus: {
-					vocab: 5,
-					grammar: 5,
-					listening: 5,
-					speaking: 5,
-					reading: 5,
-					writing: 5,
-				},
-				desc: '全スキル均等ボーナス',
+				name: '万能の血統',
+				bonus: { type: 'exp_all', value: 0.05 },
+				desc: '全EXP+5%',
 			},
 			{
 				id: 'skilled',
-				name: '熟練',
-				bonus: { vocab: 15, grammar: 15 },
-				desc: '語彙と文法に特化',
-			},
-			{
-				id: 'ambitious',
-				name: '野心家',
-				bonus: { speaking: 20, writing: 10 },
-				desc: '表現力重視',
+				name: '技巧の血統',
+				bonus: { type: 'skill_unlock_discount', value: 1 },
+				desc: 'スキル解放コスト-1',
 			},
 		],
 	},
 	{
 		id: 'elf',
 		name: 'エルフ',
-		icon: '🧝',
-		rarity: 2,
-		category: 'CORE',
-		desc: '長命で芸術と言語に秀でる',
+		desc: '長命で知識に秀でた種族',
 		heritages: [
 			{
 				id: 'ancient',
-				name: '古エルフ',
-				bonus: { reading: 20, grammar: 15 },
-				desc: '古典言語の理解力',
+				name: '古代エルフ',
+				bonus: { type: 'exp_vocab', value: 0.1 },
+				desc: '語彙EXP+10%',
 			},
 			{
 				id: 'woodland',
-				name: '森エルフ',
-				bonus: { listening: 20, vocab: 10 },
-				desc: '自然音の聞き分け',
+				name: '森林エルフ',
+				bonus: { type: 'exp_listening', value: 0.1 },
+				desc: 'リスニングEXP+10%',
 			},
 			{
 				id: 'high',
 				name: 'ハイエルフ',
-				bonus: { writing: 15, grammar: 15 },
-				desc: '優雅な文章力',
+				bonus: { type: 'exp_grammar', value: 0.1 },
+				desc: '文法EXP+10%',
 			},
 		],
 	},
 	{
 		id: 'dwarf',
 		name: 'ドワーフ',
-		icon: '⛏️',
-		rarity: 1,
-		category: 'CORE',
-		desc: '頑強で記憶力に優れる',
+		desc: '頑強で忍耐力のある種族',
 		heritages: [
 			{
 				id: 'forge',
-				name: '鍛冶',
-				bonus: { vocab: 20, writing: 10 },
-				desc: '専門用語の記憶力',
+				name: '鍛冶ドワーフ',
+				bonus: { type: 'gold_bonus', value: 0.1 },
+				desc: 'ゴールド+10%',
 			},
 			{
 				id: 'deep',
-				name: '深淵',
-				bonus: { reading: 15, listening: 15 },
-				desc: '暗所での集中力',
-			},
-		],
-	},
-	{
-		id: 'gnome',
-		name: 'ノーム',
-		icon: '🍄',
-		rarity: 2,
-		category: 'CORE',
-		desc: '好奇心旺盛な小型種族',
-		heritages: [
-			{
-				id: 'rock',
-				name: '岩ノーム',
-				bonus: { grammar: 20, reading: 10 },
-				desc: '論理的思考',
-			},
-			{
-				id: 'fey',
-				name: '妖精ノーム',
-				bonus: { speaking: 15, listening: 15 },
-				desc: '音声模倣能力',
+				name: '深層ドワーフ',
+				bonus: { type: 'exp_reading', value: 0.1 },
+				desc: '読解EXP+10%',
 			},
 		],
 	},
 	{
 		id: 'halfling',
 		name: 'ハーフリング',
-		icon: '🦶',
-		rarity: 1,
-		category: 'CORE',
-		desc: '幸運と順応性を持つ',
+		desc: '幸運と器用さの種族',
 		heritages: [
 			{
-				id: 'gutsy',
-				name: '豪胆',
-				bonus: { speaking: 20, vocab: 10 },
-				desc: '臆さず話す勇気',
+				id: 'lucky',
+				name: '幸運のハーフリング',
+				bonus: { type: 'crit_exp', value: 0.08 },
+				desc: 'EXPクリティカル率+8%',
 			},
 			{
-				id: 'hillock',
-				name: '丘陵',
-				bonus: { listening: 15, reading: 15 },
-				desc: '穏やかな学習',
+				id: 'nimble',
+				name: '俊敏のハーフリング',
+				bonus: { type: 'quest_speed', value: 0.1 },
+				desc: 'クエスト完了速度+10%',
 			},
 		],
 	},
 	{
-		id: 'goblin',
-		name: 'ゴブリン',
-		icon: '👺',
-		rarity: 1,
-		category: 'CORE',
-		desc: '素早い学習と応用力',
+		id: 'gnome',
+		name: 'ノーム',
+		desc: '好奇心旺盛な発明種族',
 		heritages: [
 			{
-				id: 'razortooth',
-				name: '鋭歯',
-				bonus: { speaking: 20, vocab: 10 },
-				desc: '素早い発話',
+				id: 'tinker',
+				name: '発明ノーム',
+				bonus: { type: 'exp_writing', value: 0.1 },
+				desc: 'ライティングEXP+10%',
 			},
 			{
-				id: 'unbreakable',
-				name: '不屈',
-				bonus: { grammar: 15, writing: 15 },
-				desc: '粘り強い反復学習',
+				id: 'forest',
+				name: '森のノーム',
+				bonus: { type: 'exp_speaking', value: 0.08 },
+				desc: 'スピーキングEXP+8%',
 			},
 		],
 	},
 	{
 		id: 'orc',
 		name: 'オーク',
-		icon: '💪',
-		rarity: 1,
-		category: 'CORE',
-		desc: '力強い意志と記憶力',
+		desc: '力強さと闘志の種族',
 		heritages: [
 			{
 				id: 'hold',
-				name: '砦育ち',
-				bonus: { vocab: 20, speaking: 10 },
-				desc: '力強い暗記力',
+				name: '砦オーク',
+				bonus: { type: 'exp_all', value: 0.03 },
+				desc: '全EXP+3%',
 			},
 			{
 				id: 'badlands',
-				name: '荒野育ち',
-				bonus: { listening: 15, grammar: 15 },
-				desc: 'サバイバル語彙',
+				name: '荒地オーク',
+				bonus: { type: 'streak_bonus', value: 0.15 },
+				desc: '連続ボーナス+15%',
+			},
+			{
+				id: 'deep',
+				name: '深淵オーク',
+				bonus: { type: 'boss_exp', value: 0.2 },
+				desc: 'ボス報酬EXP+20%',
 			},
 		],
 	},
 	{
-		id: 'halfelf',
-		name: 'ハーフエルフ',
-		icon: '🌿',
-		rarity: 2,
-		category: 'CORE',
-		desc: '二つの血統からの恩恵',
+		id: 'goblin',
+		name: 'ゴブリン',
+		desc: '素早さと狡猾さの種族',
 		heritages: [
 			{
-				id: 'sociable',
-				name: '社交的',
-				bonus: { speaking: 15, listening: 15 },
-				desc: '会話の達人',
+				id: 'irongut',
+				name: '鉄腹ゴブリン',
+				bonus: { type: 'gold_bonus', value: 0.15 },
+				desc: 'ゴールド+15%',
 			},
 			{
-				id: 'lorekeeper',
-				name: '伝承',
-				bonus: { reading: 20, vocab: 10 },
-				desc: '歴史的知識',
-			},
-		],
-	},
-	{
-		id: 'halforc',
-		name: 'ハーフオーク',
-		icon: '🗡️',
-		rarity: 1,
-		category: 'CORE',
-		desc: '強靭さと適応力の融合',
-		heritages: [
-			{
-				id: 'mightymaw',
-				name: '猛顎',
-				bonus: { speaking: 20, grammar: 10 },
-				desc: '声量と発声力',
-			},
-			{
-				id: 'keen',
-				name: '鋭敏',
-				bonus: { listening: 20, reading: 10 },
-				desc: '細部への注意力',
+				id: 'razortooth',
+				name: '鋭牙ゴブリン',
+				bonus: { type: 'exp_speaking', value: 0.1 },
+				desc: 'スピーキングEXP+10%',
 			},
 		],
 	},
 	{
 		id: 'leshy',
-		name: 'レシー',
-		icon: '🌱',
-		rarity: 2,
-		category: 'CORE',
-		desc: '自然から生まれた植物種族',
+		name: 'レッシー',
+		desc: '植物から生まれた精霊種族',
 		heritages: [
 			{
 				id: 'leaf',
-				name: '葉',
-				bonus: { listening: 20, speaking: 10 },
-				desc: '風の言葉を聞く',
+				name: '葉のレッシー',
+				bonus: { type: 'exp_vocab', value: 0.08 },
+				desc: '語彙EXP+8%',
 			},
 			{
 				id: 'fungus',
-				name: '菌糸',
-				bonus: { vocab: 15, grammar: 15 },
-				desc: 'ネットワーク思考',
+				name: '菌のレッシー',
+				bonus: { type: 'night_bonus', value: 0.15 },
+				desc: '夜間EXP+15%',
+			},
+			{
+				id: 'vine',
+				name: '蔦のレッシー',
+				bonus: { type: 'exp_grammar', value: 0.08 },
+				desc: '文法EXP+8%',
 			},
 		],
 	},
 	{
 		id: 'catfolk',
 		name: 'キャットフォーク',
-		icon: '🐱',
-		rarity: 2,
-		category: 'UNCOMMON',
-		desc: '猫の優雅さと好奇心',
+		desc: '猫のような俊敏種族',
 		heritages: [
 			{
 				id: 'clawed',
-				name: '爪持ち',
-				bonus: { writing: 20, vocab: 10 },
-				desc: '素早い筆記',
+				name: '爪キャットフォーク',
+				bonus: { type: 'crit_exp', value: 0.1 },
+				desc: 'EXPクリティカル率+10%',
 			},
 			{
 				id: 'hunting',
-				name: '狩猟',
-				bonus: { listening: 20, speaking: 10 },
-				desc: '音声追跡能力',
-			},
-		],
-	},
-	{
-		id: 'lizardfolk',
-		name: 'リザードフォーク',
-		icon: '🦎',
-		rarity: 2,
-		category: 'UNCOMMON',
-		desc: '冷静な判断力と忍耐',
-		heritages: [
-			{
-				id: 'swamp',
-				name: '沼地',
-				bonus: { reading: 15, grammar: 15 },
-				desc: '集中持続力',
-			},
-			{
-				id: 'sand',
-				name: '砂漠',
-				bonus: { vocab: 20, listening: 10 },
-				desc: '環境適応語彙',
+				name: '狩猟キャットフォーク',
+				bonus: { type: 'quest_speed', value: 0.12 },
+				desc: 'クエスト完了速度+12%',
 			},
 		],
 	},
 	{
 		id: 'tengu',
 		name: 'テング',
-		icon: '🐦',
-		rarity: 3,
-		category: 'UNCOMMON',
-		desc: '声帯模倣の達人',
+		desc: '鳥人の知恵深い種族',
 		heritages: [
+			{
+				id: 'stormborn',
+				name: '嵐のテング',
+				bonus: { type: 'exp_listening', value: 0.12 },
+				desc: 'リスニングEXP+12%',
+			},
 			{
 				id: 'skyborn',
-				name: '天生',
-				bonus: { speaking: 25, listening: 10 },
-				desc: '完璧な発音模倣',
+				name: '天空テング',
+				bonus: { type: 'exp_all', value: 0.04 },
+				desc: '全EXP+4%',
 			},
 			{
-				id: 'stormwing',
-				name: '嵐翼',
-				bonus: { vocab: 15, writing: 15 },
-				desc: '詩的表現力',
-			},
-		],
-	},
-	{
-		id: 'ratfolk',
-		name: 'ラットフォーク',
-		icon: '🐀',
-		rarity: 1,
-		category: 'UNCOMMON',
-		desc: '情報収集と暗記の達人',
-		heritages: [
-			{
-				id: 'sewer',
-				name: '下水道',
-				bonus: { vocab: 25, reading: 5 },
-				desc: '雑多な語彙力',
-			},
-			{
-				id: 'longsnout',
-				name: '長鼻',
-				bonus: { listening: 20, grammar: 10 },
-				desc: '鋭い聴覚',
-			},
-		],
-	},
-	{
-		id: 'kobold',
-		name: 'コボルド',
-		icon: '🐲',
-		rarity: 2,
-		category: 'UNCOMMON',
-		desc: '竜の血を引く小種族',
-		heritages: [
-			{
-				id: 'dragonscale',
-				name: '竜鱗',
-				bonus: { grammar: 20, vocab: 10 },
-				desc: '竜語の残滓',
-			},
-			{
-				id: 'tunnelflame',
-				name: '坑道炎',
-				bonus: { reading: 15, writing: 15 },
-				desc: '暗所筆写能力',
+				id: 'jinxed',
+				name: '呪いのテング',
+				bonus: { type: 'boss_exp', value: 0.15 },
+				desc: 'ボス報酬EXP+15%',
 			},
 		],
 	},
 	{
 		id: 'kitsune',
 		name: 'キツネ',
-		icon: '🦊',
-		rarity: 3,
-		category: 'UNCOMMON',
-		desc: '変化と多言語の才能',
+		desc: '変化の術を持つ狐種族',
 		heritages: [
-			{
-				id: 'shapechanger',
-				name: '変化',
-				bonus: { speaking: 20, listening: 15 },
-				desc: 'アクセント変化自在',
-			},
 			{
 				id: 'celestial',
 				name: '天狐',
-				bonus: { reading: 20, writing: 15 },
-				desc: '古文書の理解',
-			},
-		],
-	},
-	{
-		id: 'automaton',
-		name: 'オートマトン',
-		icon: '🤖',
-		rarity: 3,
-		category: 'UNCOMMON',
-		desc: '機械仕掛けの学習者',
-		heritages: [
-			{
-				id: 'hunter',
-				name: '狩猟型',
-				bonus: { listening: 25, vocab: 10 },
-				desc: '音声認識精度',
+				bonus: { type: 'exp_grammar', value: 0.12 },
+				desc: '文法EXP+12%',
 			},
 			{
-				id: 'mage',
-				name: '魔導型',
-				bonus: { grammar: 20, writing: 15 },
-				desc: '構文解析能力',
-			},
-		],
-	},
-	{
-		id: 'fetchling',
-		name: 'フェッチリング',
-		icon: '🌑',
-		rarity: 3,
-		category: 'UNCOMMON',
-		desc: '影界から来た存在',
-		heritages: [
-			{
-				id: 'bright',
-				name: '光影',
-				bonus: { reading: 20, listening: 15 },
-				desc: '暗号解読能力',
-			},
-			{
-				id: 'deep',
-				name: '深影',
-				bonus: { writing: 20, speaking: 15 },
-				desc: '暗示的表現力',
-			},
-		],
-	},
-	{
-		id: 'sprite',
-		name: 'スプライト',
-		icon: '✨',
-		rarity: 3,
-		category: 'UNCOMMON',
-		desc: '妖精界の極小種族',
-		heritages: [
-			{
-				id: 'dragonfly',
-				name: '蜻蛉',
-				bonus: { listening: 20, speaking: 15 },
-				desc: '高速言語処理',
-			},
-			{
-				id: 'luminous',
-				name: '発光',
-				bonus: { vocab: 15, grammar: 15, reading: 5 },
-				desc: '知識照射',
-			},
-		],
-	},
-	{
-		id: 'grippli',
-		name: 'グリプリ',
-		icon: '🐸',
-		rarity: 2,
-		category: 'UNCOMMON',
-		desc: '樹上生活の蛙人族',
-		heritages: [
-			{
-				id: 'poisonhide',
-				name: '毒皮',
-				bonus: { vocab: 20, grammar: 10 },
-				desc: '薬学用語',
-			},
-			{
-				id: 'windweb',
-				name: '風網',
-				bonus: { listening: 15, speaking: 15 },
-				desc: '遠距離聴覚',
+				id: 'dark',
+				name: '闇狐',
+				bonus: { type: 'night_bonus', value: 0.2 },
+				desc: '夜間EXP+20%',
 			},
 		],
 	},
 	{
 		id: 'android',
 		name: 'アンドロイド',
-		icon: '🤖',
-		rarity: 4,
-		category: 'RARE',
-		desc: '古代文明の合成存在',
+		desc: '精密な思考の機械種族',
 		heritages: [
 			{
-				id: 'polyglot',
-				name: '多言語',
-				bonus: { vocab: 20, grammar: 20 },
-				desc: '言語DB搭載',
+				id: 'laborer',
+				name: '労働型',
+				bonus: { type: 'exp_writing', value: 0.12 },
+				desc: 'ライティングEXP+12%',
 			},
 			{
-				id: 'artisan',
-				name: '工匠',
-				bonus: { writing: 25, reading: 10 },
-				desc: '精密な文字出力',
+				id: 'warrior',
+				name: '戦闘型',
+				bonus: { type: 'streak_bonus', value: 0.1 },
+				desc: '連続ボーナス+10%',
+			},
+			{
+				id: 'scholar',
+				name: '学者型',
+				bonus: { type: 'exp_reading', value: 0.12 },
+				desc: '読解EXP+12%',
 			},
 		],
 	},
 	{
-		id: 'fleshwarp',
-		name: 'フレッシュワープ',
-		icon: '🧬',
-		rarity: 4,
-		category: 'RARE',
-		desc: '魔法で変容した存在',
+		id: 'automaton',
+		name: 'オートマトン',
+		desc: '古代文明の自動人形',
 		heritages: [
 			{
-				id: 'created',
-				name: '被造',
-				bonus: { listening: 20, speaking: 15 },
-				desc: '適応的発声器官',
+				id: 'hunter',
+				name: '狩猟型',
+				bonus: { type: 'quest_speed', value: 0.15 },
+				desc: 'クエスト完了速度+15%',
 			},
 			{
-				id: 'mutated',
-				name: '変異',
-				bonus: { vocab: 15, grammar: 15, writing: 5 },
-				desc: '変容する理解力',
+				id: 'mage',
+				name: '魔導型',
+				bonus: { type: 'exp_all', value: 0.06 },
+				desc: '全EXP+6%',
 			},
 		],
 	},
 	{
-		id: 'strix',
-		name: 'ストリックス',
-		icon: '🦅',
-		rarity: 4,
-		category: 'RARE',
-		desc: '翼を持つ空の民',
+		id: 'sprite',
+		name: 'スプライト',
+		desc: '妖精界の極小種族',
 		heritages: [
 			{
-				id: 'nightglider',
-				name: '夜翔',
-				bonus: { listening: 25, reading: 10 },
-				desc: '夜間学習効率UP',
+				id: 'dragonfly',
+				name: 'トンボスプライト',
+				bonus: { type: 'exp_speaking', value: 0.12 },
+				desc: 'スピーキングEXP+12%',
 			},
 			{
-				id: 'predator',
-				name: '捕食者',
-				bonus: { speaking: 20, vocab: 15 },
-				desc: '鋭い発声と語彙',
-			},
-		],
-	},
-	{
-		id: 'anadi',
-		name: 'アナディ',
-		icon: '🕷️',
-		rarity: 4,
-		category: 'RARE',
-		desc: '蜘蛛と人の二重形態',
-		heritages: [
-			{
-				id: 'snaring',
-				name: '捕縛',
-				bonus: { grammar: 25, writing: 10 },
-				desc: '構文の網を張る',
-			},
-			{
-				id: 'adaptive',
-				name: '適応',
-				bonus: { vocab: 15, listening: 15, speaking: 5 },
-				desc: '環境言語吸収',
-			},
-		],
-	},
-	{
-		id: 'conrasu',
-		name: 'コンラス',
-		icon: '🌀',
-		rarity: 5,
-		category: 'RARE',
-		desc: '宇宙意志の結晶体',
-		heritages: [
-			{
-				id: 'rite',
-				name: '儀式',
-				bonus: { grammar: 20, reading: 20 },
-				desc: '宇宙の文法体系',
-			},
-			{
-				id: 'grove',
-				name: '聖林',
-				bonus: { listening: 20, writing: 15, vocab: 5 },
-				desc: '自然言語共鳴',
-			},
-		],
-	},
-	{
-		id: 'goloma',
-		name: 'ゴロマ',
-		icon: '👁️',
-		rarity: 4,
-		category: 'RARE',
-		desc: '全身に目を持つ種族',
-		heritages: [
-			{
-				id: 'overlooked',
-				name: '看過',
-				bonus: { reading: 30 },
-				desc: '超速読能力',
-			},
-			{
-				id: 'visionguard',
-				name: '視護',
-				bonus: { vocab: 15, listening: 15, grammar: 5 },
-				desc: '全方位情報収集',
-			},
-		],
-	},
-	{
-		id: 'kashrishi',
-		name: 'カシュリシ',
-		icon: '🔮',
-		rarity: 4,
-		category: 'RARE',
-		desc: '水晶角のテレパス種族',
-		heritages: [
-			{
-				id: 'empathic',
-				name: '共感',
-				bonus: { listening: 25, speaking: 10 },
-				desc: '感情言語の理解',
-			},
-			{
-				id: 'shielded',
-				name: '遮蔽',
-				bonus: { grammar: 20, reading: 15 },
-				desc: '雑念排除集中',
+				id: 'grig',
+				name: 'グリグスプライト',
+				bonus: { type: 'gold_bonus', value: 0.12 },
+				desc: 'ゴールド+12%',
 			},
 		],
 	},
 	{
 		id: 'poppet',
 		name: 'ポペット',
-		icon: '🪆',
-		rarity: 5,
-		category: 'RARE',
-		desc: '魂を宿した人形',
+		desc: '命を与えられた人形種族',
 		heritages: [
 			{
 				id: 'stuffed',
-				name: '綿詰め',
-				bonus: { vocab: 20, writing: 15 },
-				desc: '知識を詰め込む',
+				name: 'ぬいぐるみ型',
+				bonus: { type: 'exp_vocab', value: 0.1 },
+				desc: '語彙EXP+10%',
 			},
 			{
-				id: 'windup',
-				name: 'ゼンマイ',
-				bonus: { grammar: 15, speaking: 15, listening: 5 },
-				desc: '正確な反復練習',
-			},
-		],
-	},
-	{
-		id: 'shisk',
-		name: 'シスク',
-		icon: '🦔',
-		rarity: 5,
-		category: 'RARE',
-		desc: '知識を守護する隠者種族',
-		heritages: [
-			{
-				id: 'loremaster',
-				name: '伝承師',
-				bonus: { reading: 25, vocab: 15 },
-				desc: '究極の読書家',
+				id: 'carved',
+				name: '彫刻型',
+				bonus: { type: 'exp_writing', value: 0.08 },
+				desc: 'ライティングEXP+8%',
 			},
 			{
-				id: 'quillcoat',
-				name: '棘衣',
-				bonus: { writing: 25, grammar: 10 },
-				desc: '鋭い筆致',
+				id: 'stitched',
+				name: '縫製型',
+				bonus: { type: 'crit_exp', value: 0.06 },
+				desc: 'EXPクリティカル率+6%',
 			},
 		],
 	},
 	{
-		id: 'skeleton',
-		name: 'スケルトン',
-		icon: '💀',
-		rarity: 5,
-		category: 'RARE',
-		desc: '不死の学習者',
+		id: 'fetchling',
+		name: 'フェッチリング',
+		desc: '影界由来の半影種族',
 		heritages: [
 			{
-				id: 'fodder',
-				name: '量産',
-				bonus: { vocab: 15, grammar: 15, reading: 5 },
-				desc: '無限の反復耐性',
+				id: 'bright',
+				name: '光のフェッチリング',
+				bonus: { type: 'exp_reading', value: 0.1 },
+				desc: '読解EXP+10%',
 			},
 			{
-				id: 'sturdy',
-				name: '頑丈',
-				bonus: { writing: 20, speaking: 15 },
-				desc: '不眠の学習',
+				id: 'deep',
+				name: '深淵フェッチリング',
+				bonus: { type: 'night_bonus', value: 0.18 },
+				desc: '夜間EXP+18%',
+			},
+		],
+	},
+	{
+		id: 'lizardfolk',
+		name: 'リザードフォーク',
+		desc: '冷静沈着な爬虫類種族',
+		heritages: [
+			{
+				id: 'frilled',
+				name: 'フリルリザード',
+				bonus: { type: 'exp_grammar', value: 0.08 },
+				desc: '文法EXP+8%',
+			},
+			{
+				id: 'sandstrider',
+				name: '砂漠リザード',
+				bonus: { type: 'streak_bonus', value: 0.12 },
+				desc: '連続ボーナス+12%',
+			},
+			{
+				id: 'unseen',
+				name: '隠密リザード',
+				bonus: { type: 'exp_listening', value: 0.08 },
+				desc: 'リスニングEXP+8%',
+			},
+		],
+	},
+	{
+		id: 'ratfolk',
+		name: 'ラットフォーク',
+		desc: '社交的で知恵のあるネズミ種族',
+		heritages: [
+			{
+				id: 'longsnout',
+				name: '長鼻ラットフォーク',
+				bonus: { type: 'exp_vocab', value: 0.12 },
+				desc: '語彙EXP+12%',
+			},
+			{
+				id: 'sewer',
+				name: '下水ラットフォーク',
+				bonus: { type: 'gold_bonus', value: 0.12 },
+				desc: 'ゴールド+12%',
+			},
+		],
+	},
+	{
+		id: 'hobgoblin',
+		name: 'ホブゴブリン',
+		desc: '規律と戦術の種族',
+		heritages: [
+			{
+				id: 'elfbane',
+				name: 'エルフベイン',
+				bonus: { type: 'exp_all', value: 0.04 },
+				desc: '全EXP+4%',
+			},
+			{
+				id: 'warmarch',
+				name: '戦軍ホブゴブリン',
+				bonus: { type: 'quest_speed', value: 0.1 },
+				desc: 'クエスト完了速度+10%',
+			},
+		],
+	},
+	{
+		id: 'shoony',
+		name: 'ショーニー',
+		desc: '犬のような温厚な小型種族',
+		heritages: [
+			{
+				id: 'paddler',
+				name: '水掻きショーニー',
+				bonus: { type: 'exp_listening', value: 0.1 },
+				desc: 'リスニングEXP+10%',
+			},
+			{
+				id: 'thickcoat',
+				name: '厚毛ショーニー',
+				bonus: { type: 'exp_reading', value: 0.08 },
+				desc: '読解EXP+8%',
+			},
+		],
+	},
+	{
+		id: 'grippli',
+		name: 'グリプリ',
+		desc: '樹上に住むカエル種族',
+		heritages: [
+			{
+				id: 'poisonhide',
+				name: '毒肌グリプリ',
+				bonus: { type: 'boss_exp', value: 0.15 },
+				desc: 'ボス報酬EXP+15%',
+			},
+			{
+				id: 'windweb',
+				name: '風膜グリプリ',
+				bonus: { type: 'exp_speaking', value: 0.1 },
+				desc: 'スピーキングEXP+10%',
+			},
+		],
+	},
+	{
+		id: 'azarketi',
+		name: 'アザルケティ',
+		desc: '海中適応した水棲種族',
+		heritages: [
+			{
+				id: 'ancient',
+				name: '古代アザルケティ',
+				bonus: { type: 'exp_grammar', value: 0.1 },
+				desc: '文法EXP+10%',
+			},
+			{
+				id: 'thalassic',
+				name: '深海アザルケティ',
+				bonus: { type: 'exp_vocab', value: 0.08 },
+				desc: '語彙EXP+8%',
+			},
+			{
+				id: 'benthic',
+				name: '底棲アザルケティ',
+				bonus: { type: 'night_bonus', value: 0.12 },
+				desc: '夜間EXP+12%',
+			},
+		],
+	},
+	{
+		id: 'strix',
+		name: 'ストリックス',
+		desc: '翼を持つ空の民',
+		heritages: [
+			{
+				id: 'nightglider',
+				name: '夜翔ストリックス',
+				bonus: { type: 'night_bonus', value: 0.2 },
+				desc: '夜間EXP+20%',
+			},
+			{
+				id: 'predator',
+				name: '猛禽ストリックス',
+				bonus: { type: 'crit_exp', value: 0.1 },
+				desc: 'EXPクリティカル率+10%',
+			},
+		],
+	},
+	{
+		id: 'anadi',
+		name: 'アナディ',
+		desc: '蜘蛛に変化できる知的種族',
+		heritages: [
+			{
+				id: 'adaptive',
+				name: '適応アナディ',
+				bonus: { type: 'exp_all', value: 0.05 },
+				desc: '全EXP+5%',
+			},
+			{
+				id: 'venomous',
+				name: '毒牙アナディ',
+				bonus: { type: 'boss_exp', value: 0.18 },
+				desc: 'ボス報酬EXP+18%',
+			},
+		],
+	},
+	{
+		id: 'conrasu',
+		name: 'コンラス',
+		desc: '宇宙エネルギーの結晶種族',
+		heritages: [
+			{
+				id: 'rite',
+				name: '儀式コンラス',
+				bonus: { type: 'exp_writing', value: 0.12 },
+				desc: 'ライティングEXP+12%',
+			},
+			{
+				id: 'sharded',
+				name: '破片コンラス',
+				bonus: { type: 'streak_bonus', value: 0.15 },
+				desc: '連続ボーナス+15%',
+			},
+		],
+	},
+	{
+		id: 'fleshwarp',
+		name: 'フレッシュワープ',
+		desc: '肉体改造を受けた変異種族',
+		heritages: [
+			{
+				id: 'created',
+				name: '人造フレッシュワープ',
+				bonus: { type: 'exp_all', value: 0.04 },
+				desc: '全EXP+4%',
+			},
+			{
+				id: 'mutated',
+				name: '突然変異体',
+				bonus: { type: 'crit_exp', value: 0.12 },
+				desc: 'EXPクリティカル率+12%',
+			},
+		],
+	},
+	{
+		id: 'kashrishi',
+		name: 'カシュリシ',
+		desc: '水晶角を持つサイ型種族',
+		heritages: [
+			{
+				id: 'athamasi',
+				name: 'アタマシ',
+				bonus: { type: 'exp_reading', value: 0.12 },
+				desc: '読解EXP+12%',
+			},
+			{
+				id: 'xyloshi',
+				name: 'キシロシ',
+				bonus: { type: 'exp_listening', value: 0.1 },
+				desc: 'リスニングEXP+10%',
+			},
+		],
+	},
+	{
+		id: 'nagaji',
+		name: 'ナガジ',
+		desc: '蛇神に創られた蛇人種族',
+		heritages: [
+			{
+				id: 'hooded',
+				name: 'フードナガジ',
+				bonus: { type: 'exp_speaking', value: 0.12 },
+				desc: 'スピーキングEXP+12%',
+			},
+			{
+				id: 'sacred',
+				name: '聖なるナガジ',
+				bonus: { type: 'exp_grammar', value: 0.1 },
+				desc: '文法EXP+10%',
+			},
+			{
+				id: 'venomshield',
+				name: '毒盾ナガジ',
+				bonus: { type: 'boss_exp', value: 0.15 },
+				desc: 'ボス報酬EXP+15%',
+			},
+		],
+	},
+	{
+		id: 'vanara',
+		name: 'ヴァナラ',
+		desc: '猿のような敏捷種族',
+		heritages: [
+			{
+				id: 'bandulur',
+				name: 'バンドゥル',
+				bonus: { type: 'exp_vocab', value: 0.1 },
+				desc: '語彙EXP+10%',
+			},
+			{
+				id: 'wajaghand',
+				name: 'ワジャガン',
+				bonus: { type: 'quest_speed', value: 0.12 },
+				desc: 'クエスト完了速度+12%',
+			},
+		],
+	},
+	{
+		id: 'vishkanya',
+		name: 'ヴィシュカニヤ',
+		desc: '毒を操る蛇目の種族',
+		heritages: [
+			{
+				id: 'elusive',
+				name: '幻惑ヴィシュカニヤ',
+				bonus: { type: 'gold_bonus', value: 0.15 },
+				desc: 'ゴールド+15%',
+			},
+			{
+				id: 'keen',
+				name: '鋭敏ヴィシュカニヤ',
+				bonus: { type: 'exp_listening', value: 0.12 },
+				desc: 'リスニングEXP+12%',
 			},
 		],
 	},
@@ -706,462 +650,445 @@ var ANCESTRIES = [
 
 var CLASSES = [
 	{
-		id: 'wizard',
-		name: 'ウィザード',
-		icon: '🧙',
-		desc: '文法の達人',
+		id: 'fighter',
+		name: 'ファイター',
+		desc: '前線の戦士',
 		subclasses: [
 			{
-				id: 'grammarian',
-				name: '文法魔導士',
-				bonus: { grammar: 30 },
-				desc: '構文解析のエキスパート',
+				id: 'champion',
+				name: 'チャンピオン',
+				bonus: { type: 'exp_all', value: 0.03 },
+				desc: '全EXP+3%',
 			},
 			{
-				id: 'etymologist',
-				name: '語源学者',
-				bonus: { vocab: 20, reading: 10 },
-				desc: '言葉のルーツを追求',
+				id: 'duelist',
+				name: 'デュエリスト',
+				bonus: { type: 'streak_bonus', value: 0.1 },
+				desc: '連続ボーナス+10%',
 			},
 		],
 	},
 	{
-		id: 'bard',
-		name: 'バード',
-		icon: '🎵',
-		desc: '聴覚と発話に秀でる',
+		id: 'wizard',
+		name: 'ウィザード',
+		desc: '知識と魔法の探究者',
 		subclasses: [
 			{
-				id: 'maestro',
-				name: 'マエストロ',
-				bonus: { listening: 25, speaking: 10 },
-				desc: '音の指揮者',
+				id: 'evoker',
+				name: '力術師',
+				bonus: { type: 'exp_grammar', value: 0.1 },
+				desc: '文法EXP+10%',
 			},
 			{
-				id: 'polyglot',
-				name: 'ポリグロット',
-				bonus: { speaking: 20, vocab: 15 },
-				desc: '多言語の語り部',
+				id: 'diviner',
+				name: '占術師',
+				bonus: { type: 'exp_reading', value: 0.1 },
+				desc: '読解EXP+10%',
 			},
 		],
 	},
 	{
 		id: 'rogue',
 		name: 'ローグ',
-		icon: '🗡️',
-		desc: '実践的スキル習得者',
+		desc: '隠密と技巧の達人',
 		subclasses: [
 			{
 				id: 'thief',
 				name: 'シーフ',
-				bonus: { vocab: 25, listening: 10 },
-				desc: '言葉を盗む才能',
+				bonus: { type: 'gold_bonus', value: 0.15 },
+				desc: 'ゴールド+15%',
 			},
 			{
 				id: 'mastermind',
 				name: 'マスターマインド',
-				bonus: { grammar: 15, reading: 15, writing: 5 },
-				desc: '戦略的学習者',
+				bonus: { type: 'exp_vocab', value: 0.1 },
+				desc: '語彙EXP+10%',
 			},
 		],
 	},
 	{
 		id: 'cleric',
 		name: 'クレリック',
-		icon: '⛪',
-		desc: '読解と精神力の守護者',
+		desc: '信仰と癒しの司祭',
 		subclasses: [
 			{
 				id: 'warpriest',
-				name: '戦神官',
-				bonus: { reading: 20, speaking: 15 },
-				desc: '声高き朗読者',
+				name: '戦司祭',
+				bonus: { type: 'exp_all', value: 0.04 },
+				desc: '全EXP+4%',
 			},
 			{
-				id: 'cloister',
-				name: '隠修士',
-				bonus: { reading: 25, writing: 10 },
-				desc: '静寂の中の精読',
-			},
-		],
-	},
-	{
-		id: 'fighter',
-		name: 'ファイター',
-		icon: '⚔️',
-		desc: '反復練習の鬼',
-		subclasses: [
-			{
-				id: 'drillmaster',
-				name: '教練士',
-				bonus: { vocab: 20, grammar: 15 },
-				desc: '反復暗記の達人',
-			},
-			{
-				id: 'shield',
-				name: '盾衛',
-				bonus: { listening: 15, speaking: 15, reading: 5 },
-				desc: '防御的学習',
+				id: 'cloistered',
+				name: '修道院司祭',
+				bonus: { type: 'exp_writing', value: 0.1 },
+				desc: 'ライティングEXP+10%',
 			},
 		],
 	},
 	{
 		id: 'ranger',
 		name: 'レンジャー',
-		icon: '🏹',
-		desc: '独学と探索の達人',
+		desc: '自然と追跡の達人',
 		subclasses: [
 			{
 				id: 'hunter',
 				name: 'ハンター',
-				bonus: { listening: 25, vocab: 10 },
-				desc: '言葉を狩る者',
+				bonus: { type: 'quest_speed', value: 0.12 },
+				desc: 'クエスト完了速度+12%',
 			},
 			{
-				id: 'guide',
-				name: 'ガイド',
-				bonus: { speaking: 20, reading: 10, writing: 5 },
-				desc: '言語の道案内',
+				id: 'warden',
+				name: 'ウォーデン',
+				bonus: { type: 'exp_listening', value: 0.1 },
+				desc: 'リスニングEXP+10%',
+			},
+		],
+	},
+	{
+		id: 'bard',
+		name: 'バード',
+		desc: '歌と物語の魔法使い',
+		subclasses: [
+			{
+				id: 'maestro',
+				name: 'マエストロ',
+				bonus: { type: 'exp_speaking', value: 0.12 },
+				desc: 'スピーキングEXP+12%',
+			},
+			{
+				id: 'polymath',
+				name: 'ポリマス',
+				bonus: { type: 'exp_all', value: 0.05 },
+				desc: '全EXP+5%',
 			},
 		],
 	},
 	{
 		id: 'monk',
 		name: 'モンク',
-		icon: '🥋',
-		desc: '規律ある反復修行者',
+		desc: '肉体と精神の鍛錬者',
 		subclasses: [
 			{
-				id: 'stance',
-				name: '構え師',
-				bonus: { grammar: 20, writing: 15 },
-				desc: '形式の追求',
+				id: 'sensei',
+				name: '先生',
+				bonus: { type: 'exp_grammar', value: 0.08 },
+				desc: '文法EXP+8%',
 			},
 			{
-				id: 'meditation',
-				name: '瞑想師',
-				bonus: { listening: 20, reading: 15 },
-				desc: '深い理解',
+				id: 'student',
+				name: '修行者',
+				bonus: { type: 'streak_bonus', value: 0.12 },
+				desc: '連続ボーナス+12%',
 			},
 		],
 	},
 	{
 		id: 'druid',
 		name: 'ドルイド',
-		icon: '🌿',
-		desc: '自然言語との対話者',
+		desc: '大自然の守護者',
 		subclasses: [
 			{
 				id: 'storm',
-				name: '嵐',
-				bonus: { listening: 25, speaking: 10 },
-				desc: '自然音声学習',
+				name: '嵐のドルイド',
+				bonus: { type: 'exp_listening', value: 0.12 },
+				desc: 'リスニングEXP+12%',
 			},
 			{
 				id: 'wild',
-				name: '野性',
-				bonus: { vocab: 20, grammar: 10, listening: 5 },
-				desc: '直感的言語習得',
+				name: '野生ドルイド',
+				bonus: { type: 'night_bonus', value: 0.15 },
+				desc: '夜間EXP+15%',
 			},
 		],
 	},
 	{
 		id: 'sorcerer',
 		name: 'ソーサラー',
-		icon: '🔥',
-		desc: '直感と天賦の才',
+		desc: '生まれながらの魔力の持ち主',
 		subclasses: [
 			{
 				id: 'imperial',
-				name: '帝血',
-				bonus: { speaking: 25, grammar: 10 },
-				desc: '支配的な弁舌',
+				name: '帝国血統',
+				bonus: { type: 'exp_grammar', value: 0.12 },
+				desc: '文法EXP+12%',
 			},
 			{
-				id: 'fey',
-				name: '妖精血',
-				bonus: { listening: 20, vocab: 15 },
-				desc: '直感的語彙習得',
-			},
-		],
-	},
-	{
-		id: 'alchemist',
-		name: 'アルケミスト',
-		icon: '⚗️',
-		desc: '学習法の研究者',
-		subclasses: [
-			{
-				id: 'bomber',
-				name: '爆弾師',
-				bonus: { vocab: 25, writing: 10 },
-				desc: '爆発的暗記',
-			},
-			{
-				id: 'chirurgeon',
-				name: '外科師',
-				bonus: { reading: 20, grammar: 15 },
-				desc: '精密な読解',
+				id: 'aberrant',
+				name: '異常血統',
+				bonus: { type: 'crit_exp', value: 0.1 },
+				desc: 'EXPクリティカル率+10%',
 			},
 		],
 	},
 	{
 		id: 'barbarian',
 		name: 'バーバリアン',
-		icon: '🪓',
-		desc: 'パッションで学ぶ',
+		desc: '怒りの力を操る戦士',
 		subclasses: [
 			{
 				id: 'fury',
-				name: '激怒',
-				bonus: { speaking: 30 },
-				desc: '情熱的な会話力',
+				name: '激怒の狂戦士',
+				bonus: { type: 'boss_exp', value: 0.2 },
+				desc: 'ボス報酬EXP+20%',
 			},
 			{
-				id: 'giant',
-				name: '巨人の血',
-				bonus: { vocab: 20, listening: 15 },
-				desc: '豪快な語彙力',
+				id: 'spirit',
+				name: '霊魂の狂戦士',
+				bonus: { type: 'exp_vocab', value: 0.08 },
+				desc: '語彙EXP+8%',
+			},
+		],
+	},
+	{
+		id: 'alchemist',
+		name: 'アルケミスト',
+		desc: '薬品と変成の達人',
+		subclasses: [
+			{
+				id: 'bomber',
+				name: 'ボマー',
+				bonus: { type: 'exp_all', value: 0.04 },
+				desc: '全EXP+4%',
+			},
+			{
+				id: 'chirurgeon',
+				name: '外科医',
+				bonus: { type: 'exp_reading', value: 0.1 },
+				desc: '読解EXP+10%',
 			},
 		],
 	},
 	{
 		id: 'champion',
 		name: 'チャンピオン',
-		icon: '🛡️',
-		desc: '正道の学習者',
+		desc: '神の意志を体現する聖騎士',
 		subclasses: [
 			{
 				id: 'paladin',
 				name: 'パラディン',
-				bonus: { grammar: 20, speaking: 15 },
-				desc: '正しい言葉遣い',
+				bonus: { type: 'exp_all', value: 0.05 },
+				desc: '全EXP+5%',
 			},
 			{
-				id: 'liberator',
-				name: '解放者',
-				bonus: { reading: 15, writing: 15, vocab: 5 },
-				desc: '自由な表現',
-			},
-		],
-	},
-	{
-		id: 'witch',
-		name: 'ウィッチ',
-		icon: '🧹',
-		desc: '秘術と暗記の専門家',
-		subclasses: [
-			{
-				id: 'hex',
-				name: '呪術師',
-				bonus: { vocab: 20, grammar: 15 },
-				desc: '呪文詠唱記憶',
-			},
-			{
-				id: 'ley',
-				name: '地脈使い',
-				bonus: { reading: 20, listening: 15 },
-				desc: '地脈の知識',
-			},
-		],
-	},
-	{
-		id: 'oracle',
-		name: 'オラクル',
-		icon: '🔮',
-		desc: '予知と言語直感',
-		subclasses: [
-			{
-				id: 'flames',
-				name: '炎の神託',
-				bonus: { speaking: 20, writing: 15 },
-				desc: '熱き予言',
-			},
-			{
-				id: 'lore',
-				name: '伝承の神託',
-				bonus: { reading: 25, vocab: 10 },
-				desc: '知識の神託',
+				id: 'redeemer',
+				name: 'リディーマー',
+				bonus: { type: 'exp_speaking', value: 0.1 },
+				desc: 'スピーキングEXP+10%',
 			},
 		],
 	},
 	{
 		id: 'investigator',
 		name: 'インベスティゲーター',
-		icon: '🔍',
-		desc: '分析的な学習者',
+		desc: '推理と分析の専門家',
 		subclasses: [
 			{
 				id: 'forensic',
-				name: '法医学',
-				bonus: { reading: 20, grammar: 15 },
-				desc: '証拠から学ぶ',
+				name: '法医学者',
+				bonus: { type: 'exp_reading', value: 0.12 },
+				desc: '読解EXP+12%',
 			},
 			{
-				id: 'empiricism',
-				name: '経験主義',
-				bonus: { listening: 20, vocab: 15 },
-				desc: '実践的検証',
+				id: 'empiricist',
+				name: '経験主義者',
+				bonus: { type: 'exp_vocab', value: 0.1 },
+				desc: '語彙EXP+10%',
+			},
+		],
+	},
+	{
+		id: 'oracle',
+		name: 'オラクル',
+		desc: '謎めいた啓示を受ける預言者',
+		subclasses: [
+			{
+				id: 'flames',
+				name: '炎の神秘',
+				bonus: { type: 'crit_exp', value: 0.12 },
+				desc: 'EXPクリティカル率+12%',
+			},
+			{
+				id: 'lore',
+				name: '知識の神秘',
+				bonus: { type: 'exp_grammar', value: 0.1 },
+				desc: '文法EXP+10%',
 			},
 		],
 	},
 	{
 		id: 'swashbuckler',
 		name: 'スワッシュバックラー',
-		icon: '🤺',
-		desc: '華麗な話術の使い手',
+		desc: '華麗な剣技の使い手',
 		subclasses: [
 			{
-				id: 'braggart',
-				name: '自慢屋',
-				bonus: { speaking: 25, vocab: 10 },
-				desc: '堂々たる弁舌',
+				id: 'battledancer',
+				name: 'バトルダンサー',
+				bonus: { type: 'exp_speaking', value: 0.1 },
+				desc: 'スピーキングEXP+10%',
 			},
 			{
-				id: 'fencer',
-				name: '剣士',
-				bonus: { grammar: 20, writing: 15 },
-				desc: '鋭い言葉の剣',
+				id: 'wit',
+				name: 'ウィット',
+				bonus: { type: 'gold_bonus', value: 0.12 },
+				desc: 'ゴールド+12%',
+			},
+		],
+	},
+	{
+		id: 'witch',
+		name: 'ウィッチ',
+		desc: '使い魔と契約した魔女',
+		subclasses: [
+			{
+				id: 'night',
+				name: '夜のウィッチ',
+				bonus: { type: 'night_bonus', value: 0.2 },
+				desc: '夜間EXP+20%',
+			},
+			{
+				id: 'wild',
+				name: '野生のウィッチ',
+				bonus: { type: 'exp_writing', value: 0.1 },
+				desc: 'ライティングEXP+10%',
 			},
 		],
 	},
 	{
 		id: 'magus',
 		name: 'メイガス',
-		icon: '⚡',
-		desc: '理論と実践の融合',
+		desc: '剣と魔法を融合させる戦士',
 		subclasses: [
-			{
-				id: 'sparkling',
-				name: '閃光',
-				bonus: { grammar: 20, speaking: 15 },
-				desc: '即興文法運用',
-			},
 			{
 				id: 'starlit',
-				name: '星光',
-				bonus: { reading: 20, writing: 15 },
-				desc: '読み書きの融合',
-			},
-		],
-	},
-	{
-		id: 'summoner',
-		name: 'サモナー',
-		icon: '👻',
-		desc: '分身で多角的に学ぶ',
-		subclasses: [
-			{
-				id: 'beast',
-				name: 'ビースト',
-				bonus: { listening: 20, speaking: 15 },
-				desc: '本能的聞き取り',
+				name: '星光のメイガス',
+				bonus: { type: 'exp_all', value: 0.04 },
+				desc: '全EXP+4%',
 			},
 			{
-				id: 'construct',
-				name: 'コンストラクト',
-				bonus: { grammar: 25, reading: 10 },
-				desc: '構造的理解',
+				id: 'sparkling',
+				name: '閃光のメイガス',
+				bonus: { type: 'streak_bonus', value: 0.12 },
+				desc: '連続ボーナス+12%',
 			},
 		],
 	},
 	{
 		id: 'gunslinger',
 		name: 'ガンスリンガー',
-		icon: '🔫',
-		desc: '速射暗記の名手',
+		desc: '銃器の達人',
 		subclasses: [
 			{
 				id: 'sniper',
 				name: 'スナイパー',
-				bonus: { vocab: 25, reading: 10 },
-				desc: '精密な単語射撃',
+				bonus: { type: 'crit_exp', value: 0.12 },
+				desc: 'EXPクリティカル率+12%',
 			},
 			{
 				id: 'drifter',
 				name: 'ドリフター',
-				bonus: { listening: 15, speaking: 15, writing: 5 },
-				desc: '流浪の会話術',
+				bonus: { type: 'quest_speed', value: 0.1 },
+				desc: 'クエスト完了速度+10%',
 			},
 		],
 	},
 	{
 		id: 'inventor',
 		name: 'インベンター',
-		icon: '🔧',
-		desc: '学習ツール発明家',
+		desc: '革新的な発明家',
 		subclasses: [
 			{
 				id: 'armor',
-				name: '装甲型',
-				bonus: { grammar: 20, writing: 15 },
-				desc: '堅牢な文法基盤',
+				name: 'アーマー型',
+				bonus: { type: 'exp_writing', value: 0.12 },
+				desc: 'ライティングEXP+12%',
 			},
 			{
 				id: 'weapon',
-				name: '武器型',
-				bonus: { vocab: 25, speaking: 10 },
-				desc: '切れ味鋭い語彙',
+				name: 'ウェポン型',
+				bonus: { type: 'boss_exp', value: 0.15 },
+				desc: 'ボス報酬EXP+15%',
 			},
 		],
 	},
 	{
-		id: 'thaumaturge',
-		name: 'ソーマターグ',
-		icon: '📿',
-		desc: '万物の知識を操る',
+		id: 'summoner',
+		name: 'サモナー',
+		desc: '幻獣を召喚する契約者',
 		subclasses: [
 			{
-				id: 'tome',
-				name: '聖典',
-				bonus: { reading: 25, grammar: 10 },
-				desc: '書物の理解者',
+				id: 'angel',
+				name: '天使の召喚師',
+				bonus: { type: 'exp_all', value: 0.05 },
+				desc: '全EXP+5%',
 			},
 			{
-				id: 'amulet',
-				name: '護符',
-				bonus: { vocab: 20, listening: 15 },
-				desc: '記憶のお守り',
+				id: 'dragon',
+				name: '竜の召喚師',
+				bonus: { type: 'boss_exp', value: 0.2 },
+				desc: 'ボス報酬EXP+20%',
 			},
 		],
 	},
 	{
 		id: 'psychic',
 		name: 'サイキック',
-		icon: '🧠',
-		desc: '精神力で言語を操る',
+		desc: '精神の力を操る超能力者',
 		subclasses: [
 			{
 				id: 'tangible',
-				name: '有形思念',
-				bonus: { writing: 25, grammar: 10 },
-				desc: '思考を文字に',
+				name: '触覚型',
+				bonus: { type: 'exp_vocab', value: 0.12 },
+				desc: '語彙EXP+12%',
 			},
 			{
 				id: 'oscillating',
-				name: '波動',
-				bonus: { listening: 25, speaking: 10 },
-				desc: '言語波の受信',
+				name: '振動型',
+				bonus: { type: 'exp_listening', value: 0.12 },
+				desc: 'リスニングEXP+12%',
+			},
+		],
+	},
+	{
+		id: 'thaumaturge',
+		name: 'ソーマターグ',
+		desc: '象徴と奇跡の使い手',
+		subclasses: [
+			{
+				id: 'tome',
+				name: '書のソーマターグ',
+				bonus: { type: 'exp_reading', value: 0.12 },
+				desc: '読解EXP+12%',
+			},
+			{
+				id: 'chalice',
+				name: '杯のソーマターグ',
+				bonus: { type: 'gold_bonus', value: 0.15 },
+				desc: 'ゴールド+15%',
 			},
 		],
 	},
 	{
 		id: 'kineticist',
 		name: 'キネティシスト',
-		icon: '🌊',
-		desc: '元素力で学習を加速',
+		desc: '元素の力を操る術者',
 		subclasses: [
 			{
 				id: 'fire',
-				name: '炎素',
-				bonus: { speaking: 20, writing: 15 },
-				desc: '燃える表現力',
+				name: '炎の操者',
+				bonus: { type: 'crit_exp', value: 0.1 },
+				desc: 'EXPクリティカル率+10%',
 			},
 			{
 				id: 'water',
-				name: '水素',
-				bonus: { listening: 20, reading: 15 },
-				desc: '流れるように理解',
+				name: '水の操者',
+				bonus: { type: 'exp_grammar', value: 0.1 },
+				desc: '文法EXP+10%',
+			},
+			{
+				id: 'earth',
+				name: '地の操者',
+				bonus: { type: 'exp_all', value: 0.04 },
+				desc: '全EXP+4%',
 			},
 		],
 	},
@@ -1170,411 +1097,370 @@ var CLASSES = [
 var SPHERE_NODES = [
 	{
 		id: 'hub',
-		zone: 'center',
-		x: 400,
-		y: 300,
-		label: '出発点',
+		zone: 'core',
+		x: 370,
+		y: 250,
+		label: 'START',
 		type: 'hub',
-		rarity: 1,
-		icon: '🌟',
+		rarity: 3,
 		prereq: [],
-		reward: { exp: 0 },
-		desc: '冒険の始まり',
+		reward: { type: 'unlock', value: 'all' },
+		desc: 'The heart of your journey. All paths begin here.',
 	},
 	{
 		id: 'v1',
 		zone: 'vocab',
-		x: 250,
-		y: 150,
-		label: '基礎単語50',
+		x: 200,
+		y: 120,
+		label: 'VOC I',
 		type: 'skill',
 		rarity: 1,
-		icon: '📝',
 		prereq: ['hub'],
-		reward: { exp: 20, vocab: 5 },
-		desc: '最初の50語',
+		reward: { type: 'exp', value: 10, cat: 'vocab' },
+		desc: 'Basic vocabulary fundamentals.',
 	},
 	{
 		id: 'v2',
 		zone: 'vocab',
-		x: 180,
-		y: 100,
-		label: '日常単語100',
+		x: 100,
+		y: 80,
+		label: 'VOC II',
 		type: 'skill',
 		rarity: 2,
-		icon: '📖',
 		prereq: ['v1'],
-		reward: { exp: 40, vocab: 10 },
-		desc: '日常会話の基本語彙',
+		reward: { type: 'exp', value: 20, cat: 'vocab' },
+		desc: 'Intermediate word mastery.',
 	},
 	{
 		id: 'v3',
 		zone: 'vocab',
-		x: 120,
-		y: 60,
-		label: '単語マスター',
+		x: 50,
+		y: 170,
+		label: 'VOC III',
 		type: 'skill',
 		rarity: 3,
-		icon: '🏆',
 		prereq: ['v2'],
-		reward: { exp: 80, vocab: 20 },
-		desc: '語彙力の飛躍',
+		reward: { type: 'exp', value: 30, cat: 'vocab' },
+		desc: 'Advanced lexical knowledge.',
 	},
 	{
 		id: 'v_boss',
 		zone: 'vocab',
-		x: 60,
-		y: 30,
-		label: '語彙の番人',
+		x: 50,
+		y: 60,
+		label: 'BOSS',
 		type: 'boss',
-		rarity: 4,
-		icon: '🐉',
+		rarity: 5,
 		prereq: ['v3'],
-		reward: { exp: 200, vocab: 30, gold: 100 },
-		desc: 'BOSS: 語彙テスト',
+		reward: { type: 'exp', value: 100, cat: 'vocab' },
+		desc: 'Vocabulary Domain Guardian. Defeat to prove your mastery.',
 	},
 	{
 		id: 'v_chest',
 		zone: 'vocab',
-		x: 200,
-		y: 50,
-		label: '宝箱: レア単語集',
+		x: 150,
+		y: 180,
+		label: 'LOOT',
 		type: 'chest',
-		rarity: 3,
-		icon: '🎁',
+		rarity: 4,
 		prereq: ['v2'],
-		reward: { exp: 50, gold: 50 },
-		desc: '珍しい単語を入手',
+		reward: { type: 'gold', value: 50 },
+		desc: 'A treasure chest of rare word cards.',
 	},
 	{
 		id: 'g1',
 		zone: 'grammar',
-		x: 550,
-		y: 150,
-		label: '基礎文法',
+		x: 540,
+		y: 120,
+		label: 'GRM I',
 		type: 'skill',
 		rarity: 1,
-		icon: '📐',
 		prereq: ['hub'],
-		reward: { exp: 20, grammar: 5 },
-		desc: '品詞と語順の基本',
+		reward: { type: 'exp', value: 10, cat: 'grammar' },
+		desc: 'Essential grammar structures.',
 	},
 	{
 		id: 'g2',
 		zone: 'grammar',
-		x: 620,
-		y: 100,
-		label: '時制マスター',
+		x: 640,
+		y: 80,
+		label: 'GRM II',
 		type: 'skill',
 		rarity: 2,
-		icon: '⏰',
 		prereq: ['g1'],
-		reward: { exp: 40, grammar: 10 },
-		desc: '過去・現在・未来',
+		reward: { type: 'exp', value: 20, cat: 'grammar' },
+		desc: 'Complex sentence patterns.',
 	},
 	{
 		id: 'g3',
 		zone: 'grammar',
-		x: 680,
-		y: 60,
-		label: '複文構造',
+		x: 700,
+		y: 170,
+		label: 'GRM III',
 		type: 'skill',
 		rarity: 3,
-		icon: '🔗',
 		prereq: ['g2'],
-		reward: { exp: 80, grammar: 20 },
-		desc: '従属節と複合文',
+		reward: { type: 'exp', value: 30, cat: 'grammar' },
+		desc: 'Master-level grammatical constructs.',
 	},
 	{
 		id: 'g_boss',
 		zone: 'grammar',
-		x: 740,
-		y: 30,
-		label: '文法の守護者',
+		x: 700,
+		y: 60,
+		label: 'BOSS',
 		type: 'boss',
-		rarity: 4,
-		icon: '🐉',
+		rarity: 5,
 		prereq: ['g3'],
-		reward: { exp: 200, grammar: 30, gold: 100 },
-		desc: 'BOSS: 文法総合テスト',
+		reward: { type: 'exp', value: 100, cat: 'grammar' },
+		desc: 'Grammar Domain Guardian. The final test of structure.',
 	},
 	{
 		id: 'g_event',
 		zone: 'grammar',
 		x: 600,
-		y: 50,
-		label: '文法チャレンジ',
+		y: 190,
+		label: 'TRIAL',
 		type: 'event',
-		rarity: 2,
-		icon: '⚡',
-		prereq: ['g1'],
-		reward: { exp: 60, grammar: 8 },
-		desc: 'ランダム文法イベント',
-	},
-	{
-		id: 'l1',
-		zone: 'listening',
-		x: 250,
-		y: 400,
-		label: '聞き取り入門',
-		type: 'skill',
-		rarity: 1,
-		icon: '👂',
-		prereq: ['hub'],
-		reward: { exp: 20, listening: 5 },
-		desc: 'ゆっくり音声に慣れる',
-	},
-	{
-		id: 'l2',
-		zone: 'listening',
-		x: 180,
-		y: 450,
-		label: '自然速度',
-		type: 'skill',
-		rarity: 2,
-		icon: '🎧',
-		prereq: ['l1'],
-		reward: { exp: 40, listening: 10 },
-		desc: 'ネイティブスピード',
-	},
-	{
-		id: 'l3',
-		zone: 'listening',
-		x: 120,
-		y: 500,
-		label: '多方言理解',
-		type: 'skill',
-		rarity: 3,
-		icon: '🌍',
-		prereq: ['l2'],
-		reward: { exp: 80, listening: 20 },
-		desc: '様々なアクセント',
-	},
-	{
-		id: 'l_boss',
-		zone: 'listening',
-		x: 60,
-		y: 540,
-		label: '聴覚の試練',
-		type: 'boss',
 		rarity: 4,
-		icon: '🐉',
-		prereq: ['l3'],
-		reward: { exp: 200, listening: 30, gold: 100 },
-		desc: 'BOSS: リスニング試験',
+		prereq: ['g2'],
+		reward: { type: 'exp', value: 40, cat: 'grammar' },
+		desc: 'A grammar trial. Complete the challenge for bonus EXP.',
 	},
 	{
 		id: 's1',
 		zone: 'speaking',
-		x: 550,
-		y: 400,
-		label: '発声練習',
+		x: 180,
+		y: 340,
+		label: 'SPK I',
 		type: 'skill',
 		rarity: 1,
-		icon: '🗣️',
 		prereq: ['hub'],
-		reward: { exp: 20, speaking: 5 },
-		desc: '基本の発声と発音',
+		reward: { type: 'exp', value: 10, cat: 'speaking' },
+		desc: 'Basic pronunciation and phrases.',
 	},
 	{
 		id: 's2',
 		zone: 'speaking',
-		x: 620,
-		y: 450,
-		label: '会話実践',
+		x: 80,
+		y: 380,
+		label: 'SPK II',
 		type: 'skill',
 		rarity: 2,
-		icon: '💬',
 		prereq: ['s1'],
-		reward: { exp: 40, speaking: 10 },
-		desc: '日常会話の練習',
+		reward: { type: 'exp', value: 20, cat: 'speaking' },
+		desc: 'Conversational fluency training.',
 	},
 	{
 		id: 's3',
 		zone: 'speaking',
-		x: 680,
-		y: 500,
-		label: 'プレゼン力',
+		x: 80,
+		y: 460,
+		label: 'SPK III',
 		type: 'skill',
 		rarity: 3,
-		icon: '🎤',
 		prereq: ['s2'],
-		reward: { exp: 80, speaking: 20 },
-		desc: 'スピーチ力',
+		reward: { type: 'exp', value: 30, cat: 'speaking' },
+		desc: 'Advanced oral expression.',
 	},
 	{
 		id: 's_boss',
 		zone: 'speaking',
-		x: 740,
-		y: 540,
-		label: '弁論の覇者',
+		x: 160,
+		y: 480,
+		label: 'BOSS',
 		type: 'boss',
-		rarity: 4,
-		icon: '🐉',
+		rarity: 5,
 		prereq: ['s3'],
-		reward: { exp: 200, speaking: 30, gold: 100 },
-		desc: 'BOSS: スピーキング試験',
+		reward: { type: 'exp', value: 100, cat: 'speaking' },
+		desc: 'Speaking Domain Guardian. Prove your voice.',
 	},
 	{
 		id: 's_chest',
 		zone: 'speaking',
-		x: 600,
-		y: 520,
-		label: '宝箱: 慣用句集',
+		x: 170,
+		y: 430,
+		label: 'LOOT',
 		type: 'chest',
-		rarity: 3,
-		icon: '🎁',
+		rarity: 4,
 		prereq: ['s2'],
-		reward: { exp: 50, gold: 50 },
-		desc: '実用的な慣用句',
+		reward: { type: 'gold', value: 50 },
+		desc: 'A cache of dialogue practice scrolls.',
+	},
+	{
+		id: 'l1',
+		zone: 'listening',
+		x: 540,
+		y: 340,
+		label: 'LSN I',
+		type: 'skill',
+		rarity: 1,
+		prereq: ['hub'],
+		reward: { type: 'exp', value: 10, cat: 'listening' },
+		desc: 'Listening comprehension basics.',
+	},
+	{
+		id: 'l2',
+		zone: 'listening',
+		x: 660,
+		y: 380,
+		label: 'LSN II',
+		type: 'skill',
+		rarity: 2,
+		prereq: ['l1'],
+		reward: { type: 'exp', value: 20, cat: 'listening' },
+		desc: 'Intermediate aural processing.',
+	},
+	{
+		id: 'l3',
+		zone: 'listening',
+		x: 660,
+		y: 460,
+		label: 'LSN III',
+		type: 'skill',
+		rarity: 3,
+		prereq: ['l2'],
+		reward: { type: 'exp', value: 30, cat: 'listening' },
+		desc: 'Advanced listening and dictation.',
+	},
+	{
+		id: 'l_boss',
+		zone: 'listening',
+		x: 580,
+		y: 480,
+		label: 'BOSS',
+		type: 'boss',
+		rarity: 5,
+		prereq: ['l3'],
+		reward: { type: 'exp', value: 100, cat: 'listening' },
+		desc: 'Listening Domain Guardian. The ultimate ear test.',
 	},
 	{
 		id: 'r1',
 		zone: 'reading',
-		x: 300,
-		y: 250,
-		label: '文字認識',
+		x: 280,
+		y: 50,
+		label: 'RDG I',
 		type: 'skill',
 		rarity: 1,
-		icon: '🔤',
 		prereq: ['hub'],
-		reward: { exp: 20, reading: 5 },
-		desc: '文字と記号を学ぶ',
+		reward: { type: 'exp', value: 10, cat: 'reading' },
+		desc: 'Reading fundamentals and decoding.',
 	},
 	{
 		id: 'r2',
 		zone: 'reading',
-		x: 230,
-		y: 280,
-		label: '短文読解',
+		x: 320,
+		y: 10,
+		label: 'RDG II',
 		type: 'skill',
 		rarity: 2,
-		icon: '📄',
 		prereq: ['r1'],
-		reward: { exp: 40, reading: 10 },
-		desc: '短い文章を読む',
+		reward: { type: 'exp', value: 25, cat: 'reading' },
+		desc: 'Passage analysis and inference.',
 	},
 	{
-		id: 'r3',
+		id: 'r_event',
 		zone: 'reading',
-		x: 160,
-		y: 310,
-		label: '長文読解',
-		type: 'skill',
+		x: 400,
+		y: 30,
+		label: 'TRIAL',
+		type: 'event',
 		rarity: 3,
-		icon: '📚',
-		prereq: ['r2'],
-		reward: { exp: 80, reading: 20 },
-		desc: 'まとまった文章の理解',
-	},
-	{
-		id: 'r_boss',
-		zone: 'reading',
-		x: 90,
-		y: 340,
-		label: '書物の守護竜',
-		type: 'boss',
-		rarity: 5,
-		icon: '🐉',
-		prereq: ['r3'],
-		reward: { exp: 250, reading: 35, gold: 150 },
-		desc: 'BOSS: 読解力の究極試練',
+		prereq: ['r1'],
+		reward: { type: 'exp', value: 30, cat: 'reading' },
+		desc: 'A reading comprehension trial.',
 	},
 	{
 		id: 'w1',
 		zone: 'writing',
-		x: 500,
-		y: 250,
-		label: '筆記入門',
+		x: 320,
+		y: 450,
+		label: 'WRT I',
 		type: 'skill',
 		rarity: 1,
-		icon: '✏️',
 		prereq: ['hub'],
-		reward: { exp: 20, writing: 5 },
-		desc: '基本的な筆記練習',
+		reward: { type: 'exp', value: 10, cat: 'writing' },
+		desc: 'Writing basics and character practice.',
 	},
 	{
 		id: 'w2',
 		zone: 'writing',
-		x: 570,
-		y: 280,
-		label: '短文作成',
+		x: 370,
+		y: 500,
+		label: 'WRT II',
 		type: 'skill',
 		rarity: 2,
-		icon: '📝',
 		prereq: ['w1'],
-		reward: { exp: 40, writing: 10 },
-		desc: '短い文章を書く',
-	},
-	{
-		id: 'w3',
-		zone: 'writing',
-		x: 640,
-		y: 310,
-		label: 'エッセイ',
-		type: 'skill',
-		rarity: 3,
-		icon: '📜',
-		prereq: ['w2'],
-		reward: { exp: 80, writing: 20 },
-		desc: '論理的な文章を書く',
-	},
-	{
-		id: 'w_boss',
-		zone: 'writing',
-		x: 710,
-		y: 340,
-		label: '文筆の大賢者',
-		type: 'boss',
-		rarity: 5,
-		icon: '🐉',
-		prereq: ['w3'],
-		reward: { exp: 250, writing: 35, gold: 150 },
-		desc: 'BOSS: 筆記力の究極試練',
+		reward: { type: 'exp', value: 25, cat: 'writing' },
+		desc: 'Structured composition skills.',
 	},
 	{
 		id: 'w_event',
 		zone: 'writing',
-		x: 560,
-		y: 330,
-		label: '創作イベント',
+		x: 440,
+		y: 480,
+		label: 'TRIAL',
 		type: 'event',
-		rarity: 2,
-		icon: '⚡',
+		rarity: 3,
 		prereq: ['w1'],
-		reward: { exp: 60, writing: 8 },
-		desc: 'ランダム創作チャレンジ',
+		reward: { type: 'exp', value: 30, cat: 'writing' },
+		desc: 'A writing challenge trial.',
+	},
+	{
+		id: 'w_chest',
+		zone: 'writing',
+		x: 260,
+		y: 490,
+		label: 'LOOT',
+		type: 'chest',
+		rarity: 4,
+		prereq: ['w2'],
+		reward: { type: 'gold', value: 60 },
+		desc: 'A chest of calligraphy and composition tools.',
+	},
+	{
+		id: 'final_boss',
+		zone: 'core',
+		x: 370,
+		y: 370,
+		label: 'FINAL',
+		type: 'boss',
+		rarity: 5,
+		prereq: ['v_boss', 'g_boss', 's_boss', 'l_boss'],
+		reward: { type: 'title', value: '伝説の言語マスター' },
+		desc: 'The Final Guardian. Only those who conquered all domains may challenge.',
 	},
 ];
 
 var JOB_SYNERGY = {
+	fighter: ['speaking', 'vocab'],
 	wizard: ['grammar', 'reading'],
-	bard: ['listening', 'speaking'],
 	rogue: ['vocab', 'listening'],
-	cleric: ['reading', 'writing'],
-	fighter: ['vocab', 'grammar'],
-	ranger: ['listening', 'vocab'],
-	monk: ['grammar', 'writing'],
-	druid: ['listening', 'reading'],
-	sorcerer: ['speaking', 'grammar'],
-	alchemist: ['vocab', 'writing'],
-	barbarian: ['speaking', 'vocab'],
-	champion: ['grammar', 'speaking'],
-	witch: ['vocab', 'grammar'],
-	oracle: ['speaking', 'reading'],
-	investigator: ['reading', 'grammar'],
+	cleric: ['writing', 'grammar'],
+	ranger: ['listening', 'speaking'],
+	bard: ['speaking', 'writing'],
+	monk: ['grammar', 'speaking'],
+	druid: ['listening', 'vocab'],
+	sorcerer: ['grammar', 'writing'],
+	barbarian: ['vocab', 'speaking'],
+	alchemist: ['reading', 'writing'],
+	champion: ['speaking', 'grammar'],
+	investigator: ['reading', 'vocab'],
+	oracle: ['grammar', 'listening'],
 	swashbuckler: ['speaking', 'vocab'],
-	magus: ['grammar', 'speaking'],
-	summoner: ['listening', 'speaking'],
-	gunslinger: ['vocab', 'reading'],
-	inventor: ['grammar', 'writing'],
-	thaumaturge: ['reading', 'vocab'],
-	psychic: ['writing', 'listening'],
-	kineticist: ['speaking', 'reading'],
+	witch: ['writing', 'listening'],
+	magus: ['grammar', 'vocab'],
+	gunslinger: ['listening', 'speaking'],
+	inventor: ['writing', 'reading'],
+	summoner: ['vocab', 'grammar'],
+	psychic: ['vocab', 'listening'],
+	thaumaturge: ['reading', 'writing'],
+	kineticist: ['grammar', 'speaking'],
 };
 
 console.log(
-	'✅ Data loaded:',
+	'✅ data.js loaded:',
 	ANCESTRIES.length,
 	'ancestries,',
 	CLASSES.length,
@@ -1582,1082 +1468,1193 @@ console.log(
 	SPHERE_NODES.length,
 	'nodes',
 );
-/* ==================== STATE ==================== */
+
+// ========== DEFAULT STATE ==========
+
 var DEFAULT_STATE = {
-	name: '冒険者',
-	ancestry: 'human',
-	heritage: 'versatile',
-	cls: 'wizard',
-	subclass: 'grammarian',
+	version: '1.0.0',
+	character: null,
 	level: 1,
 	exp: 0,
 	gold: 0,
-	hp: 100,
-	maxHp: 100,
 	skills: {
 		vocab: 0,
 		grammar: 0,
-		listening: 0,
 		speaking: 0,
+		listening: 0,
 		reading: 0,
 		writing: 0,
 	},
-	timer: { logs: [], todayTotal: 0, target: 30 },
-	calendar: {},
-	vocab: { words: [], nextId: 1 },
-	review: { queue: [], history: [] },
-	sphere: { unlocked: ['hub'], activated: ['hub'] },
-	settings: {},
+	sphereUnlocked: ['hub'],
+	quests: [],
+	dailyDate: null,
+	reviewDeck: [],
+	streak: 0,
+	lastStudy: null,
+	totalSessions: 0,
+	activityLog: [],
 };
+
 var state = {};
-function loadState() {
+
+// ========== UTILITY FUNCTIONS ==========
+
+function deepClone(obj) {
 	try {
-		var s = localStorage.getItem('linguaquest_state');
-		if (s) {
-			state = JSON.parse(s);
-			for (var k in DEFAULT_STATE)
-				if (!(k in state))
-					state[k] = JSON.parse(JSON.stringify(DEFAULT_STATE[k]));
-			if (!state.skills)
-				state.skills = {
-					vocab: 0,
-					grammar: 0,
-					listening: 0,
-					speaking: 0,
-					reading: 0,
-					writing: 0,
-				};
-			if (!state.sphere)
-				state.sphere = { unlocked: ['hub'], activated: ['hub'] };
-			if (!state.sphere.activated) state.sphere.activated = ['hub'];
-		} else state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+		return JSON.parse(JSON.stringify(obj));
 	} catch (e) {
-		state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-	}
-}
-function saveState() {
-	try {
-		localStorage.setItem('linguaquest_state', JSON.stringify(state));
-	} catch (e) {}
-}
-function resetState() {
-	if (confirm('本当にすべてのデータをリセットしますか？')) {
-		state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-		saveState();
-		location.reload();
+		console.error('deepClone error:', e);
+		return obj;
 	}
 }
 
-/* ==================== UTILITIES ==================== */
-function getAncestry(id) {
-	return ANCESTRIES.find(function (a) {
-		return a.id === (id || state.ancestry);
-	});
+function saveState() {
+	try {
+		localStorage.setItem('lq_state', JSON.stringify(state));
+	} catch (e) {
+		console.error('saveState error:', e);
+	}
 }
-function getHeritage(aId, hId) {
-	var a = getAncestry(aId);
-	return a
-		? a.heritages.find(function (h) {
-				return h.id === (hId || state.heritage);
-			})
-		: null;
+
+function loadState() {
+	try {
+		var saved = localStorage.getItem('lq_state');
+		if (saved) {
+			var parsed = JSON.parse(saved);
+			state = Object.assign(deepClone(DEFAULT_STATE), parsed);
+		} else {
+			state = deepClone(DEFAULT_STATE);
+		}
+	} catch (e) {
+		console.error('loadState error:', e);
+		state = deepClone(DEFAULT_STATE);
+	}
 }
-function getClass(id) {
-	return CLASSES.find(function (c) {
-		return c.id === (id || state.cls);
-	});
-}
-function getSubclass(cId, sId) {
-	var c = getClass(cId);
-	return c
-		? c.subclasses.find(function (s) {
-				return s.id === (sId || state.subclass);
-			})
-		: null;
-}
-function getTitle() {
-	var t = TITLES[0].title;
-	for (var i = 0; i < TITLES.length; i++)
-		if (state.level >= TITLES[i].lv) t = TITLES[i].title;
-	return t;
-}
-function calcBonuses() {
-	var b = {
-		vocab: 0,
-		grammar: 0,
-		listening: 0,
-		speaking: 0,
-		reading: 0,
-		writing: 0,
-	};
-	var h = getHeritage(state.ancestry, state.heritage);
-	var sc = getSubclass(state.cls, state.subclass);
-	if (h && h.bonus) for (var k in h.bonus) b[k] = (b[k] || 0) + h.bonus[k];
-	if (sc && sc.bonus) for (var k in sc.bonus) b[k] = (b[k] || 0) + sc.bonus[k];
-	return b;
-}
-function skillLabel(k) {
-	var m = {
-		vocab: '語彙',
-		grammar: '文法',
-		listening: '聴解',
-		speaking: '会話',
-		reading: '読解',
-		writing: '筆記',
-	};
-	return m[k] || k;
-}
-function todayKey(d) {
-	var x = d || new Date();
-	return (
-		x.getFullYear() +
-		'-' +
-		String(x.getMonth() + 1).padStart(2, '0') +
-		'-' +
-		String(x.getDate()).padStart(2, '0')
-	);
-}
+
 function isNightTime() {
 	var h = new Date().getHours();
-	return h >= 22 || h < 5;
+	return h >= 21 || h < 6;
 }
-function getStreak() {
-	var s = 0,
-		d = new Date();
-	for (var i = 0; i < 365; i++) {
-		var k = todayKey(d);
-		if (state.calendar[k] && state.calendar[k].studied) {
-			s++;
-			d.setDate(d.getDate() - 1);
-		} else if (i === 0) {
-			d.setDate(d.getDate() - 1);
-		} else break;
+
+function getTitleForLevel(lv) {
+	var t = '見習い冒険者';
+	for (var i = 0; i < TITLES.length; i++) {
+		if (lv >= TITLES[i].level) t = TITLES[i].title;
 	}
-	return s;
+	return t;
 }
-function getStreakBonus() {
-	var s = getStreak();
-	if (s >= 30) return 0.15;
-	if (s >= 14) return 0.1;
-	if (s >= 7) return 0.05;
-	return 0;
+
+function getBonus(type) {
+	var val = 0;
+	if (state.character) {
+		var anc = null;
+		var cls = null;
+		for (var i = 0; i < ANCESTRIES.length; i++) {
+			if (ANCESTRIES[i].id === state.character.ancestryId) {
+				anc = ANCESTRIES[i];
+				break;
+			}
+		}
+		for (var i = 0; i < CLASSES.length; i++) {
+			if (CLASSES[i].id === state.character.classId) {
+				cls = CLASSES[i];
+				break;
+			}
+		}
+		if (anc) {
+			for (var j = 0; j < anc.heritages.length; j++) {
+				if (
+					anc.heritages[j].id === state.character.heritageId &&
+					anc.heritages[j].bonus.type === type
+				) {
+					val += anc.heritages[j].bonus.value;
+				}
+			}
+		}
+		if (cls) {
+			for (var j = 0; j < cls.subclasses.length; j++) {
+				if (
+					cls.subclasses[j].id === state.character.subclassId &&
+					cls.subclasses[j].bonus.type === type
+				) {
+					val += cls.subclasses[j].bonus.value;
+				}
+			}
+		}
+	}
+	return val;
 }
-function logStudyToday(min) {
-	var k = todayKey();
-	if (!state.calendar[k]) state.calendar[k] = { studied: false, minutes: 0 };
-	state.calendar[k].studied = true;
-	state.calendar[k].minutes += min;
-	saveState();
-}
-function esc(s) {
-	if (!s) return '';
-	var d = document.createElement('div');
-	d.textContent = s;
-	return d.innerHTML;
-}
-function addExp(skill, amount) {
-	var bn = calcBonuses();
-	var bp = (bn[skill] || 0) / 100;
-	var nb = isNightTime() ? 0.1 : 0;
-	var sb = getStreakBonus();
-	var total = Math.floor(amount * (1 + bp + nb + sb));
-	if (skill && state.skills[skill] !== undefined) state.skills[skill] += total;
-	state.exp += total;
-	var needed = expForLevel(state.level);
-	while (state.exp >= needed && state.level < 99) {
-		state.exp -= needed;
+
+function addExp(amount, category) {
+	var catBonus = 0;
+	if (category) {
+		catBonus = getBonus('exp_' + category);
+	}
+	var allBonus = getBonus('exp_all');
+	var nightBonus = isNightTime() ? getBonus('night_bonus') : 0;
+	var streakBonus = state.streak >= 3 ? getBonus('streak_bonus') : 0;
+	var critBonus = 0;
+	var critRate = getBonus('crit_exp');
+	if (Math.random() < critRate) {
+		critBonus = 0.5;
+		showToast('クリティカルEXP! +50%', 'exp');
+	}
+	var totalMult =
+		1 + catBonus + allBonus + nightBonus + streakBonus + critBonus;
+	var finalExp = Math.floor(amount * totalMult);
+	state.exp += finalExp;
+	if (category && state.skills[category] !== undefined) {
+		state.skills[category] += finalExp;
+	}
+	while (state.exp >= expForLevel(state.level)) {
+		state.exp -= expForLevel(state.level);
 		state.level++;
-		needed = expForLevel(state.level);
-		state.maxHp = 100 + (state.level - 1) * 5;
-		state.hp = state.maxHp;
-		showToast('🎉 レベルアップ！ Lv.' + state.level, 'gold');
+		showToast(
+			'レベルアップ! Lv.' + state.level + ' - ' + getTitleForLevel(state.level),
+			'gold',
+		);
 	}
-	saveState();
 	updateHUD();
+	saveState();
+	return finalExp;
+}
+
+function addGold(amount) {
+	var bonus = getBonus('gold_bonus');
+	var total = Math.floor(amount * (1 + bonus));
+	state.gold += total;
+	updateHUD();
+	saveState();
 	return total;
 }
 
-/* ==================== TOAST / HUD ==================== */
-function showToast(msg, type) {
-	var c = document.querySelector('.toast-container');
-	if (!c) {
-		c = document.createElement('div');
-		c.className = 'toast-container';
-		document.body.appendChild(c);
-	}
-	var t = document.createElement('div');
-	t.className = 'toast' + (type ? ' ' + type : '');
-	t.textContent = msg;
-	c.appendChild(t);
-	setTimeout(function () {
-		t.remove();
-	}, 4000);
-}
-function updateHUD() {
-	var l = document.getElementById('header-level');
-	var g = document.getElementById('header-gold');
-	if (l) l.textContent = 'Lv.' + state.level;
-	if (g) g.textContent = '💰 ' + state.gold + ' G';
-}
-function updateClock() {
-	var el = document.getElementById('header-clock');
-	if (el)
-		el.textContent = new Date().toLocaleTimeString('ja-JP', {
-			hour: '2-digit',
-			minute: '2-digit',
-		});
-}
-function initParticles() {
-	var c = document.getElementById('particles');
-	if (!c) return;
-	for (var i = 0; i < 30; i++) {
-		var p = document.createElement('div');
-		p.className = 'particle';
-		p.style.left = Math.random() * 100 + '%';
-		p.style.animationDelay = Math.random() * 8 + 's';
-		p.style.animationDuration = 6 + Math.random() * 6 + 's';
-		c.appendChild(p);
-	}
-}
-
-/* ==================== NAV ==================== */
-var currentTab = 'home';
-function initNav() {
-	var btns = document.querySelectorAll('.nav-btn');
-	for (var i = 0; i < btns.length; i++) {
-		(function (b) {
-			b.addEventListener('click', function () {
-				if (b.dataset.tab) switchTab(b.dataset.tab);
-			});
-		})(btns[i]);
-	}
-}
-function switchTab(tab) {
-	currentTab = tab;
-	var btns = document.querySelectorAll('.nav-btn');
-	for (var i = 0; i < btns.length; i++)
-		btns[i].classList.toggle('active', btns[i].dataset.tab === tab);
-	var secs = document.querySelectorAll('.tab-content');
-	for (var i = 0; i < secs.length; i++)
-		secs[i].classList.toggle('active', secs[i].id === 'tab-' + tab);
-	var r = {
-		home: renderHome,
-		timer: renderTimer,
-		calendar: renderCalendar,
-		vocab: renderVocab,
-		review: renderReview,
-		character: renderCharacter,
-		sphere: renderSphere,
-		report: renderReport,
-	};
-	if (r[tab]) r[tab]();
-}
-
-/* ==================== HOME ==================== */
-function renderHome() {
-	var el = document.getElementById('tab-home');
-	if (!el) return;
-	var needed = expForLevel(state.level);
-	var pct = Math.min(100, Math.floor((state.exp / needed) * 100));
-	var streak = getStreak();
-	var bonuses = calcBonuses();
-	var anc = getAncestry();
-	var skillsHtml = '';
-	var keys = [
-		'vocab',
-		'grammar',
-		'listening',
-		'speaking',
-		'reading',
-		'writing',
-	];
-	for (var i = 0; i < keys.length; i++) {
-		var k = keys[i];
-		var v = state.skills[k] || 0;
-		var b = bonuses[k] || 0;
-		skillsHtml +=
-			'<div class="stat-row"><span class="stat-label">' +
-			skillLabel(k) +
-			(b > 0 ? ' <span class="badge rarity-2">+' + b + '%</span>' : '') +
-			'</span><span class="stat-value">' +
-			v +
-			'</span></div>';
-	}
-	var cal = state.calendar[todayKey()] || {};
-	el.innerHTML =
-		'<div class="card-grid"><div class="card"><h2>⚔️ 冒険者ステータス</h2><div class="char-portrait">' +
-		(anc ? anc.icon : '🧑') +
-		'</div><div class="char-name">' +
-		state.name +
-		'</div><div class="char-title">' +
-		getTitle() +
-		'</div><div class="stat-row"><span class="stat-label">レベル</span><span class="stat-value">Lv.' +
-		state.level +
-		'</span></div><div class="stat-row"><span class="stat-label">EXP</span><span class="stat-value">' +
-		state.exp +
-		' / ' +
-		needed +
-		'</span></div><div class="progress-bar"><div class="progress-fill" style="width:' +
-		pct +
-		'%"></div></div><div class="stat-row"><span class="stat-label">HP</span><span class="stat-value">' +
-		state.hp +
-		' / ' +
-		state.maxHp +
-		'</span></div><div class="stat-row"><span class="stat-label">ゴールド</span><span class="stat-value gold">💰 ' +
-		state.gold +
-		' G</span></div><div class="stat-row"><span class="stat-label">連続学習</span><span class="stat-value">' +
-		streak +
-		'日 🔥</span></div></div><div class="card"><h2>📊 スキル一覧</h2>' +
-		skillsHtml +
-		'</div><div class="card"><h2>🏠 クイックアクション</h2><p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:12px">今日も冒険を始めましょう！</p><div style="display:flex;flex-direction:column;gap:8px"><button class="btn-primary" onclick="switchTab(\'timer\')">⏱️ 学習タイマーを開始</button><button class="btn-secondary" onclick="switchTab(\'vocab\')">📖 単語帳を開く</button><button class="btn-secondary" onclick="switchTab(\'review\')">🔄 復習を始める</button><button class="btn-gold" onclick="document.getElementById(\'ai-tutor-toggle\').click()">🤖 AIチューターに質問</button></div></div><div class="card"><h2>📈 今日の学習</h2><div class="stat-row"><span class="stat-label">学習時間</span><span class="stat-value">' +
-		(cal.minutes || 0) +
-		'分</span></div><div class="stat-row"><span class="stat-label">登録単語数</span><span class="stat-value">' +
-		state.vocab.words.length +
-		'</span></div><div class="stat-row"><span class="stat-label">スフィア解放</span><span class="stat-value">' +
-		state.sphere.unlocked.length +
-		' / ' +
-		SPHERE_NODES.length +
-		'</span></div><div class="stat-row"><span class="stat-label">夜間ボーナス</span><span class="stat-value">' +
-		(isNightTime() ? '✅ +10%' : '—') +
-		'</span></div><div class="stat-row"><span class="stat-label">連続ボーナス</span><span class="stat-value">+' +
-		Math.floor(getStreakBonus() * 100) +
-		'%</span></div></div></div>';
-}
-
-/* ==================== TIMER ==================== */
-var timerInterval = null,
-	timerSeconds = 0,
-	timerRunning = false;
-function renderTimer() {
-	var el = document.getElementById('tab-timer');
-	if (!el) return;
-	el.innerHTML =
-		'<div class="card"><h2>⏱️ 学習タイマー</h2><div class="timer-display" id="timer-display">00:00:00</div><div class="timer-controls"><button class="btn-primary" onclick="startTimer()">▶ 開始</button><button class="btn-secondary" onclick="pauseTimer()">⏸ 一時停止</button><button class="btn-danger" onclick="stopTimer()">⏹ 終了＆記録</button></div><div class="form-group" style="margin-top:16px"><label>学習スキル:</label><select id="timer-skill"><option value="vocab">語彙</option><option value="grammar">文法</option><option value="listening">聴解</option><option value="speaking">会話</option><option value="reading">読解</option><option value="writing">筆記</option></select></div><div class="form-group"><label>目標 (分):</label><input type="number" id="timer-target" value="' +
-		state.timer.target +
-		'" min="1" max="480" onchange="state.timer.target=parseInt(this.value)||30;saveState()"></div></div><div class="card"><h2>📋 今日のログ</h2><div id="timer-logs">' +
-		renderTimerLogs() +
-		'</div></div>';
-	updateTimerDisplay();
-}
-function updateTimerDisplay() {
-	var el = document.getElementById('timer-display');
-	if (!el) return;
-	var h = Math.floor(timerSeconds / 3600);
-	var m = Math.floor((timerSeconds % 3600) / 60);
-	var s = timerSeconds % 60;
-	el.textContent =
-		String(h).padStart(2, '0') +
-		':' +
-		String(m).padStart(2, '0') +
-		':' +
-		String(s).padStart(2, '0');
-}
-function startTimer() {
-	if (timerRunning) return;
-	timerRunning = true;
-	timerInterval = setInterval(function () {
-		timerSeconds++;
-		updateTimerDisplay();
-	}, 1000);
-	showToast('⏱️ タイマー開始！', '');
-}
-function pauseTimer() {
-	if (!timerRunning) return;
-	timerRunning = false;
-	clearInterval(timerInterval);
-	showToast('⏸ 一時停止', '');
-}
-function stopTimer() {
-	if (timerSeconds < 10) {
-		showToast('⚠️ 10秒以上学習してから記録', 'danger');
-		return;
-	}
-	pauseTimer();
-	var min = Math.ceil(timerSeconds / 60);
-	var skill = (document.getElementById('timer-skill') || {}).value || 'vocab';
-	var expG = addExp(skill, min * 2);
-	var goldG = Math.floor(min / 5) * 10;
-	state.gold += goldG;
-	state.timer.logs.push({
-		time: new Date().toISOString(),
-		skill: skill,
-		minutes: min,
-		exp: expG,
-		gold: goldG,
-	});
-	logStudyToday(min);
+function logActivity(msg) {
+	state.activityLog.unshift({ time: Date.now(), msg: msg });
+	if (state.activityLog.length > 50) state.activityLog.length = 50;
 	saveState();
-	showToast('✅ ' + min + '分記録！ +' + expG + 'EXP +' + goldG + 'G', 'gold');
-	timerSeconds = 0;
-	updateTimerDisplay();
-	renderTimer();
-}
-function renderTimerLogs() {
-	var today = todayKey();
-	var logs = [];
-	for (var i = 0; i < state.timer.logs.length; i++) {
-		var l = state.timer.logs[i];
-		if (l.time && l.time.indexOf(today) === 0) logs.push(l);
-	}
-	if (!logs.length)
-		return '<p style="color:var(--text-dim);font-size:.85rem">まだ記録がありません</p>';
-	var html =
-		'<table class="styled-table"><thead><tr><th>時刻</th><th>スキル</th><th>時間</th><th>EXP</th><th>G</th></tr></thead><tbody>';
-	for (var i = 0; i < logs.length; i++) {
-		var l = logs[i];
-		html +=
-			'<tr><td>' +
-			new Date(l.time).toLocaleTimeString('ja-JP', {
-				hour: '2-digit',
-				minute: '2-digit',
-			}) +
-			'</td><td>' +
-			skillLabel(l.skill) +
-			'</td><td>' +
-			l.minutes +
-			'分</td><td>+' +
-			l.exp +
-			'</td><td>+' +
-			l.gold +
-			'</td></tr>';
-	}
-	return html + '</tbody></table>';
 }
 
-/* ==================== CALENDAR ==================== */
-function renderCalendar() {
-	var el = document.getElementById('tab-calendar');
+// ========== TOAST NOTIFICATION ==========
+
+function showToast(msg, type) {
+	var container = document.getElementById('toast-container');
+	if (!container) return;
+	var el = document.createElement('div');
+	el.className = 'toast' + (type ? ' ' + type : '');
+	el.textContent = msg;
+	container.appendChild(el);
+	setTimeout(function () {
+		if (el.parentNode) el.parentNode.removeChild(el);
+	}, 3500);
+}
+
+// ========== HUD ==========
+
+function updateHUD() {
+	var elLv = document.getElementById('hud-level');
+	var elExp = document.getElementById('hud-exp');
+	var elGold = document.getElementById('hud-gold');
+	if (elLv) elLv.textContent = 'Lv.' + state.level;
+	if (elExp)
+		elExp.textContent = 'EXP ' + state.exp + '/' + expForLevel(state.level);
+	if (elGold) elGold.textContent = 'Gold ' + state.gold;
+}
+
+function updateClock() {
+	var el = document.getElementById('hud-clock');
 	if (!el) return;
 	var now = new Date();
-	var yr = now.getFullYear();
-	var mo = now.getMonth();
-	var dim = new Date(yr, mo + 1, 0).getDate();
-	var fd = new Date(yr, mo, 1).getDay();
-	var streak = getStreak();
-	var hd = ['日', '月', '火', '水', '木', '金', '土'];
-	var g = '';
-	for (var i = 0; i < 7; i++)
-		g += '<div class="calendar-cell header">' + hd[i] + '</div>';
-	for (var i = 0; i < fd; i++) g += '<div class="calendar-cell"></div>';
-	for (var d = 1; d <= dim; d++) {
-		var k =
-			yr +
-			'-' +
-			String(mo + 1).padStart(2, '0') +
-			'-' +
-			String(d).padStart(2, '0');
-		var isT = d === now.getDate();
-		var hasS = state.calendar[k] && state.calendar[k].studied;
-		var mins = (state.calendar[k] && state.calendar[k].minutes) || 0;
-		g +=
-			'<div class="calendar-cell' +
-			(isT ? ' today' : '') +
-			(hasS ? ' has-study' : '') +
-			'" title="' +
-			k +
-			': ' +
-			mins +
-			'分">' +
-			d +
-			'</div>';
+	var hh = String(now.getHours()).padStart(2, '0');
+	var mm = String(now.getMinutes()).padStart(2, '0');
+	el.textContent = hh + ':' + mm;
+	if (isNightTime()) {
+		el.style.color = '#a855f7';
+	} else {
+		el.style.color = '';
 	}
-	var mStudy = 0;
-	for (var d = 1; d <= dim; d++) {
-		var k =
-			yr +
-			'-' +
-			String(mo + 1).padStart(2, '0') +
-			'-' +
-			String(d).padStart(2, '0');
-		if (state.calendar[k] && state.calendar[k].studied) mStudy++;
-	}
-	el.innerHTML =
-		'<div class="card"><h2>📅 ' +
-		yr +
-		'年' +
-		(mo + 1) +
-		'月</h2><div class="stat-row"><span class="stat-label">連続学習</span><span class="stat-value">' +
-		streak +
-		'日 🔥</span></div><div class="stat-row"><span class="stat-label">今月の学習日数</span><span class="stat-value">' +
-		mStudy +
-		'日</span></div><div class="calendar-grid">' +
-		g +
-		'</div></div>';
 }
 
-/* ==================== VOCAB ==================== */
-function renderVocab() {
-	var el = document.getElementById('tab-vocab');
-	if (!el) return;
-	var w = state.vocab.words || [];
-	el.innerHTML =
-		'<div class="card"><h2>📖 単語帳 (' +
-		w.length +
-		'語)</h2><div class="form-row" style="margin-bottom:12px"><input type="text" id="vocab-word" placeholder="単語"><input type="text" id="vocab-meaning" placeholder="意味"><input type="text" id="vocab-example" placeholder="例文 (任意)"><button class="btn-primary btn-sm" onclick="addVocab()">追加</button></div><div id="vocab-list">' +
-		renderVL(w) +
-		'</div></div>';
-}
-function renderVL(w) {
-	if (!w.length)
-		return '<p style="color:var(--text-dim);font-size:.85rem">単語を追加しましょう！</p>';
-	var html =
-		'<table class="styled-table"><thead><tr><th>単語</th><th>意味</th><th>例文</th><th>復習</th><th></th></tr></thead><tbody>';
-	var start = Math.max(0, w.length - 50);
-	for (var i = w.length - 1; i >= start; i--) {
-		var v = w[i];
-		html +=
-			'<tr><td><strong>' +
-			esc(v.word) +
-			'</strong></td><td>' +
-			esc(v.meaning) +
-			'</td><td style="font-size:.78rem;color:var(--text-dim)">' +
-			esc(v.example || '') +
-			'</td><td>' +
-			(v.reviewCount || 0) +
-			'回</td><td><button class="btn-danger btn-sm" onclick="deleteVocab(' +
-			v.id +
-			')">✕</button></td></tr>';
+// ========== PARTICLES ==========
+
+function initParticles() {
+	var canvas = document.getElementById('particles-canvas');
+	if (!canvas) return;
+	var ctx = canvas.getContext('2d');
+	var particles = [];
+	var maxP = 60;
+
+	function resize() {
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
 	}
-	return html + '</tbody></table>';
-}
-function addVocab() {
-	var wi = document.getElementById('vocab-word');
-	var mi = document.getElementById('vocab-meaning');
-	var ei = document.getElementById('vocab-example');
-	var w = wi ? wi.value.trim() : '';
-	var m = mi ? mi.value.trim() : '';
-	var ex = ei ? ei.value.trim() : '';
-	if (!w || !m) {
-		showToast('⚠️ 単語と意味を入力', 'danger');
-		return;
+	resize();
+	window.addEventListener('resize', resize);
+
+	for (var i = 0; i < maxP; i++) {
+		particles.push({
+			x: Math.random() * canvas.width,
+			y: Math.random() * canvas.height,
+			r: Math.random() * 2 + 0.5,
+			dx: (Math.random() - 0.5) * 0.4,
+			dy: (Math.random() - 0.5) * 0.4,
+			a: Math.random() * 0.4 + 0.1,
+		});
 	}
-	state.vocab.words.push({
-		id: state.vocab.nextId++,
-		word: w,
-		meaning: m,
-		example: ex,
-		reviewCount: 0,
-		added: new Date().toISOString(),
+
+	function draw() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for (var i = 0; i < particles.length; i++) {
+			var p = particles[i];
+			ctx.beginPath();
+			ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+			ctx.fillStyle = 'rgba(80,200,120,' + p.a + ')';
+			ctx.fill();
+			p.x += p.dx;
+			p.y += p.dy;
+			if (p.x < 0) p.x = canvas.width;
+			if (p.x > canvas.width) p.x = 0;
+			if (p.y < 0) p.y = canvas.height;
+			if (p.y > canvas.height) p.y = 0;
+		}
+		requestAnimationFrame(draw);
+	}
+	draw();
+}
+
+// ========== NAVIGATION ==========
+
+function initNavigation() {
+	var btns = document.querySelectorAll('.nav-btn');
+	for (var i = 0; i < btns.length; i++) {
+		btns[i].addEventListener('click', function () {
+			var tab = this.getAttribute('data-tab');
+			showTab(tab);
+		});
+	}
+}
+
+function showTab(tabId) {
+	var panels = document.querySelectorAll('.tab-panel');
+	var btns = document.querySelectorAll('.nav-btn');
+	for (var i = 0; i < panels.length; i++) {
+		panels[i].classList.remove('active');
+	}
+	for (var i = 0; i < btns.length; i++) {
+		btns[i].classList.remove('active');
+		if (btns[i].getAttribute('data-tab') === tabId) {
+			btns[i].classList.add('active');
+		}
+	}
+	var target = document.getElementById('tab-' + tabId);
+	if (target) target.classList.add('active');
+
+	if (tabId === 'home') renderHome();
+	if (tabId === 'character') renderCharacter();
+	if (tabId === 'sphere') renderSphere();
+	if (tabId === 'quests') renderQuests();
+	if (tabId === 'review') renderReview();
+}
+/* ============================================
+   LinguaQuest - app.js
+   Part 2/3: Tab Rendering (Home, Character, Sphere, Quests, Review, Settings)
+   ============================================ */
+
+// ========== HOME TAB ==========
+
+function renderHome() {
+	var statsEl = document.getElementById('home-stats');
+	var dailyEl = document.getElementById('daily-quest-list');
+	var recentEl = document.getElementById('recent-activity');
+
+	if (statsEl) {
+		var items = [
+			{ num: state.level, label: 'レベル' },
+			{ num: state.gold, label: 'ゴールド' },
+			{ num: state.sphereUnlocked.length, label: '解放ノード' },
+			{ num: state.streak, label: '連続日数' },
+			{ num: state.totalSessions, label: '総セッション' },
+			{
+				num: Object.keys(state.skills).reduce(function (s, k) {
+					return s + state.skills[k];
+				}, 0),
+				label: '総スキルEXP',
+			},
+		];
+		var html = '';
+		for (var i = 0; i < items.length; i++) {
+			html += '<div class="home-stat-item">';
+			html += '<div class="home-stat-num">' + items[i].num + '</div>';
+			html += '<div class="home-stat-label">' + items[i].label + '</div>';
+			html += '</div>';
+		}
+		statsEl.innerHTML = html;
+	}
+
+	if (dailyEl) {
+		generateDailyQuests();
+		var dq = state.quests.filter(function (q) {
+			return q.type === 'daily';
+		});
+		if (dq.length === 0) {
+			dailyEl.innerHTML =
+				'<p style="color:var(--text-muted);">デイリークエストを生成中…</p>';
+		} else {
+			var html = '';
+			for (var i = 0; i < dq.length; i++) {
+				var q = dq[i];
+				var done = q.completed ? ' completed' : '';
+				html += '<div class="quest-item' + done + '">';
+				html += '<div><span class="quest-title">' + q.title + '</span></div>';
+				html += '<div><span class="quest-reward">+' + q.reward + ' EXP</span> ';
+				if (!q.completed) {
+					html +=
+						'<button class="quest-btn" onclick="completeQuest(\'' +
+						q.id +
+						'\')">達成</button>';
+				} else {
+					html += '<span style="color:var(--accent-1);">完了</span>';
+				}
+				html += '</div></div>';
+			}
+			dailyEl.innerHTML = html;
+		}
+	}
+
+	if (recentEl) {
+		if (state.activityLog.length === 0) {
+			recentEl.innerHTML =
+				'<p style="color:var(--text-muted);">まだ活動記録がありません。</p>';
+		} else {
+			var html = '';
+			var show = state.activityLog.slice(0, 10);
+			for (var i = 0; i < show.length; i++) {
+				var d = new Date(show[i].time);
+				var ts =
+					String(d.getHours()).padStart(2, '0') +
+					':' +
+					String(d.getMinutes()).padStart(2, '0');
+				html +=
+					'<div style="padding:6px 0;border-bottom:1px solid rgba(80,200,120,0.08);font-size:0.85rem;">';
+				html +=
+					'<span style="color:var(--text-muted);margin-right:10px;">' +
+					ts +
+					'</span>';
+				html += '<span>' + show[i].msg + '</span>';
+				html += '</div>';
+			}
+			recentEl.innerHTML = html;
+		}
+	}
+}
+
+// ========== DAILY QUESTS ==========
+
+function generateDailyQuests() {
+	var today = new Date().toISOString().slice(0, 10);
+	if (state.dailyDate === today) return;
+	state.dailyDate = today;
+
+	var templates = [
+		{ title: '語彙を5つ学習する', reward: 20, cat: 'vocab' },
+		{ title: '文法問題を3問解く', reward: 20, cat: 'grammar' },
+		{ title: 'AIチューターと会話する', reward: 15, cat: 'speaking' },
+		{ title: 'リスニング練習を1回行う', reward: 15, cat: 'listening' },
+		{ title: '文章を1つ書く', reward: 20, cat: 'writing' },
+		{ title: '復習デッキを5枚確認する', reward: 15, cat: 'reading' },
+		{ title: 'スフィア盤のノードを1つ解放する', reward: 25, cat: 'vocab' },
+		{ title: '10分間学習する', reward: 30, cat: 'speaking' },
+	];
+
+	var shuffled = templates.slice().sort(function () {
+		return Math.random() - 0.5;
 	});
-	addExp('vocab', 5);
-	state.gold += 2;
+	var picked = shuffled.slice(0, 4);
+	var dailies = [];
+	for (var i = 0; i < picked.length; i++) {
+		dailies.push({
+			id: 'daily_' + today + '_' + i,
+			type: 'daily',
+			title: picked[i].title,
+			reward: picked[i].reward,
+			cat: picked[i].cat,
+			completed: false,
+		});
+	}
+
+	state.quests = state.quests.filter(function (q) {
+		return q.type !== 'daily';
+	});
+	state.quests = state.quests.concat(dailies);
 	saveState();
-	showToast('📝 "' + w + '" を追加！ +5EXP +2G', '');
-	renderVocab();
-}
-function deleteVocab(id) {
-	var nw = [];
-	for (var i = 0; i < state.vocab.words.length; i++)
-		if (state.vocab.words[i].id !== id) nw.push(state.vocab.words[i]);
-	state.vocab.words = nw;
-	saveState();
-	renderVocab();
 }
 
-/* ==================== REVIEW ==================== */
-function renderReview() {
-	var el = document.getElementById('tab-review');
-	if (!el) return;
-	var w = state.vocab.words;
-	if (!w || !w.length) {
-		el.innerHTML =
-			'<div class="card"><h2>🔄 復習</h2><p style="color:var(--text-dim)">まず単語帳に単語を追加してください。</p></div>';
-		return;
-	}
-	var word = w[Math.floor(Math.random() * w.length)];
-	el.innerHTML =
-		'<div class="card" style="text-align:center"><h2>🔄 復習クイズ</h2><p style="font-size:.85rem;color:var(--text-dim);margin-bottom:20px">単語の意味を思い出してください</p><div style="font-size:2rem;margin:20px 0;color:var(--accent-gold);font-weight:700">' +
-		esc(word.word) +
-		'</div><div id="review-answer" style="display:none;margin:16px 0"><p style="font-size:1.2rem;color:var(--accent-emerald);font-weight:600">' +
-		esc(word.meaning) +
-		'</p>' +
-		(word.example
-			? '<p style="font-size:.85rem;color:var(--text-dim);margin-top:8px">例: ' +
-				esc(word.example) +
-				'</p>'
-			: '') +
-		'</div><div id="review-buttons"><button class="btn-primary" onclick="showRevAns()">答えを見る</button></div><div id="review-result-buttons" style="display:none;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn-primary" onclick="revResult(' +
-		word.id +
-		',true)">✅ 覚えてた！</button><button class="btn-danger" onclick="revResult(' +
-		word.id +
-		',false)">❌ 忘れてた…</button><button class="btn-secondary" onclick="renderReview()">⏭ 次の単語</button></div><p style="font-size:.75rem;color:var(--text-dim);margin-top:16px">復習回数: ' +
-		(word.reviewCount || 0) +
-		'回</p></div>';
-}
-function showRevAns() {
-	document.getElementById('review-answer').style.display = 'block';
-	document.getElementById('review-buttons').style.display = 'none';
-	document.getElementById('review-result-buttons').style.display = 'flex';
-}
-function revResult(id, ok) {
-	var w = null;
-	for (var i = 0; i < state.vocab.words.length; i++)
-		if (state.vocab.words[i].id === id) {
-			w = state.vocab.words[i];
+function completeQuest(qid) {
+	for (var i = 0; i < state.quests.length; i++) {
+		if (state.quests[i].id === qid && !state.quests[i].completed) {
+			state.quests[i].completed = true;
+			var q = state.quests[i];
+			var gained = addExp(q.reward, q.cat);
+			addGold(Math.floor(q.reward / 2));
+			showToast('クエスト完了! +' + gained + ' EXP', 'exp');
+			logActivity('クエスト完了: ' + q.title);
 			break;
 		}
-	if (w) w.reviewCount = (w.reviewCount || 0) + 1;
-	if (ok) {
-		addExp('vocab', 3);
-		showToast('✅ 正解！', '');
-	} else showToast('📖 次は覚えよう！', '');
+	}
+	renderHome();
+	renderQuests();
+}
+
+// ========== CHARACTER TAB ==========
+
+function renderCharacter() {
+	var display = document.getElementById('char-display');
+	var creation = document.getElementById('char-creation');
+	var info = document.getElementById('char-info');
+
+	if (!display || !creation || !info) return;
+
+	if (state.character) {
+		display.style.display = 'block';
+		creation.style.display = 'none';
+
+		var anc = null;
+		var cls = null;
+		var her = null;
+		var sub = null;
+
+		for (var i = 0; i < ANCESTRIES.length; i++) {
+			if (ANCESTRIES[i].id === state.character.ancestryId) {
+				anc = ANCESTRIES[i];
+				for (var j = 0; j < anc.heritages.length; j++) {
+					if (anc.heritages[j].id === state.character.heritageId)
+						her = anc.heritages[j];
+				}
+				break;
+			}
+		}
+		for (var i = 0; i < CLASSES.length; i++) {
+			if (CLASSES[i].id === state.character.classId) {
+				cls = CLASSES[i];
+				for (var j = 0; j < cls.subclasses.length; j++) {
+					if (cls.subclasses[j].id === state.character.subclassId)
+						sub = cls.subclasses[j];
+				}
+				break;
+			}
+		}
+
+		var html = '';
+		html +=
+			'<div class="char-stat-row"><span class="char-stat-label">名前</span><span class="char-stat-value">' +
+			state.character.name +
+			'</span></div>';
+		html +=
+			'<div class="char-stat-row"><span class="char-stat-label">称号</span><span class="char-stat-value">' +
+			getTitleForLevel(state.level) +
+			'</span></div>';
+		html +=
+			'<div class="char-stat-row"><span class="char-stat-label">種族</span><span class="char-stat-value">' +
+			(anc ? anc.name : '?') +
+			'</span></div>';
+		html +=
+			'<div class="char-stat-row"><span class="char-stat-label">Heritage</span><span class="char-stat-value">' +
+			(her ? her.name : '?') +
+			'</span></div>';
+		if (her)
+			html +=
+				'<div class="char-stat-row"><span class="char-stat-label">Heritage効果</span><span class="char-bonus-tag">' +
+				her.desc +
+				'</span></div>';
+		html +=
+			'<div class="char-stat-row"><span class="char-stat-label">職業</span><span class="char-stat-value">' +
+			(cls ? cls.name : '?') +
+			'</span></div>';
+		html +=
+			'<div class="char-stat-row"><span class="char-stat-label">Subclass</span><span class="char-stat-value">' +
+			(sub ? sub.name : '?') +
+			'</span></div>';
+		if (sub)
+			html +=
+				'<div class="char-stat-row"><span class="char-stat-label">Subclass効果</span><span class="char-bonus-tag">' +
+				sub.desc +
+				'</span></div>';
+
+		html +=
+			'<div class="char-stat-row"><span class="char-stat-label">レベル</span><span class="char-stat-value">Lv.' +
+			state.level +
+			'</span></div>';
+		html +=
+			'<div class="char-stat-row"><span class="char-stat-label">EXP</span><span class="char-stat-value">' +
+			state.exp +
+			' / ' +
+			expForLevel(state.level) +
+			'</span></div>';
+		html +=
+			'<div class="exp-bar-container"><div class="exp-bar-fill" style="width:' +
+			Math.min(100, (state.exp / expForLevel(state.level)) * 100) +
+			'%"></div></div>';
+
+		html += '<h3 style="margin-top:20px;color:var(--accent-1);">スキル</h3>';
+		var skillNames = {
+			vocab: '語彙',
+			grammar: '文法',
+			speaking: '会話',
+			listening: '聴解',
+			reading: '読解',
+			writing: '作文',
+		};
+		var keys = Object.keys(state.skills);
+		for (var i = 0; i < keys.length; i++) {
+			html +=
+				'<div class="char-stat-row"><span class="char-stat-label">' +
+				(skillNames[keys[i]] || keys[i]) +
+				'</span><span class="char-stat-value">' +
+				state.skills[keys[i]] +
+				' pts</span></div>';
+		}
+
+		html +=
+			'<button class="btn-reroll" onclick="resetCharacter()">キャラクターリセット</button>';
+		info.innerHTML = html;
+	} else {
+		display.style.display = 'none';
+		creation.style.display = 'block';
+		populateCreationForm();
+	}
+}
+
+function populateCreationForm() {
+	var ancSel = document.getElementById('char-ancestry-select');
+	var herSel = document.getElementById('char-heritage-select');
+	var clsSel = document.getElementById('char-class-select');
+	var subSel = document.getElementById('char-subclass-select');
+
+	if (!ancSel || !herSel || !clsSel || !subSel) return;
+
+	ancSel.innerHTML = '';
+	for (var i = 0; i < ANCESTRIES.length; i++) {
+		var opt = document.createElement('option');
+		opt.value = ANCESTRIES[i].id;
+		opt.textContent = ANCESTRIES[i].name + ' - ' + ANCESTRIES[i].desc;
+		ancSel.appendChild(opt);
+	}
+
+	clsSel.innerHTML = '';
+	for (var i = 0; i < CLASSES.length; i++) {
+		var opt = document.createElement('option');
+		opt.value = CLASSES[i].id;
+		opt.textContent = CLASSES[i].name + ' - ' + CLASSES[i].desc;
+		clsSel.appendChild(opt);
+	}
+
+	function updateHeritages() {
+		herSel.innerHTML = '';
+		var aid = ancSel.value;
+		for (var i = 0; i < ANCESTRIES.length; i++) {
+			if (ANCESTRIES[i].id === aid) {
+				for (var j = 0; j < ANCESTRIES[i].heritages.length; j++) {
+					var h = ANCESTRIES[i].heritages[j];
+					var opt = document.createElement('option');
+					opt.value = h.id;
+					opt.textContent = h.name + ' (' + h.desc + ')';
+					herSel.appendChild(opt);
+				}
+				break;
+			}
+		}
+		updateBonusPreview();
+	}
+
+	function updateSubclasses() {
+		subSel.innerHTML = '';
+		var cid = clsSel.value;
+		for (var i = 0; i < CLASSES.length; i++) {
+			if (CLASSES[i].id === cid) {
+				for (var j = 0; j < CLASSES[i].subclasses.length; j++) {
+					var s = CLASSES[i].subclasses[j];
+					var opt = document.createElement('option');
+					opt.value = s.id;
+					opt.textContent = s.name + ' (' + s.desc + ')';
+					subSel.appendChild(opt);
+				}
+				break;
+			}
+		}
+		updateBonusPreview();
+	}
+
+	function updateBonusPreview() {
+		var preview = document.getElementById('bonus-preview');
+		if (!preview) return;
+		var aid = ancSel.value;
+		var hid = herSel.value;
+		var cid = clsSel.value;
+		var sid = subSel.value;
+		var lines = [];
+
+		for (var i = 0; i < ANCESTRIES.length; i++) {
+			if (ANCESTRIES[i].id === aid) {
+				for (var j = 0; j < ANCESTRIES[i].heritages.length; j++) {
+					if (ANCESTRIES[i].heritages[j].id === hid) {
+						lines.push('Heritage: ' + ANCESTRIES[i].heritages[j].desc);
+					}
+				}
+				break;
+			}
+		}
+		for (var i = 0; i < CLASSES.length; i++) {
+			if (CLASSES[i].id === cid) {
+				for (var j = 0; j < CLASSES[i].subclasses.length; j++) {
+					if (CLASSES[i].subclasses[j].id === sid) {
+						lines.push('Subclass: ' + CLASSES[i].subclasses[j].desc);
+					}
+				}
+				break;
+			}
+		}
+
+		if (JOB_SYNERGY[cid]) {
+			lines.push('職業シナジー: ' + JOB_SYNERGY[cid].join(' / '));
+		}
+
+		preview.innerHTML =
+			lines.length > 0 ? lines.join('<br>') : 'ボーナスプレビュー';
+	}
+
+	ancSel.addEventListener('change', updateHeritages);
+	clsSel.addEventListener('change', updateSubclasses);
+	herSel.addEventListener('change', updateBonusPreview);
+	subSel.addEventListener('change', updateBonusPreview);
+
+	updateHeritages();
+	updateSubclasses();
+
+	var createBtn = document.getElementById('btn-create-char');
+	if (createBtn) {
+		createBtn.onclick = function () {
+			var name = document.getElementById('char-name-input').value.trim();
+			if (!name) {
+				showToast('名前を入力してください', 'error');
+				return;
+			}
+			state.character = {
+				name: name,
+				ancestryId: ancSel.value,
+				heritageId: herSel.value,
+				classId: clsSel.value,
+				subclassId: subSel.value,
+			};
+			saveState();
+			logActivity('キャラクター作成: ' + name);
+			showToast('キャラクターを作成しました!', 'gold');
+			renderCharacter();
+		};
+	}
+}
+
+function resetCharacter() {
+	if (
+		confirm('キャラクターをリセットしますか？（EXPやゴールドは保持されます）')
+	) {
+		state.character = null;
+		saveState();
+		showToast('キャラクターをリセットしました', '');
+		renderCharacter();
+	}
+}
+
+// ========== SPHERE GRID TAB ==========
+
+function renderSphere() {
+	var grid = document.getElementById('sphere-grid');
+	var infoBox = document.getElementById('sphere-info');
+	if (!grid) return;
+
+	grid.innerHTML = '';
+
+	// Draw connecting lines first
+	for (var i = 0; i < SPHERE_NODES.length; i++) {
+		var node = SPHERE_NODES[i];
+		for (var p = 0; p < node.prereq.length; p++) {
+			var parentNode = null;
+			for (var k = 0; k < SPHERE_NODES.length; k++) {
+				if (SPHERE_NODES[k].id === node.prereq[p]) {
+					parentNode = SPHERE_NODES[k];
+					break;
+				}
+			}
+			if (parentNode) {
+				var line = document.createElement('div');
+				line.className = 'sphere-line';
+
+				var x1 = parentNode.x;
+				var y1 = parentNode.y;
+				var x2 = node.x;
+				var y2 = node.y;
+				var dx = x2 - x1;
+				var dy = y2 - y1;
+				var len = Math.sqrt(dx * dx + dy * dy);
+				var angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+				line.style.left = x1 + 'px';
+				line.style.top = y1 + 'px';
+				line.style.width = len + 'px';
+				line.style.transform = 'rotate(' + angle + 'deg)';
+
+				var parentUnlocked = state.sphereUnlocked.indexOf(parentNode.id) >= 0;
+				var childUnlocked = state.sphereUnlocked.indexOf(node.id) >= 0;
+				if (parentUnlocked && childUnlocked) {
+					line.classList.add('active');
+				}
+
+				grid.appendChild(line);
+			}
+		}
+	}
+
+	// Draw nodes
+	for (var i = 0; i < SPHERE_NODES.length; i++) {
+		var node = SPHERE_NODES[i];
+		var el = document.createElement('div');
+		el.className = 'sphere-node';
+		el.setAttribute('data-type', node.type);
+		el.setAttribute('data-rarity', node.rarity);
+		el.setAttribute('data-id', node.id);
+
+		var isUnlocked = state.sphereUnlocked.indexOf(node.id) >= 0;
+
+		// Determine if node can be unlocked
+		var canUnlock = false;
+		if (!isUnlocked) {
+			if (node.prereq.length === 0) {
+				canUnlock = true;
+			} else {
+				canUnlock = true;
+				for (var p = 0; p < node.prereq.length; p++) {
+					if (state.sphereUnlocked.indexOf(node.prereq[p]) < 0) {
+						canUnlock = false;
+						break;
+					}
+				}
+			}
+		}
+
+		if (isUnlocked) {
+			el.classList.add('unlocked');
+		} else if (!canUnlock) {
+			el.classList.add('locked');
+		}
+
+		// Size by type
+		var w = 44;
+		var h = 44;
+		var fontSize = '0.55rem';
+		if (node.type === 'boss') {
+			w = 56;
+			h = 56;
+			fontSize = '0.6rem';
+		} else if (node.type === 'chest' || node.type === 'event') {
+			w = 50;
+			h = 50;
+			fontSize = '0.55rem';
+		} else if (node.type === 'hub') {
+			w = 56;
+			h = 56;
+			fontSize = '0.65rem';
+		}
+
+		el.style.width = w + 'px';
+		el.style.height = h + 'px';
+		el.style.left = node.x - w / 2 + 'px';
+		el.style.top = node.y - h / 2 + 'px';
+		el.style.fontSize = fontSize;
+
+		el.textContent = node.label;
+
+		(function (n, unlocked, canUn) {
+			el.addEventListener('click', function () {
+				sphereClick(n, unlocked, canUn);
+			});
+			el.addEventListener('mouseenter', function () {
+				if (infoBox) {
+					var stars = '';
+					for (var s = 0; s < n.rarity; s++) stars += '★';
+					infoBox.innerHTML =
+						'<strong>' +
+						n.label +
+						'</strong> ' +
+						stars +
+						'<br>' +
+						'<em>Zone: ' +
+						n.zone +
+						' | Type: ' +
+						n.type +
+						'</em><br>' +
+						n.desc;
+				}
+			});
+		})(node, isUnlocked, canUnlock);
+
+		grid.appendChild(el);
+	}
+}
+
+function sphereClick(node, isUnlocked, canUnlock) {
+	if (isUnlocked) {
+		var msgs = {
+			boss: 'BOSS DEFEATED!',
+			chest: 'TREASURE UNLOCKED!',
+			event: 'TRIAL CLEARED!',
+			skill: 'SKILL ACQUIRED!',
+			hub: 'JOURNEY BEGINS!',
+		};
+		showToast(msgs[node.type] || 'Already unlocked.', '');
+		return;
+	}
+
+	if (!canUnlock) {
+		showToast('前提ノードを先に解放してください', 'error');
+		return;
+	}
+
+	// Unlock the node
+	state.sphereUnlocked.push(node.id);
+
+	// Apply reward
+	if (node.reward) {
+		if (node.reward.type === 'exp') {
+			var gained = addExp(node.reward.value, node.reward.cat || null);
+			showToast('NODE UNLOCKED: ' + node.label + ' +' + gained + ' EXP', 'exp');
+		} else if (node.reward.type === 'gold') {
+			var gained = addGold(node.reward.value);
+			showToast(
+				'NODE UNLOCKED: ' + node.label + ' +' + gained + ' Gold',
+				'gold',
+			);
+		} else if (node.reward.type === 'title') {
+			showToast('LEGENDARY TITLE ACQUIRED: ' + node.reward.value, 'gold');
+		} else {
+			showToast('NODE UNLOCKED: ' + node.label, 'exp');
+		}
+	}
+
+	logActivity('ノード解放: ' + node.label + ' (' + node.zone + ')');
+	saveState();
+	renderSphere();
+}
+
+// ========== QUESTS TAB ==========
+
+function renderQuests() {
+	var list = document.getElementById('quest-list');
+	if (!list) return;
+
+	generateDailyQuests();
+
+	if (state.quests.length === 0) {
+		list.innerHTML =
+			'<p style="color:var(--text-muted);">クエストがありません。ホームタブでデイリークエストを確認してください。</p>';
+		return;
+	}
+
+	var html = '';
+	for (var i = 0; i < state.quests.length; i++) {
+		var q = state.quests[i];
+		var done = q.completed ? ' completed' : '';
+		html += '<div class="quest-item' + done + '">';
+		html += '<div>';
+		html += '<span class="quest-title">' + q.title + '</span>';
+		html +=
+			'<br><span style="font-size:0.75rem;color:var(--text-muted);">' +
+			q.type +
+			' | ' +
+			(q.cat || '-') +
+			'</span>';
+		html += '</div>';
+		html += '<div>';
+		html += '<span class="quest-reward">+' + q.reward + ' EXP</span> ';
+		if (!q.completed) {
+			html +=
+				'<button class="quest-btn" onclick="completeQuest(\'' +
+				q.id +
+				'\')">達成</button>';
+		} else {
+			html += '<span style="color:var(--accent-1);">完了</span>';
+		}
+		html += '</div></div>';
+	}
+	list.innerHTML = html;
+}
+
+// ========== REVIEW TAB ==========
+
+var reviewState = {
+	currentIndex: 0,
+	showBack: false,
+};
+
+function renderReview() {
+	var area = document.getElementById('review-area');
+	if (!area) return;
+
+	if (state.reviewDeck.length === 0) {
+		generateSampleDeck();
+	}
+
+	var deck = state.reviewDeck;
+	if (deck.length === 0) {
+		area.innerHTML =
+			'<p style="color:var(--text-muted);">復習カードがありません。学習を進めてカードを追加しましょう。</p>';
+		return;
+	}
+
+	if (reviewState.currentIndex >= deck.length) {
+		reviewState.currentIndex = 0;
+	}
+
+	var card = deck[reviewState.currentIndex];
+	var html = '';
+
+	html += '<div class="review-card-display" onclick="flipReviewCard()">';
+	html += '<div class="review-front">' + card.front + '</div>';
+	if (reviewState.showBack) {
+		html += '<div class="review-back">' + card.back + '</div>';
+	} else {
+		html +=
+			'<div style="color:var(--text-muted);font-size:0.8rem;margin-top:8px;">クリックして回答を表示</div>';
+	}
+	html += '</div>';
+
+	html +=
+		'<div style="text-align:center;color:var(--text-muted);font-size:0.8rem;margin-bottom:12px;">';
+	html += reviewState.currentIndex + 1 + ' / ' + deck.length;
+	html += '</div>';
+
+	if (reviewState.showBack) {
+		html += '<div class="review-btns">';
+		html +=
+			'<button class="review-btn easy" onclick="rateReviewCard(\'easy\')">簡単</button>';
+		html +=
+			'<button class="review-btn medium" onclick="rateReviewCard(\'medium\')">普通</button>';
+		html +=
+			'<button class="review-btn hard" onclick="rateReviewCard(\'hard\')">難しい</button>';
+		html += '</div>';
+	}
+
+	area.innerHTML = html;
+}
+
+function generateSampleDeck() {
+	state.reviewDeck = [
+		{
+			front: 'Hello',
+			back: 'こんにちは',
+			cat: 'vocab',
+			interval: 1,
+			nextReview: Date.now(),
+		},
+		{
+			front: 'Thank you',
+			back: 'ありがとう',
+			cat: 'vocab',
+			interval: 1,
+			nextReview: Date.now(),
+		},
+		{
+			front: 'Good morning',
+			back: 'おはようございます',
+			cat: 'vocab',
+			interval: 1,
+			nextReview: Date.now(),
+		},
+		{
+			front: 'I like coffee',
+			back: 'コーヒーが好きです',
+			cat: 'grammar',
+			interval: 1,
+			nextReview: Date.now(),
+		},
+		{
+			front: 'Where is the station?',
+			back: '駅はどこですか？',
+			cat: 'speaking',
+			interval: 1,
+			nextReview: Date.now(),
+		},
+		{
+			front: 'Excuse me',
+			back: 'すみません',
+			cat: 'vocab',
+			interval: 1,
+			nextReview: Date.now(),
+		},
+		{
+			front: 'How much is this?',
+			back: 'これはいくらですか？',
+			cat: 'speaking',
+			interval: 1,
+			nextReview: Date.now(),
+		},
+		{
+			front: 'Nice to meet you',
+			back: 'はじめまして',
+			cat: 'vocab',
+			interval: 1,
+			nextReview: Date.now(),
+		},
+	];
+	saveState();
+}
+
+function flipReviewCard() {
+	reviewState.showBack = !reviewState.showBack;
+	renderReview();
+}
+
+function rateReviewCard(rating) {
+	var card = state.reviewDeck[reviewState.currentIndex];
+	if (!card) return;
+
+	if (rating === 'easy') {
+		card.interval = Math.min(card.interval * 2.5, 30);
+		addExp(5, card.cat);
+	} else if (rating === 'medium') {
+		card.interval = Math.min(card.interval * 1.5, 20);
+		addExp(3, card.cat);
+	} else {
+		card.interval = 1;
+		addExp(1, card.cat);
+	}
+
+	card.nextReview = Date.now() + card.interval * 86400000;
+	addGold(1);
+
+	reviewState.showBack = false;
+	reviewState.currentIndex++;
+	if (reviewState.currentIndex >= state.reviewDeck.length) {
+		reviewState.currentIndex = 0;
+		showToast('復習デッキ完了! 素晴らしい!', 'gold');
+	}
+
 	saveState();
 	renderReview();
 }
 
-/* ==================== CHARACTER ==================== */
-function renderCharacter() {
-	var el = document.getElementById('tab-character');
-	if (!el) return;
-	var anc = getAncestry();
-	var her = getHeritage(state.ancestry, state.heritage);
-	var cls = getClass();
-	var sc = getSubclass(state.cls, state.subclass);
-	var bn = calcBonuses();
-	var ancOpts = '';
-	for (var i = 0; i < ANCESTRIES.length; i++) {
-		var a = ANCESTRIES[i];
-		var stars = '';
-		for (var j = 0; j < a.rarity; j++) stars += '★';
-		ancOpts +=
-			'<option value="' +
-			a.id +
-			'"' +
-			(a.id === state.ancestry ? ' selected' : '') +
-			'>' +
-			a.icon +
-			' ' +
-			a.name +
-			' ' +
-			stars +
-			'</option>';
-	}
-	var herOpts = '';
-	if (anc)
-		for (var i = 0; i < anc.heritages.length; i++) {
-			var h = anc.heritages[i];
-			herOpts +=
-				'<option value="' +
-				h.id +
-				'"' +
-				(h.id === state.heritage ? ' selected' : '') +
-				'>' +
-				h.name +
-				'</option>';
-		}
-	var clsOpts = '';
-	for (var i = 0; i < CLASSES.length; i++) {
-		var c = CLASSES[i];
-		clsOpts +=
-			'<option value="' +
-			c.id +
-			'"' +
-			(c.id === state.cls ? ' selected' : '') +
-			'>' +
-			c.icon +
-			' ' +
-			c.name +
-			'</option>';
-	}
-	var scOpts = '';
-	if (cls)
-		for (var i = 0; i < cls.subclasses.length; i++) {
-			var s = cls.subclasses[i];
-			scOpts +=
-				'<option value="' +
-				s.id +
-				'"' +
-				(s.id === state.subclass ? ' selected' : '') +
-				'>' +
-				s.name +
-				'</option>';
-		}
-	var bonusHtml = '';
-	var bkeys = [
-		'vocab',
-		'grammar',
-		'listening',
-		'speaking',
-		'reading',
-		'writing',
-	];
-	for (var i = 0; i < bkeys.length; i++) {
-		var k = bkeys[i];
-		if (bn[k] > 0)
-			bonusHtml +=
-				'<div class="stat-row"><span class="stat-label">' +
-				skillLabel(k) +
-				'</span><span class="stat-value" style="color:var(--rarity2)">+' +
-				bn[k] +
-				'%</span></div>';
-	}
-	if (!bonusHtml)
-		bonusHtml =
-			'<p style="color:var(--text-dim);font-size:.8rem">ボーナスなし</p>';
-	var synergyHtml = '';
-	if (JOB_SYNERGY[state.cls]) {
-		var zones = JOB_SYNERGY[state.cls];
-		var zNames = [];
-		for (var i = 0; i < zones.length; i++) zNames.push(skillLabel(zones[i]));
-		synergyHtml =
-			'<h3 style="margin-top:16px">🌐 スフィア適性ゾーン</h3><p style="font-size:.85rem;color:var(--accent-teal)">' +
-			zNames.join('、') +
-			'</p>';
-	}
-	var detailHtml = '';
-	if (anc)
-		detailHtml +=
-			'<div class="stat-row"><span class="stat-label">種族</span><span class="stat-value">' +
-			anc.icon +
-			' ' +
-			anc.name +
-			'</span></div><div class="stat-row"><span class="stat-label">カテゴリ</span><span class="stat-value"><span class="badge rarity-' +
-			anc.rarity +
-			'">' +
-			anc.category +
-			' ★' +
-			anc.rarity +
-			'</span></span></div><p style="font-size:.8rem;color:var(--text-dim);margin:6px 0">' +
-			anc.desc +
-			'</p>';
-	if (her)
-		detailHtml +=
-			'<div class="stat-row"><span class="stat-label">ヘリテージ</span><span class="stat-value">' +
-			her.name +
-			'</span></div><p style="font-size:.8rem;color:var(--text-dim);margin:6px 0">' +
-			her.desc +
-			'</p>';
-	if (cls)
-		detailHtml +=
-			'<div class="stat-row"><span class="stat-label">職業</span><span class="stat-value">' +
-			cls.icon +
-			' ' +
-			cls.name +
-			'</span></div><p style="font-size:.8rem;color:var(--text-dim);margin:6px 0">' +
-			cls.desc +
-			'</p>';
-	if (sc)
-		detailHtml +=
-			'<div class="stat-row"><span class="stat-label">サブクラス</span><span class="stat-value">' +
-			sc.name +
-			'</span></div><p style="font-size:.8rem;color:var(--text-dim);margin:6px 0">' +
-			sc.desc +
-			'</p>';
-	el.innerHTML =
-		'<div class="card-grid"><div class="card"><h2>🧝 キャラクターシート</h2><div class="char-portrait">' +
-		(anc ? anc.icon : '🧑') +
-		'</div><div class="char-name">' +
-		state.name +
-		'</div><div class="char-title">' +
-		getTitle() +
-		'</div><div class="form-group"><label>冒険者名:</label><input type="text" value="' +
-		esc(state.name) +
-		'" onchange="state.name=this.value;saveState();renderCharacter()" maxlength="20"></div><div class="char-select-group"><div class="form-group"><label>種族:</label><select onchange="chAnc(this.value)">' +
-		ancOpts +
-		'</select></div><div class="form-group"><label>ヘリテージ:</label><select onchange="state.heritage=this.value;saveState();renderCharacter()">' +
-		herOpts +
-		'</select></div><div class="form-group"><label>職業:</label><select onchange="chCls(this.value)">' +
-		clsOpts +
-		'</select></div><div class="form-group"><label>サブクラス:</label><select onchange="state.subclass=this.value;saveState();renderCharacter()">' +
-		scOpts +
-		'</select></div></div></div><div class="card"><h2>📋 詳細情報</h2>' +
-		detailHtml +
-		'<h3 style="margin-top:16px">🎯 学習ボーナス</h3>' +
-		bonusHtml +
-		synergyHtml +
-		'</div></div>';
-}
-function chAnc(id) {
-	state.ancestry = id;
-	var a = getAncestry(id);
-	if (a && a.heritages.length) state.heritage = a.heritages[0].id;
-	saveState();
-	renderCharacter();
-}
-function chCls(id) {
-	state.cls = id;
-	var c = getClass(id);
-	if (c && c.subclasses.length) state.subclass = c.subclasses[0].id;
-	saveState();
-	renderCharacter();
-}
+// ========== SETTINGS TAB ==========
 
-/* ==================== SPHERE GRID ==================== */
-var ZONE_COLORS = {
-	vocab: '#22c55e',
-	grammar: '#3b82f6',
-	listening: '#a855f7',
-	speaking: '#ef4444',
-	reading: '#f59e0b',
-	writing: '#06b6d4',
-	center: '#ffd700',
-};
-var RARITY_COLORS = {
-	1: '#9ca3af',
-	2: '#22c55e',
-	3: '#3b82f6',
-	4: '#a855f7',
-	5: '#f59e0b',
-};
-function renderSphere() {
-	var el = document.getElementById('tab-sphere');
-	if (!el) return;
-	var ulArr = state.sphere.unlocked || [];
-	var acArr = state.sphere.activated || [];
-	var ulSet = {};
-	for (var i = 0; i < ulArr.length; i++) ulSet[ulArr[i]] = true;
-	var acSet = {};
-	for (var i = 0; i < acArr.length; i++) acSet[acArr[i]] = true;
-	var lines = '';
-	var nodes = '';
-	for (var i = 0; i < SPHERE_NODES.length; i++) {
-		var n = SPHERE_NODES[i];
-		for (var j = 0; j < n.prereq.length; j++) {
-			var pid = n.prereq[j];
-			var p = null;
-			for (var k = 0; k < SPHERE_NODES.length; k++)
-				if (SPHERE_NODES[k].id === pid) {
-					p = SPHERE_NODES[k];
-					break;
-				}
-			if (p) {
-				var active = acSet[n.id] && acSet[pid];
-				lines +=
-					'<line x1="' +
-					p.x +
-					'" y1="' +
-					p.y +
-					'" x2="' +
-					n.x +
-					'" y2="' +
-					n.y +
-					'" stroke="' +
-					(active
-						? ZONE_COLORS[n.zone] || '#22c55e'
-						: 'rgba(255,255,255,0.1)') +
-					'" stroke-width="' +
-					(active ? 2 : 1) +
-					'"/>';
+function initSettings() {
+	var btnExport = document.getElementById('btn-export');
+	var btnImport = document.getElementById('btn-import');
+	var importFile = document.getElementById('import-file');
+	var btnReset = document.getElementById('btn-reset');
+
+	if (btnExport) {
+		btnExport.addEventListener('click', function () {
+			try {
+				var data = JSON.stringify(state, null, 2);
+				var blob = new Blob([data], { type: 'application/json' });
+				var url = URL.createObjectURL(blob);
+				var a = document.createElement('a');
+				a.href = url;
+				a.download =
+					'linguaquest_save_' + new Date().toISOString().slice(0, 10) + '.json';
+				a.click();
+				URL.revokeObjectURL(url);
+				showToast('データをエクスポートしました', '');
+			} catch (e) {
+				showToast('エクスポートに失敗しました', 'error');
+				console.error('Export error:', e);
 			}
-		}
+		});
 	}
-	for (var i = 0; i < SPHERE_NODES.length; i++) {
-		var n = SPHERE_NODES[i];
-		var isA = !!acSet[n.id];
-		var isU = !!ulSet[n.id];
-		var canU = false;
-		if (!isA) {
-			var allMet = true;
-			for (var j = 0; j < n.prereq.length; j++)
-				if (!acSet[n.prereq[j]]) {
-					allMet = false;
-					break;
+
+	if (btnImport && importFile) {
+		btnImport.addEventListener('click', function () {
+			importFile.click();
+		});
+		importFile.addEventListener('change', function (e) {
+			var file = e.target.files[0];
+			if (!file) return;
+			var reader = new FileReader();
+			reader.onload = function (ev) {
+				try {
+					var imported = JSON.parse(ev.target.result);
+					state = Object.assign(deepClone(DEFAULT_STATE), imported);
+					saveState();
+					updateHUD();
+					showToast('データをインポートしました', 'gold');
+					showTab('home');
+				} catch (err) {
+					showToast(
+						'インポートに失敗しました。ファイルを確認してください',
+						'error',
+					);
+					console.error('Import error:', err);
 				}
-			canU = allMet;
-		}
-		var col = isA
-			? ZONE_COLORS[n.zone] || '#22c55e'
-			: isU
-				? 'rgba(255,255,255,0.5)'
-				: 'rgba(255,255,255,0.15)';
-		var bc = canU
-			? '#ffd700'
-			: isA
-				? RARITY_COLORS[n.rarity] || '#22c55e'
-				: 'rgba(255,255,255,0.1)';
-		var bg = isA
-			? 'radial-gradient(circle,' + col + '33,' + col + '11)'
-			: 'rgba(0,0,0,0.3)';
-		var extra = '';
-		if (canU)
-			extra =
-				'animation:pulse 1.5s infinite;box-shadow:0 0 12px rgba(255,215,0,0.4);';
-		else if (isA) extra = 'box-shadow:0 0 10px ' + col + '44;';
-		nodes +=
-			'<div style="position:absolute;left:' +
-			(n.x - 22) +
-			'px;top:' +
-			(n.y - 22) +
-			'px;width:44px;height:44px;border-radius:50%;background:' +
-			bg +
-			';border:2px solid ' +
-			bc +
-			';display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:' +
-			(canU || isA ? 'pointer' : 'default') +
-			';transition:all .3s;' +
-			extra +
-			'" title="' +
-			n.label +
-			': ' +
-			n.desc +
-			'" onclick="sphereClick(\'' +
-			n.id +
-			'\')">' +
-			n.icon +
-			'</div>';
+			};
+			reader.readAsText(file);
+			importFile.value = '';
+		});
 	}
-	var legendHtml = '';
-	var zkeys = [
-		'vocab',
-		'grammar',
-		'listening',
-		'speaking',
-		'reading',
-		'writing',
-		'center',
+
+	if (btnReset) {
+		btnReset.addEventListener('click', function () {
+			if (confirm('全データをリセットしますか？この操作は元に戻せません。')) {
+				localStorage.removeItem('lq_state');
+				localStorage.removeItem('lq_ai_settings');
+				var keys = [];
+				for (var i = 0; i < localStorage.length; i++) {
+					var k = localStorage.key(i);
+					if (k && k.indexOf('lq_') === 0) keys.push(k);
+				}
+				for (var i = 0; i < keys.length; i++) {
+					localStorage.removeItem(keys[i]);
+				}
+				state = deepClone(DEFAULT_STATE);
+				saveState();
+				updateHUD();
+				showToast('全データをリセットしました', '');
+				showTab('home');
+			}
+		});
+	}
+}
+/* ============================================
+   LinguaQuest - app.js
+   Part 3/3: AI Tutor + Initialization
+   ============================================ */
+
+// ========== AI TUTOR MODULE ==========
+
+var AI_TUTOR = (function () {
+	var defaultLangs = [
+		{
+			code: 'en',
+			name: '英語',
+			flag: '\uD83C\uDDEC\uD83C\uDDE7',
+			removable: false,
+		},
+		{
+			code: 'yue',
+			name: '広東語',
+			flag: '\uD83C\uDDED\uD83C\uDDF0',
+			removable: false,
+		},
+		{
+			code: 'ja',
+			name: '日本語',
+			flag: '\uD83C\uDDEF\uD83C\uDDF5',
+			removable: false,
+		},
+		{
+			code: 'it',
+			name: 'イタリア語',
+			flag: '\uD83C\uDDEE\uD83C\uDDF9',
+			removable: false,
+		},
 	];
-	for (var i = 0; i < zkeys.length; i++) {
-		var zk = zkeys[i];
-		legendHtml +=
-			'<div class="sphere-legend-item"><div class="sphere-legend-color" style="background:' +
-			(ZONE_COLORS[zk] || '#fff') +
-			'"></div><span>' +
-			(skillLabel(zk) || zk) +
-			'</span></div>';
-	}
-	el.innerHTML =
-		'<div class="card"><h2>🌐 スフィア盤</h2><div class="stat-row"><span class="stat-label">解放済み</span><span class="stat-value">' +
-		ulArr.length +
-		' / ' +
-		SPHERE_NODES.length +
-		'</span></div><div class="stat-row"><span class="stat-label">有効化済み</span><span class="stat-value">' +
-		acArr.length +
-		'</span></div><div class="sphere-legend">' +
-		legendHtml +
-		'</div><div class="sphere-container" style="height:600px;position:relative"><svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">' +
-		lines +
-		'</svg>' +
-		nodes +
-		'</div></div>';
-}
-function sphereClick(id) {
-	var n = null;
-	for (var i = 0; i < SPHERE_NODES.length; i++)
-		if (SPHERE_NODES[i].id === id) {
-			n = SPHERE_NODES[i];
-			break;
-		}
-	if (!n) return;
-	var acArr = state.sphere.activated || [];
-	var acSet = {};
-	for (var i = 0; i < acArr.length; i++) acSet[acArr[i]] = true;
-	if (acSet[id]) {
-		showToast('ℹ️ ' + n.label + ': ' + n.desc, '');
-		return;
-	}
-	var allMet = true;
-	for (var i = 0; i < n.prereq.length; i++)
-		if (!acSet[n.prereq[i]]) {
-			allMet = false;
-			break;
-		}
-	if (!allMet) {
-		showToast('🔒 前提ノードを先に有効化してください', 'danger');
-		return;
-	}
-	var ulSet = {};
-	for (var i = 0; i < state.sphere.unlocked.length; i++)
-		ulSet[state.sphere.unlocked[i]] = true;
-	if (!ulSet[id]) state.sphere.unlocked.push(id);
-	state.sphere.activated.push(id);
-	if (n.reward) {
-		var zone = n.zone === 'center' ? 'vocab' : n.zone;
-		if (n.reward.exp) addExp(zone, n.reward.exp);
-		if (n.reward.gold) state.gold += n.reward.gold;
-		var sks = [
-			'vocab',
-			'grammar',
-			'listening',
-			'speaking',
-			'reading',
-			'writing',
-		];
-		for (var i = 0; i < sks.length; i++) {
-			var sk = sks[i];
-			if (n.reward[sk]) state.skills[sk] += n.reward[sk];
-		}
-	}
-	saveState();
-	updateHUD();
-	var msgs = {
-		boss: '🐉 BOSS撃破！',
-		chest: '🎁 宝箱を開けた！',
-		event: '⚡ イベントクリア！',
-		skill: '⭐ スキル習得！',
-		hub: '🌟 出発！',
-	};
-	showToast((msgs[n.type] || '✅') + ' ' + n.label, 'gold');
-	renderSphere();
-}
 
-/* ==================== REPORT ==================== */
-function renderReport() {
-	var el = document.getElementById('tab-report');
-	if (!el) return;
-	var totalMin = 0;
-	var totalDays = 0;
-	var calKeys = Object.keys(state.calendar);
-	for (var i = 0; i < calKeys.length; i++) {
-		var v = state.calendar[calKeys[i]];
-		totalMin += v.minutes || 0;
-		if (v.studied) totalDays++;
-	}
-	var totalSkill = 0;
-	var sks = ['vocab', 'grammar', 'listening', 'speaking', 'reading', 'writing'];
-	for (var i = 0; i < sks.length; i++) totalSkill += state.skills[sks[i]] || 0;
-	el.innerHTML =
-		'<div class="card-grid"><div class="card"><h2>📊 総合レポート</h2><div class="stat-row"><span class="stat-label">総学習時間</span><span class="stat-value">' +
-		totalMin +
-		'分 (' +
-		(totalMin / 60).toFixed(1) +
-		'時間)</span></div><div class="stat-row"><span class="stat-label">学習日数</span><span class="stat-value">' +
-		totalDays +
-		'日</span></div><div class="stat-row"><span class="stat-label">総スキルポイント</span><span class="stat-value">' +
-		totalSkill +
-		'</span></div><div class="stat-row"><span class="stat-label">登録単語数</span><span class="stat-value">' +
-		state.vocab.words.length +
-		'</span></div><div class="stat-row"><span class="stat-label">スフィア解放率</span><span class="stat-value">' +
-		Math.floor((state.sphere.unlocked.length / SPHERE_NODES.length) * 100) +
-		'%</span></div></div><div class="card"><h2>🛠️ データ管理</h2><div style="display:flex;flex-direction:column;gap:8px"><button class="btn-secondary" onclick="exportData()">📤 データをエクスポート</button><button class="btn-secondary" onclick="document.getElementById(\'import-file\').click()">📥 データをインポート</button><input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"><button class="btn-danger" onclick="resetState()">🗑️ データをリセット</button></div></div></div>';
-}
-function exportData() {
-	var d = JSON.stringify(state, null, 2);
-	var b = new Blob([d], { type: 'application/json' });
-	var u = URL.createObjectURL(b);
-	var a = document.createElement('a');
-	a.href = u;
-	a.download = 'linguaquest_' + todayKey() + '.json';
-	a.click();
-	URL.revokeObjectURL(u);
-	showToast('📤 エクスポート完了！', '');
-}
-function importData(e) {
-	var f = e.target.files[0];
-	if (!f) return;
-	var r = new FileReader();
-	r.onload = function (ev) {
-		try {
-			state = JSON.parse(ev.target.result);
-			saveState();
-			location.reload();
-		} catch (err) {
-			showToast('⚠️ ファイルの読み込みに失敗', 'danger');
-		}
-	};
-	r.readAsText(f);
-}
-
-/* ==================== AI TUTOR ==================== */
-var AI_TUTOR = {
-	defaultLangs: [
-		{ code: 'en', name: '英語', flag: '🇬🇧', removable: false },
-		{ code: 'yue', name: '広東語', flag: '🇭🇰', removable: false },
-	],
-	histories: {},
-	currentLang: 'en',
-	isStreaming: false,
-	sidebarOpen: false,
-	defaultSettings: {
+	var settings = {
 		provider: 'gemini',
 		geminiKey: '',
 		geminiModel: 'gemini-2.5-flash',
@@ -2667,253 +2664,293 @@ var AI_TUTOR = {
 		openaiModel: 'gpt-4o',
 		customEndpoint: '',
 		customKey: '',
-		customModel: '',
-		languages: null,
-	},
-	buildSystemPrompt: function (langCode) {
-		var langObj = null;
-		var langs = this.getLangs();
-		for (var i = 0; i < langs.length; i++)
-			if (langs[i].code === langCode) {
-				langObj = langs[i];
-				break;
-			}
-		var langName = langObj ? langObj.name : langCode;
-		var extra = '';
-		if (langCode === 'yue')
-			extra =
-				'- 広東語の場合、粤拼（Jyutping）のローマ字表記と声調番号も必ず付けてください。\n- 例：「你好」(nei5 hou2) — こんにちは\n';
-		if (langCode === 'en')
-			extra =
-				'- 英語の場合、発音のカタカナ表記も適宜付けてください。\n- 例：「Hello」(ハロー) — こんにちは\n';
-		return (
-			'あなたは「LinguaQuest」というRPG風言語学習アプリのAIチューターです。\n\n【基本ルール】\n- 応答言語は常に「日本語」です。\n- 教える対象言語は「' +
-			langName +
-			'」です。\n- ユーザーは日本語話者で、' +
-			langName +
-			'を学習中です。\n- 説明はすべて日本語で行い、' +
-			langName +
-			'の原文と日本語訳を併記してください。\n' +
-			extra +
-			'\n【役割】\n- 文法説明、単語の使い方、例文作成、会話練習、作文添削、発音指導。\n- レベルに合わせて難易度を調整。\n- 間違いは優しく訂正。\n- RPGの冒険者に語りかけるトーンで。\n- 簡潔に、でも必要な情報は省略しない。'
-		);
-	},
-	getLangs: function () {
-		var s = this.loadSettings();
-		return s.languages || this.defaultLangs;
-	},
-	setLangs: function (langs) {
-		var s = this.loadSettings();
-		s.languages = langs;
-		this.saveSettings(s);
-	},
-	addLang: function (code, name, flag) {
-		if (!code || !name) return false;
-		var langs = this.getLangs();
-		for (var i = 0; i < langs.length; i++)
-			if (langs[i].code === code) return false;
-		langs.push({ code: code, name: name, flag: flag || '🌐', removable: true });
-		this.setLangs(langs);
-		return true;
-	},
-	removeLang: function (code) {
-		var langs = this.getLangs();
-		var nw = [];
-		for (var i = 0; i < langs.length; i++)
-			if (langs[i].code !== code || !langs[i].removable) nw.push(langs[i]);
-		this.setLangs(nw);
-		if (this.currentLang === code)
-			this.currentLang = nw.length ? nw[0].code : 'en';
-	},
-	loadSettings: function () {
+		customModel: 'default',
+		languages: deepClone(defaultLangs),
+	};
+
+	var histories = {};
+	var currentLang = 'en';
+	var sidebarOpen = false;
+
+	// --- Persistence ---
+
+	function loadSettings() {
 		try {
-			var s = localStorage.getItem('lq_ai_settings');
-			if (s) {
-				var p = JSON.parse(s);
-				for (var k in this.defaultSettings)
-					if (!(k in p)) p[k] = this.defaultSettings[k];
-				if (!p.languages)
-					p.languages = JSON.parse(JSON.stringify(this.defaultLangs));
-				return p;
+			var saved = localStorage.getItem('lq_ai_settings');
+			if (saved) {
+				var parsed = JSON.parse(saved);
+				settings = Object.assign({}, settings, parsed);
+				if (!settings.languages || settings.languages.length === 0) {
+					settings.languages = deepClone(defaultLangs);
+				}
 			}
-		} catch (e) {}
-		var def = JSON.parse(JSON.stringify(this.defaultSettings));
-		def.languages = JSON.parse(JSON.stringify(this.defaultLangs));
-		return def;
-	},
-	saveSettings: function (settings) {
+		} catch (e) {
+			console.error('AI loadSettings error:', e);
+		}
+	}
+
+	function saveSettings() {
 		try {
 			localStorage.setItem('lq_ai_settings', JSON.stringify(settings));
-		} catch (e) {}
-	},
-	loadHistory: function (lang) {
-		try {
-			var s = localStorage.getItem('lq_ai_hist_' + lang);
-			return s ? JSON.parse(s) : [];
 		} catch (e) {
-			return [];
+			console.error('AI saveSettings error:', e);
 		}
-	},
-	saveHistory: function (lang, hist) {
+	}
+
+	function loadHistory(lang) {
 		try {
-			localStorage.setItem(
-				'lq_ai_hist_' + lang,
-				JSON.stringify(hist.slice(-100)),
-			);
-		} catch (e) {}
-	},
-	getEl: function (id) {
+			var saved = localStorage.getItem('lq_ai_hist_' + lang);
+			if (saved) {
+				histories[lang] = JSON.parse(saved);
+			} else {
+				histories[lang] = [];
+			}
+		} catch (e) {
+			console.error('AI loadHistory error:', e);
+			histories[lang] = [];
+		}
+	}
+
+	function saveHistory(lang) {
+		try {
+			var h = histories[lang] || [];
+			if (h.length > 100) h = h.slice(h.length - 100);
+			histories[lang] = h;
+			localStorage.setItem('lq_ai_hist_' + lang, JSON.stringify(h));
+		} catch (e) {
+			console.error('AI saveHistory error:', e);
+		}
+	}
+
+	// --- DOM Helpers ---
+
+	function getEl(id) {
 		return document.getElementById(id);
-	},
-	appendMsg: function (role, text) {
-		var c = this.getEl('ai-chat-messages');
-		if (!c) return null;
+	}
+
+	function appendMsg(role, text) {
+		var area = getEl('ai-chat-messages');
+		if (!area) return;
 		var div = document.createElement('div');
 		div.className = 'ai-msg ' + role;
-		div.innerHTML = this.formatMsg(text);
-		c.appendChild(div);
-		c.scrollTop = c.scrollHeight;
-		return div;
-	},
-	formatMsg: function (text) {
+		div.innerHTML = formatMsg(text);
+		area.appendChild(div);
+		area.scrollTop = area.scrollHeight;
+	}
+
+	function formatMsg(text) {
 		if (!text) return '';
 		return text
 			.replace(/&/g, '&amp;')
 			.replace(/</g, '&lt;')
 			.replace(/>/g, '&gt;')
+			.replace(/\n/g, '<br>')
 			.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-			.replace(/\*(.+?)\*/g, '<em>$1</em>')
-			.replace(
-				/`(.+?)`/g,
-				"<code style='background:rgba(0,255,170,0.1);padding:1px 4px;border-radius:3px'>$1</code>",
-			)
-			.replace(/\n/g, '<br>');
-	},
-	setStatus: function (text) {
-		var el = this.getEl('ai-status');
-		if (el) el.textContent = text;
-	},
-	clearChat: function () {
-		var c = this.getEl('ai-chat-messages');
-		if (c) c.innerHTML = '';
-	},
-	callAPI: function (messages) {
-		var settings = this.loadSettings();
-		var provider = settings.provider || 'gemini';
-		switch (provider) {
-			case 'gemini':
-				return this.callGemini(settings, messages);
-			case 'openrouter':
-				return this.callOpenRouter(settings, messages);
-			case 'openai':
-				return this.callOpenAI(settings, messages);
-			case 'custom':
-				return this.callCustom(settings, messages);
-			default:
-				return Promise.reject(new Error('不明なプロバイダー'));
+			.replace(/\*(.+?)\*/g, '<em>$1</em>');
+	}
+
+	function setStatus(msg) {
+		var el = getEl('ai-status');
+		if (el) el.textContent = msg;
+	}
+
+	function clearChat() {
+		var area = getEl('ai-chat-messages');
+		if (area) area.innerHTML = '';
+	}
+
+	// --- System Prompt ---
+
+	function buildSystemPrompt(langCode) {
+		var langName = langCode;
+		for (var i = 0; i < settings.languages.length; i++) {
+			if (settings.languages[i].code === langCode) {
+				langName = settings.languages[i].name;
+				break;
+			}
 		}
-	},
-	callGemini: function (settings, messages) {
+
+		var base =
+			'あなたは「LinguaQuest」というRPG風言語学習アプリのAIチューターです。\n';
+		base +=
+			'ユーザーの主言語は日本語です。あなたは日本語で応答してください。\n';
+		base +=
+			'現在の学習対象言語は「' + langName + '」(' + langCode + ')です。\n';
+		base += '以下のルールに従って学習をサポートしてください：\n';
+		base +=
+			'1. ユーザーが学習対象言語について質問したら、原文と日本語訳を併記してください。\n';
+		base += '2. 間違いがあれば優しく訂正し、正しい表現を教えてください。\n';
+		base += '3. 文法の説明は日本語で丁寧に行ってください。\n';
+		base +=
+			'4. 会話練習を求められたら、学習対象言語で会話し、必要に応じて日本語で補足してください。\n';
+		base +=
+			'5. RPGの世界観（冒険者、クエスト、スキルアップ等）を織り交ぜて楽しく教えてください。\n';
+		base += '6. 回答は簡潔かつ実用的にしてください。\n';
+
+		var extra = '';
+		if (langCode === 'yue') {
+			extra = '\n【広東語固有の補足】\n';
+			extra +=
+				'- 広東語（粤語）の場合、Jyutpingのローマ字表記と声調番号を併記してください。\n';
+			extra += '- 例: 你好 (nei5 hou2) - こんにちは\n';
+			extra +=
+				'- 書き言葉（書面語）と話し言葉（口語）の違いがあれば注記してください。\n';
+		} else if (langCode === 'en') {
+			extra = '\n【英語固有の補足】\n';
+			extra += '- 発音が難しい単語にはカタカナでの近似発音を添えてください。\n';
+			extra += '- 例: through (スルー) - ～を通して\n';
+			extra += '- イディオムやフレーズにはニュアンスの説明を加えてください。\n';
+		} else if (langCode === 'ja') {
+			extra = '\n【日本語固有の補足】\n';
+			extra += '- 漢字にはふりがなを括弧内に併記してください。\n';
+			extra += '- 例: 勉強(べんきょう) - study\n';
+			extra +=
+				'- 敬語（丁寧語・尊敬語・謙譲語）の使い分けを丁寧に解説してください。\n';
+			extra +=
+				'- 日本語が母語のユーザーが自国語を深く学ぶ前提で教えてください。\n';
+		} else if (langCode === 'it') {
+			extra = '\n【イタリア語固有の補足】\n';
+			extra += '- 発音が難しい単語にはカタカナでの近似発音を添えてください。\n';
+			extra += '- 例: buongiorno (ブオンジョルノ) - おはようございます\n';
+			extra +=
+				'- 動詞の活用（現在形・過去形・未来形等）は表形式で示すと分かりやすいです。\n';
+			extra += '- 男性名詞/女性名詞の区別にも注意して説明してください。\n';
+		}
+
+		return base + extra;
+	}
+
+	// --- API Calls ---
+
+	function callGemini(messages, callback) {
 		var key = settings.geminiKey;
-		if (!key)
-			return Promise.reject(
-				new Error('Gemini APIキーが未設定です。⚙️設定から入力してください。'),
-			);
 		var model = settings.geminiModel || 'gemini-2.5-flash';
+		if (!key) {
+			callback(
+				'Gemini APIキーが設定されていません。設定画面でキーを入力してください。',
+				true,
+			);
+			return;
+		}
+
+		var contents = [];
+		for (var i = 0; i < messages.length; i++) {
+			var m = messages[i];
+			contents.push({
+				role: m.role === 'assistant' ? 'model' : 'user',
+				parts: [{ text: m.content }],
+			});
+		}
+
 		var url =
 			'https://generativelanguage.googleapis.com/v1beta/models/' +
 			model +
 			':generateContent?key=' +
 			key;
-		var systemText = '';
-		var contents = [];
-		for (var i = 0; i < messages.length; i++) {
-			var m = messages[i];
-			if (m.role === 'system') {
-				systemText += m.content + '\n';
-			} else {
-				contents.push({
-					role: m.role === 'assistant' ? 'model' : 'user',
-					parts: [{ text: m.content }],
-				});
-			}
-		}
-		var body = {
-			contents: contents,
-			generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
-		};
-		if (systemText) body.systemInstruction = { parts: [{ text: systemText }] };
-		return fetch(url, {
+
+		fetch(url, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(body),
+			body: JSON.stringify({
+				contents: contents,
+				generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
+			}),
 		})
-			.then(function (resp) {
-				if (!resp.ok)
-					return resp.text().then(function (t) {
-						throw new Error(
-							'Gemini エラー (' + resp.status + '): ' + t.substring(0, 200),
-						);
-					});
-				return resp.json();
+			.then(function (res) {
+				return res.json();
 			})
 			.then(function (data) {
-				var text =
-					data &&
+				if (
 					data.candidates &&
 					data.candidates[0] &&
 					data.candidates[0].content &&
-					data.candidates[0].content.parts &&
-					data.candidates[0].content.parts[0] &&
-					data.candidates[0].content.parts[0].text;
-				if (!text) throw new Error('Geminiから応答なし');
-				return text;
+					data.candidates[0].content.parts
+				) {
+					callback(data.candidates[0].content.parts[0].text, false);
+				} else if (data.error) {
+					callback(
+						'Gemini API Error: ' +
+							(data.error.message || JSON.stringify(data.error)),
+						true,
+					);
+				} else {
+					callback('Gemini: 予期しない応答形式です。', true);
+				}
+			})
+			.catch(function (err) {
+				callback('Gemini 接続エラー: ' + err.message, true);
 			});
-	},
-	callOpenRouter: function (settings, messages) {
+	}
+
+	function callOpenRouter(messages, callback) {
 		var key = settings.openrouterKey;
-		if (!key)
-			return Promise.reject(new Error('OpenRouter APIキーが未設定です。'));
 		var model = settings.openrouterModel || 'deepseek/deepseek-r1:free';
-		return fetch('https://openrouter.ai/api/v1/chat/completions', {
+		if (!key) {
+			callback('OpenRouter APIキーが設定されていません。', true);
+			return;
+		}
+
+		var apiMessages = [];
+		for (var i = 0; i < messages.length; i++) {
+			apiMessages.push({
+				role: messages[i].role,
+				content: messages[i].content,
+			});
+		}
+
+		fetch('https://openrouter.ai/api/v1/chat/completions', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + key,
-				'HTTP-Referer': location.href,
+				'HTTP-Referer': window.location.href,
 				'X-Title': 'LinguaQuest',
 			},
 			body: JSON.stringify({
 				model: model,
-				messages: messages,
+				messages: apiMessages,
 				max_tokens: 1024,
 				temperature: 0.7,
 			}),
 		})
-			.then(function (resp) {
-				if (!resp.ok)
-					return resp.text().then(function (t) {
-						throw new Error(
-							'OpenRouter エラー (' + resp.status + '): ' + t.substring(0, 200),
-						);
-					});
-				return resp.json();
+			.then(function (res) {
+				return res.json();
 			})
 			.then(function (data) {
-				return (
-					(data.choices &&
-						data.choices[0] &&
-						data.choices[0].message &&
-						data.choices[0].message.content) ||
-					'応答なし'
-				);
+				if (data.choices && data.choices[0] && data.choices[0].message) {
+					callback(data.choices[0].message.content, false);
+				} else if (data.error) {
+					callback(
+						'OpenRouter Error: ' +
+							(data.error.message || JSON.stringify(data.error)),
+						true,
+					);
+				} else {
+					callback('OpenRouter: 予期しない応答形式です。', true);
+				}
+			})
+			.catch(function (err) {
+				callback('OpenRouter 接続エラー: ' + err.message, true);
 			});
-	},
-	callOpenAI: function (settings, messages) {
+	}
+
+	function callOpenAI(messages, callback) {
 		var key = settings.openaiKey;
-		if (!key) return Promise.reject(new Error('OpenAI APIキーが未設定です。'));
 		var model = settings.openaiModel || 'gpt-4o';
-		return fetch('https://api.openai.com/v1/chat/completions', {
+		if (!key) {
+			callback('OpenAI APIキーが設定されていません。', true);
+			return;
+		}
+
+		var apiMessages = [];
+		for (var i = 0; i < messages.length; i++) {
+			apiMessages.push({
+				role: messages[i].role,
+				content: messages[i].content,
+			});
+		}
+
+		fetch('https://api.openai.com/v1/chat/completions', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -2921,399 +2958,571 @@ var AI_TUTOR = {
 			},
 			body: JSON.stringify({
 				model: model,
-				messages: messages,
+				messages: apiMessages,
 				max_tokens: 1024,
 				temperature: 0.7,
 			}),
 		})
-			.then(function (resp) {
-				if (!resp.ok)
-					return resp.text().then(function (t) {
-						throw new Error(
-							'OpenAI エラー (' + resp.status + '): ' + t.substring(0, 200),
-						);
-					});
-				return resp.json();
+			.then(function (res) {
+				return res.json();
 			})
 			.then(function (data) {
-				return (
-					(data.choices &&
-						data.choices[0] &&
-						data.choices[0].message &&
-						data.choices[0].message.content) ||
-					'応答なし'
-				);
+				if (data.choices && data.choices[0] && data.choices[0].message) {
+					callback(data.choices[0].message.content, false);
+				} else if (data.error) {
+					callback(
+						'OpenAI Error: ' +
+							(data.error.message || JSON.stringify(data.error)),
+						true,
+					);
+				} else {
+					callback('OpenAI: 予期しない応答形式です。', true);
+				}
+			})
+			.catch(function (err) {
+				callback('OpenAI 接続エラー: ' + err.message, true);
 			});
-	},
-	callCustom: function (settings, messages) {
+	}
+
+	function callCustom(messages, callback) {
 		var ep = settings.customEndpoint;
-		if (!ep)
-			return Promise.reject(new Error('カスタムエンドポイントが未設定です。'));
+		var key = settings.customKey;
+		var model = settings.customModel || 'default';
+		if (!ep) {
+			callback('カスタムエンドポイントが設定されていません。', true);
+			return;
+		}
+
+		var apiMessages = [];
+		for (var i = 0; i < messages.length; i++) {
+			apiMessages.push({
+				role: messages[i].role,
+				content: messages[i].content,
+			});
+		}
+
 		var headers = { 'Content-Type': 'application/json' };
-		if (settings.customKey)
-			headers['Authorization'] = 'Bearer ' + settings.customKey;
-		return fetch(ep + '/chat/completions', {
+		if (key) headers['Authorization'] = 'Bearer ' + key;
+
+		fetch(ep + '/chat/completions', {
 			method: 'POST',
 			headers: headers,
 			body: JSON.stringify({
-				model: settings.customModel || 'default',
-				messages: messages,
+				model: model,
+				messages: apiMessages,
 				max_tokens: 1024,
 				temperature: 0.7,
 			}),
 		})
-			.then(function (resp) {
-				if (!resp.ok)
-					return resp.text().then(function (t) {
-						throw new Error(
-							'Custom エラー (' + resp.status + '): ' + t.substring(0, 200),
-						);
-					});
-				return resp.json();
+			.then(function (res) {
+				return res.json();
 			})
 			.then(function (data) {
-				return (
-					(data.choices &&
-						data.choices[0] &&
-						data.choices[0].message &&
-						data.choices[0].message.content) ||
-					'応答なし'
-				);
+				if (data.choices && data.choices[0] && data.choices[0].message) {
+					callback(data.choices[0].message.content, false);
+				} else if (data.error) {
+					callback(
+						'Custom API Error: ' +
+							(data.error.message || JSON.stringify(data.error)),
+						true,
+					);
+				} else {
+					callback('Custom: 予期しない応答形式です。', true);
+				}
+			})
+			.catch(function (err) {
+				callback('Custom API 接続エラー: ' + err.message, true);
 			});
-	},
-	sendMessage: function () {
-		var self = this;
-		var input = this.getEl('ai-input');
+	}
+
+	// --- Send Message ---
+
+	function sendMessage() {
+		var input = getEl('ai-input');
 		if (!input) return;
+
 		var text = input.value.trim();
-		if (!text || this.isStreaming) return;
+		if (!text) return;
+
 		input.value = '';
-		this.isStreaming = true;
-		var sendBtn = this.getEl('ai-send-btn');
-		if (sendBtn) sendBtn.disabled = true;
-		this.appendMsg('user', text);
-		if (!this.histories[this.currentLang])
-			this.histories[this.currentLang] = [];
-		var hist = this.histories[this.currentLang];
-		hist.push({ role: 'user', content: text });
-		var loadingDiv = this.appendMsg('assistant', '考え中...');
-		if (loadingDiv) loadingDiv.classList.add('loading');
-		this.setStatus('🔄 応答を生成中...');
-		var sp = this.buildSystemPrompt(this.currentLang);
-		var apiMsgs = [{ role: 'system', content: sp }].concat(hist.slice(-20));
-		this.callAPI(apiMsgs)
-			.then(function (reply) {
-				if (loadingDiv) loadingDiv.remove();
-				self.appendMsg('assistant', reply);
-				hist.push({ role: 'assistant', content: reply });
-				self.histories[self.currentLang] = hist;
-				self.saveHistory(self.currentLang, hist);
-				addExp(self.currentLang === 'en' ? 'speaking' : 'vocab', 5);
-				state.gold += 1;
+
+		if (!histories[currentLang]) histories[currentLang] = [];
+		histories[currentLang].push({ role: 'user', content: text });
+		appendMsg('user', text);
+
+		setStatus('考え中...');
+
+		var sysPrompt = buildSystemPrompt(currentLang);
+		var contextMessages = [];
+		contextMessages.push({ role: 'user', content: sysPrompt });
+		contextMessages.push({
+			role: 'assistant',
+			content:
+				'了解しました。' +
+				currentLang +
+				'の学習をサポートします。何でも聞いてください！',
+		});
+
+		var hist = histories[currentLang];
+		var start = Math.max(0, hist.length - 20);
+		for (var i = start; i < hist.length; i++) {
+			contextMessages.push(hist[i]);
+		}
+
+		function onResponse(reply, isError) {
+			setStatus('');
+			if (isError) {
+				appendMsg('system', reply);
+			} else {
+				histories[currentLang].push({ role: 'assistant', content: reply });
+				appendMsg('assistant', reply);
+				saveHistory(currentLang);
+
+				// Reward
+				addExp(5, 'speaking');
+				addGold(1);
+				state.totalSessions++;
 				saveState();
-				self.setStatus('✅ 応答完了 | +5 EXP +1 G');
-			})
-			.catch(function (err) {
-				if (loadingDiv) loadingDiv.remove();
-				self.appendMsg('system', '⚠️ エラー: ' + err.message);
-				self.setStatus('❌ エラーが発生しました');
-			})
-			.finally(function () {
-				self.isStreaming = false;
-				if (sendBtn) sendBtn.disabled = false;
-				input.focus();
-			});
-	},
-	testConnection: function () {
-		var self = this;
-		var resultEl = this.getEl('ai-test-result');
-		if (resultEl) {
-			resultEl.style.background = 'rgba(0,255,170,0.05)';
-			resultEl.style.color = 'var(--text-secondary)';
-			resultEl.textContent = '🔄 接続テスト中...';
+			}
 		}
-		this.callAPI([
-			{ role: 'system', content: 'テスト。一言だけ日本語で返して。' },
-			{ role: 'user', content: '接続テスト' },
-		])
-			.then(function (reply) {
-				if (resultEl) {
-					resultEl.style.background = 'rgba(0,255,170,0.1)';
-					resultEl.style.color = 'var(--accent-emerald)';
-					resultEl.textContent =
-						'✅ 接続成功: ' + (reply || '').substring(0, 80);
-				}
-			})
-			.catch(function (err) {
-				if (resultEl) {
-					resultEl.style.background = 'rgba(239,68,68,0.1)';
-					resultEl.style.color = 'var(--danger)';
-					resultEl.textContent = '❌ ' + err.message;
-				}
-			});
-	},
-	switchLang: function (code) {
-		this.currentLang = code;
-		this.histories[code] = this.loadHistory(code);
-		this.clearChat();
-		var hist = this.histories[code] || [];
-		if (!hist.length) {
-			var langObj = null;
-			var langs = this.getLangs();
-			for (var i = 0; i < langs.length; i++)
-				if (langs[i].code === code) {
-					langObj = langs[i];
-					break;
-				}
-			var langName = langObj ? langObj.name : code;
-			this.appendMsg(
-				'system',
-				(langObj ? langObj.flag : '🌐') +
-					' ' +
-					langName +
-					'チューターモードへようこそ！\n日本語で何でも質問してください。',
-			);
+
+		var provider = settings.provider;
+		if (provider === 'gemini') {
+			callGemini(contextMessages, onResponse);
+		} else if (provider === 'openrouter') {
+			callOpenRouter(contextMessages, onResponse);
+		} else if (provider === 'openai') {
+			callOpenAI(contextMessages, onResponse);
+		} else if (provider === 'custom') {
+			callCustom(contextMessages, onResponse);
 		} else {
-			for (var i = 0; i < hist.length; i++)
-				this.appendMsg(hist[i].role, hist[i].content);
+			onResponse('不明なプロバイダです: ' + provider, true);
 		}
-		var lObj = null;
-		var ls = this.getLangs();
-		for (var i = 0; i < ls.length; i++)
-			if (ls[i].code === code) {
-				lObj = ls[i];
+	}
+
+	// --- Test Connection ---
+
+	function testConnection() {
+		setStatus('接続テスト中...');
+		var testMessages = [
+			{
+				role: 'user',
+				content: 'テスト接続です。「接続成功」と返答してください。',
+			},
+		];
+
+		function onTest(reply, isError) {
+			if (isError) {
+				setStatus('接続失敗');
+				showToast('接続テスト失敗: ' + reply, 'error');
+			} else {
+				setStatus('接続成功!');
+				showToast('接続テスト成功!', 'gold');
+			}
+		}
+
+		var provider = settings.provider;
+		if (provider === 'gemini') callGemini(testMessages, onTest);
+		else if (provider === 'openrouter') callOpenRouter(testMessages, onTest);
+		else if (provider === 'openai') callOpenAI(testMessages, onTest);
+		else if (provider === 'custom') callCustom(testMessages, onTest);
+		else onTest('不明なプロバイダです', true);
+	}
+
+	// --- Language Management ---
+
+	function switchLang(code) {
+		currentLang = code;
+		if (!histories[currentLang]) loadHistory(currentLang);
+		clearChat();
+
+		// Show welcome message
+		var langName = code;
+		for (var i = 0; i < settings.languages.length; i++) {
+			if (settings.languages[i].code === code) {
+				langName =
+					settings.languages[i].flag + ' ' + settings.languages[i].name;
 				break;
 			}
-		this.setStatus(
-			(lObj ? lObj.flag : '🌐') + ' ' + (lObj ? lObj.name : code) + 'モード',
+		}
+		appendMsg(
+			'system',
+			langName + ' モードに切り替えました。学習を始めましょう！',
 		);
-	},
-	toggleSidebar: function () {
-		var sidebar = this.getEl('ai-tutor-sidebar');
-		var toggle = this.getEl('ai-tutor-toggle');
-		if (!sidebar) return;
-		this.sidebarOpen = !this.sidebarOpen;
-		if (this.sidebarOpen) sidebar.classList.add('open');
-		else sidebar.classList.remove('open');
-		if (toggle) {
-			if (this.sidebarOpen) toggle.classList.add('hidden');
-			else toggle.classList.remove('hidden');
+
+		// Restore history
+		var hist = histories[currentLang] || [];
+		for (var i = 0; i < hist.length; i++) {
+			appendMsg(hist[i].role, hist[i].content);
 		}
-		if (
-			this.sidebarOpen &&
-			(!this.histories[this.currentLang] ||
-				!this.histories[this.currentLang].length)
-		)
-			this.switchLang(this.currentLang);
-	},
-	openSettings: function () {
-		var o = this.getEl('ai-settings-overlay');
-		if (o) o.classList.remove('hidden');
-		this.populateSettingsForm();
-	},
-	closeSettings: function () {
-		var o = this.getEl('ai-settings-overlay');
-		if (o) o.classList.add('hidden');
-	},
-	populateSettingsForm: function () {
-		var s = this.loadSettings();
-		var prov = this.getEl('ai-provider-select');
-		if (prov) prov.value = s.provider || 'gemini';
-		var fields = {
-			geminiKey: 'gemini-api-key',
-			geminiModel: 'gemini-model',
-			openrouterKey: 'openrouter-api-key',
-			openrouterModel: 'openrouter-model',
-			openaiKey: 'openai-api-key',
-			openaiModel: 'openai-model',
-			customEndpoint: 'custom-endpoint',
-			customKey: 'custom-api-key',
-			customModel: 'custom-model',
-		};
-		for (var k in fields) {
-			var el = this.getEl(fields[k]);
-			if (el) el.value = s[k] || '';
+
+		setStatus('');
+	}
+
+	function addLang(code, name) {
+		if (!code || !name) return false;
+		code = code.trim().toLowerCase();
+		name = name.trim();
+		for (var i = 0; i < settings.languages.length; i++) {
+			if (settings.languages[i].code === code) return false;
 		}
-		this.showProviderFields(s.provider || 'gemini');
-		this.renderLangList();
-	},
-	showProviderFields: function (provider) {
-		var ps = ['gemini', 'openrouter', 'openai', 'custom'];
-		for (var i = 0; i < ps.length; i++) {
-			var el = this.getEl('provider-fields-' + ps[i]);
-			if (el) {
-				if (ps[i] === provider) el.classList.remove('hidden');
-				else el.classList.add('hidden');
+		settings.languages.push({
+			code: code,
+			name: name,
+			flag: '\uD83C\uDDF3\uD83C\uDDFA',
+			removable: true,
+		});
+		saveSettings();
+		return true;
+	}
+
+	function removeLang(code) {
+		for (var i = 0; i < settings.languages.length; i++) {
+			if (
+				settings.languages[i].code === code &&
+				settings.languages[i].removable
+			) {
+				settings.languages.splice(i, 1);
+				if (currentLang === code) {
+					currentLang = settings.languages[0].code;
+				}
+				localStorage.removeItem('lq_ai_hist_' + code);
+				delete histories[code];
+				saveSettings();
+				return true;
 			}
 		}
-	},
-	saveSettingsFromForm: function () {
-		var s = this.loadSettings();
-		s.provider = (this.getEl('ai-provider-select') || {}).value || 'gemini';
-		s.geminiKey = (this.getEl('gemini-api-key') || {}).value || '';
-		s.geminiModel =
-			(this.getEl('gemini-model') || {}).value || 'gemini-2.5-flash';
-		s.openrouterKey = (this.getEl('openrouter-api-key') || {}).value || '';
-		s.openrouterModel =
-			(this.getEl('openrouter-model') || {}).value ||
-			'deepseek/deepseek-r1:free';
-		s.openaiKey = (this.getEl('openai-api-key') || {}).value || '';
-		s.openaiModel = (this.getEl('openai-model') || {}).value || 'gpt-4o';
-		s.customEndpoint = (this.getEl('custom-endpoint') || {}).value || '';
-		s.customKey = (this.getEl('custom-api-key') || {}).value || '';
-		s.customModel = (this.getEl('custom-model') || {}).value || '';
-		this.saveSettings(s);
-		showToast('✅ AI設定を保存しました', '');
-		this.closeSettings();
-		this.populateLangSelect();
-	},
-	renderLangList: function () {
-		var c = this.getEl('lang-list');
-		if (!c) return;
-		var langs = this.getLangs();
+		return false;
+	}
+
+	// --- Sidebar Toggle ---
+
+	function toggleSidebar() {
+		var sb = getEl('ai-sidebar');
+		if (!sb) return;
+		sidebarOpen = !sidebarOpen;
+		if (sidebarOpen) {
+			sb.classList.add('open');
+		} else {
+			sb.classList.remove('open');
+		}
+	}
+
+	// --- Settings UI ---
+
+	function openSettings() {
+		var overlay = getEl('ai-settings-overlay');
+		if (overlay) overlay.classList.add('open');
+		populateSettingsForm();
+	}
+
+	function closeSettings() {
+		var overlay = getEl('ai-settings-overlay');
+		if (overlay) overlay.classList.remove('open');
+	}
+
+	function populateSettingsForm() {
+		var provSel = getEl('ai-provider-select');
+		if (provSel) provSel.value = settings.provider;
+
+		var fields = {
+			'ai-gemini-key': 'geminiKey',
+			'ai-gemini-model': 'geminiModel',
+			'ai-openrouter-key': 'openrouterKey',
+			'ai-openrouter-model': 'openrouterModel',
+			'ai-openai-key': 'openaiKey',
+			'ai-openai-model': 'openaiModel',
+			'ai-custom-endpoint': 'customEndpoint',
+			'ai-custom-key': 'customKey',
+			'ai-custom-model': 'customModel',
+		};
+
+		var keys = Object.keys(fields);
+		for (var i = 0; i < keys.length; i++) {
+			var el = getEl(keys[i]);
+			if (el) el.value = settings[fields[keys[i]]] || '';
+		}
+
+		updateProviderVisibility();
+		renderLangList();
+	}
+
+	function updateProviderVisibility() {
+		var prov = settings.provider;
+		var groups = {
+			gemini: ['fg-gemini-key', 'fg-gemini-model'],
+			openrouter: ['fg-openrouter-key', 'fg-openrouter-model'],
+			openai: ['fg-openai-key', 'fg-openai-model'],
+			custom: ['fg-custom-ep', 'fg-custom-key', 'fg-custom-model'],
+		};
+
+		var allIds = [];
+		var gKeys = Object.keys(groups);
+		for (var i = 0; i < gKeys.length; i++) {
+			allIds = allIds.concat(groups[gKeys[i]]);
+		}
+
+		for (var i = 0; i < allIds.length; i++) {
+			var el = getEl(allIds[i]);
+			if (el) el.style.display = 'none';
+		}
+
+		if (groups[prov]) {
+			for (var i = 0; i < groups[prov].length; i++) {
+				var el = getEl(groups[prov][i]);
+				if (el) el.style.display = 'block';
+			}
+		}
+	}
+
+	function saveSettingsFromForm() {
+		var provSel = getEl('ai-provider-select');
+		if (provSel) settings.provider = provSel.value;
+
+		var fields = {
+			'ai-gemini-key': 'geminiKey',
+			'ai-gemini-model': 'geminiModel',
+			'ai-openrouter-key': 'openrouterKey',
+			'ai-openrouter-model': 'openrouterModel',
+			'ai-openai-key': 'openaiKey',
+			'ai-openai-model': 'openaiModel',
+			'ai-custom-endpoint': 'customEndpoint',
+			'ai-custom-key': 'customKey',
+			'ai-custom-model': 'customModel',
+		};
+
+		var keys = Object.keys(fields);
+		for (var i = 0; i < keys.length; i++) {
+			var el = getEl(keys[i]);
+			if (el) settings[fields[keys[i]]] = el.value.trim();
+		}
+
+		saveSettings();
+		showToast('設定を保存しました', 'gold');
+		closeSettings();
+	}
+
+	function renderLangList() {
+		var container = getEl('ai-lang-manager');
+		if (!container) return;
 		var html = '';
-		for (var i = 0; i < langs.length; i++) {
-			var l = langs[i];
-			html +=
-				'<div class="lang-item"><span class="lang-flag">' +
-				l.flag +
-				'</span><span class="lang-name">' +
-				l.name +
-				' (' +
-				l.code +
-				')</span>' +
-				(l.removable
-					? '<button onclick="AI_TUTOR.removeLangUI(\'' +
-						l.code +
-						'\')">✕</button>'
-					: '<span class="lang-default">デフォルト</span>') +
-				'</div>';
+		for (var i = 0; i < settings.languages.length; i++) {
+			var l = settings.languages[i];
+			html += '<span class="lang-tag">';
+			html += l.flag + ' ' + l.name + ' (' + l.code + ')';
+			if (l.removable) {
+				html +=
+					' <button class="lang-remove" data-code="' + l.code + '">✕</button>';
+			}
+			html += '</span>';
 		}
-		c.innerHTML = html;
-	},
-	addLangUI: function () {
-		var codeEl = this.getEl('new-lang-code');
-		var nameEl = this.getEl('new-lang-name');
-		var flagEl = this.getEl('new-lang-flag');
-		var code = codeEl ? codeEl.value.trim().toLowerCase() : '';
-		var name = nameEl ? nameEl.value.trim() : '';
-		var flag = flagEl ? flagEl.value.trim() || '🌐' : '🌐';
-		if (!code || !name) {
-			showToast('⚠️ コードと表示名を入力', 'danger');
-			return;
-		}
-		if (this.addLang(code, name, flag)) {
-			showToast('✅ ' + flag + ' ' + name + ' を追加', '');
-			this.renderLangList();
-			this.populateLangSelect();
-			if (codeEl) codeEl.value = '';
-			if (nameEl) nameEl.value = '';
-			if (flagEl) flagEl.value = '';
-		} else showToast('⚠️ そのコードは既に存在', 'danger');
-	},
-	removeLangUI: function (code) {
-		if (!confirm('この言語を削除しますか？')) return;
-		this.removeLang(code);
-		showToast('🗑️ 言語を削除', '');
-		this.renderLangList();
-		this.populateLangSelect();
-	},
-	populateLangSelect: function () {
-		var sel = this.getEl('ai-lang-select');
-		if (!sel) return;
-		var langs = this.getLangs();
-		var html = '';
-		for (var i = 0; i < langs.length; i++) {
-			var l = langs[i];
-			html +=
-				'<option value="' +
-				l.code +
-				'"' +
-				(l.code === this.currentLang ? ' selected' : '') +
-				'>' +
-				l.flag +
-				' ' +
-				l.name +
-				'</option>';
-		}
-		sel.innerHTML = html;
-	},
-	init: function () {
-		var self = this;
-		var toggleBtn = this.getEl('ai-tutor-toggle');
-		if (toggleBtn)
-			toggleBtn.addEventListener('click', function () {
-				self.toggleSidebar();
-			});
-		var closeBtn = this.getEl('ai-close-btn');
-		if (closeBtn)
-			closeBtn.addEventListener('click', function () {
-				self.toggleSidebar();
-			});
-		var settingsBtn = this.getEl('ai-settings-btn');
-		if (settingsBtn)
-			settingsBtn.addEventListener('click', function () {
-				self.openSettings();
-			});
-		var sendBtn = this.getEl('ai-send-btn');
-		if (sendBtn)
-			sendBtn.addEventListener('click', function () {
-				self.sendMessage();
-			});
-		var input = this.getEl('ai-input');
-		if (input)
-			input.addEventListener('keydown', function (e) {
-				if (e.key === 'Enter' && !e.shiftKey) {
-					e.preventDefault();
-					self.sendMessage();
+		container.innerHTML = html;
+
+		var removeBtns = container.querySelectorAll('.lang-remove');
+		for (var i = 0; i < removeBtns.length; i++) {
+			removeBtns[i].addEventListener('click', function () {
+				var code = this.getAttribute('data-code');
+				if (confirm(code + ' を削除しますか？履歴も削除されます。')) {
+					removeLang(code);
+					renderLangList();
+					populateLangSelect();
 				}
 			});
-		var langSel = this.getEl('ai-lang-select');
-		if (langSel)
-			langSel.addEventListener('change', function (e) {
-				self.switchLang(e.target.value);
-			});
-		var provSel = this.getEl('ai-provider-select');
-		if (provSel)
-			provSel.addEventListener('change', function (e) {
-				self.showProviderFields(e.target.value);
-			});
-		var saveBtn = this.getEl('ai-save-settings-btn');
-		if (saveBtn)
-			saveBtn.addEventListener('click', function () {
-				self.saveSettingsFromForm();
-			});
-		var cancelBtn = this.getEl('ai-cancel-settings-btn');
-		if (cancelBtn)
-			cancelBtn.addEventListener('click', function () {
-				self.closeSettings();
-			});
-		var testBtn = this.getEl('ai-test-btn');
-		if (testBtn)
-			testBtn.addEventListener('click', function () {
-				self.testConnection();
-			});
-		var addLangBtn = this.getEl('add-lang-btn');
-		if (addLangBtn)
-			addLangBtn.addEventListener('click', function () {
-				self.addLangUI();
-			});
-		this.populateLangSelect();
-		this.histories[this.currentLang] = this.loadHistory(this.currentLang);
-		console.log('✅ AI Tutor initialized');
-	},
-};
+		}
+	}
 
-/* ==================== INIT ==================== */
+	function populateLangSelect() {
+		var sel = getEl('ai-lang-select');
+		if (!sel) return;
+		sel.innerHTML = '';
+		for (var i = 0; i < settings.languages.length; i++) {
+			var l = settings.languages[i];
+			var opt = document.createElement('option');
+			opt.value = l.code;
+			opt.textContent = l.flag + ' ' + l.name;
+			if (l.code === currentLang) opt.selected = true;
+			sel.appendChild(opt);
+		}
+	}
+
+	// --- Initialize ---
+
+	function init() {
+		loadSettings();
+
+		// Ensure default langs exist
+		for (var d = 0; d < defaultLangs.length; d++) {
+			var found = false;
+			for (var s = 0; s < settings.languages.length; s++) {
+				if (settings.languages[s].code === defaultLangs[d].code) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				settings.languages.push(deepClone(defaultLangs[d]));
+			}
+		}
+		saveSettings();
+
+		currentLang = settings.languages[0].code;
+		loadHistory(currentLang);
+		populateLangSelect();
+
+		// Sidebar toggle
+		var toggleBtn = getEl('btn-ai-toggle');
+		if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+
+		var closeBtn = getEl('btn-ai-close');
+		if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+
+		// Send
+		var sendBtn = getEl('ai-send-btn');
+		if (sendBtn) sendBtn.addEventListener('click', sendMessage);
+
+		var inputEl = getEl('ai-input');
+		if (inputEl) {
+			inputEl.addEventListener('keydown', function (e) {
+				if (e.key === 'Enter' && !e.shiftKey) {
+					e.preventDefault();
+					sendMessage();
+				}
+			});
+		}
+
+		// Lang switch
+		var langSel = getEl('ai-lang-select');
+		if (langSel) {
+			langSel.addEventListener('change', function () {
+				switchLang(this.value);
+			});
+		}
+
+		// Settings buttons
+		var settingsBtn = getEl('btn-ai-settings');
+		if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
+
+		var closeSettingsBtn = getEl('btn-close-ai-settings');
+		if (closeSettingsBtn)
+			closeSettingsBtn.addEventListener('click', closeSettings);
+
+		var saveSettingsBtn = getEl('btn-save-ai-settings');
+		if (saveSettingsBtn)
+			saveSettingsBtn.addEventListener('click', saveSettingsFromForm);
+
+		var testBtn = getEl('btn-test-ai');
+		if (testBtn) testBtn.addEventListener('click', testConnection);
+
+		// Provider change
+		var provSel = getEl('ai-provider-select');
+		if (provSel) {
+			provSel.addEventListener('change', function () {
+				settings.provider = this.value;
+				updateProviderVisibility();
+			});
+		}
+
+		// Add language
+		var addLangBtn = getEl('btn-add-lang');
+		if (addLangBtn) {
+			addLangBtn.addEventListener('click', function () {
+				var codeEl = getEl('ai-new-lang-code');
+				var nameEl = getEl('ai-new-lang-name');
+				if (!codeEl || !nameEl) return;
+				var code = codeEl.value.trim();
+				var name = nameEl.value.trim();
+				if (!code || !name) {
+					showToast('コードと名前を入力してください', 'error');
+					return;
+				}
+				if (addLang(code, name)) {
+					showToast(name + ' を追加しました', 'gold');
+					codeEl.value = '';
+					nameEl.value = '';
+					renderLangList();
+					populateLangSelect();
+				} else {
+					showToast('追加できません。コードが重複しています。', 'error');
+				}
+			});
+		}
+
+		// Show welcome
+		var welcomeLang = settings.languages[0];
+		if (welcomeLang) {
+			appendMsg(
+				'system',
+				welcomeLang.flag +
+					' ' +
+					welcomeLang.name +
+					' モードで起動しました。AIチューターに話しかけてみましょう！',
+			);
+		}
+
+		// Restore history
+		var hist = histories[currentLang] || [];
+		for (var i = 0; i < hist.length; i++) {
+			appendMsg(hist[i].role, hist[i].content);
+		}
+
+		console.log(
+			'✅ AI Tutor initialized:',
+			settings.languages.length,
+			'languages',
+		);
+	}
+
+	return {
+		init: init,
+		toggleSidebar: toggleSidebar,
+		sendMessage: sendMessage,
+		switchLang: switchLang,
+		testConnection: testConnection,
+	};
+})();
+
+// ========== INITIALIZATION ==========
+
 document.addEventListener('DOMContentLoaded', function () {
-	console.log('🚀 LinguaQuest initializing...');
+	// Load state
 	loadState();
 	updateHUD();
 	updateClock();
 	setInterval(updateClock, 30000);
+
+	// Particles
 	initParticles();
-	initNav();
+
+	// Navigation
+	initNavigation();
+
+	// Settings
+	initSettings();
+
+	// Streak check
+	(function checkStreak() {
+		var today = new Date().toISOString().slice(0, 10);
+		if (state.lastStudy) {
+			var last = new Date(state.lastStudy);
+			var diff = Math.floor((new Date(today) - last) / 86400000);
+			if (diff === 1) {
+				state.streak++;
+				showToast('連続 ' + state.streak + ' 日目! 素晴らしい!', 'gold');
+			} else if (diff > 1) {
+				state.streak = 1;
+			}
+		} else {
+			state.streak = 1;
+		}
+		state.lastStudy = today;
+		saveState();
+	})();
+
+	// AI Tutor
 	AI_TUTOR.init();
-	switchTab('home');
-	console.log('✅ LinguaQuest ready! Lv.' + state.level + ' ' + getTitle());
+
+	// Show home tab
+	showTab('home');
+
+	console.log('✅ LinguaQuest ready! v' + state.version);
 });
