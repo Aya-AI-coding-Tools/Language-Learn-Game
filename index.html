@@ -1,231 +1,393 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LinguaQuest</title>
-  <link rel="stylesheet" href="./style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
-  <link rel="icon" href="./LLG_icon.ico" />
-  <link rel="apple-touch-icon" href="./LLG_icon.ico" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinguaQuest v2.0</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="./LLG_icon.ico" />
+    <link rel="apple-touch-icon" href="./LLG_icon.ico" />
+  </head>
+  <body>
+    <canvas id="particles-canvas"></canvas>
 
-<!-- ===== パーティクル背景 ===== -->
-<canvas id="particles-canvas"></canvas>
-
-<!-- ===== ヘッダー ===== -->
-<header id="app-header">
-  <div class="header-inner">
-    <h1 class="logo-title">LinguaQuest</h1>
-    <div class="header-hud">
-      <span class="hud-item" id="hud-level">Lv.1</span>
-      <span class="hud-item" id="hud-exp">EXP 0/100</span>
-      <span class="hud-item" id="hud-gold">Gold 0</span>
-      <span class="hud-item" id="hud-clock">00:00</span>
-    </div>
-    <button class="btn-ai-toggle" id="btn-ai-toggle" title="AIチューター">AI</button>
-  </div>
-</header>
-
-<!-- ===== メインナビ ===== -->
-<nav id="main-nav">
-  <button class="nav-btn active" data-tab="home">ホーム</button>
-  <button class="nav-btn" data-tab="character">キャラクター</button>
-  <button class="nav-btn" data-tab="sphere">スフィア盤</button>
-  <button class="nav-btn" data-tab="quests">クエスト</button>
-  <button class="nav-btn" data-tab="review">復習</button>
-  <button class="nav-btn" data-tab="settings">設定</button>
-</nav>
-
-<!-- ===== コンテンツエリア ===== -->
-<main id="content-area">
-
-  <!-- ホーム -->
-  <section class="tab-panel active" id="tab-home">
-    <div class="card welcome-card">
-      <h2>冒険の始まり</h2>
-      <p>LinguaQuestへようこそ！言語を学びながら、キャラクターを育て、スフィア盤を解放し、クエストをクリアしよう。</p>
-      <div class="home-stats" id="home-stats"></div>
-    </div>
-    <div class="card" id="home-daily">
-      <h3>今日のデイリークエスト</h3>
-      <div id="daily-quest-list"></div>
-    </div>
-    <div class="card" id="home-recent">
-      <h3>最近の活動</h3>
-      <div id="recent-activity"></div>
-    </div>
-  </section>
-
-  <!-- キャラクター -->
-  <section class="tab-panel" id="tab-character">
-    <div class="card" id="char-display">
-      <h2>キャラクター</h2>
-      <div id="char-info"></div>
-    </div>
-    <div class="card" id="char-creation" style="display:none;">
-      <h2>キャラクター作成</h2>
-      <div class="form-group">
-        <label for="char-name-input">名前</label>
-        <input type="text" id="char-name-input" placeholder="冒険者の名前" maxlength="20"/>
+    <!-- ===== ヘッダー ===== -->
+    <header id="app-header">
+      <div class="header-inner">
+        <h1 class="logo-title">LinguaQuest</h1>
+        <div class="header-hud">
+          <span class="hud-item" id="hud-level">Lv.1</span>
+          <span class="hud-item" id="hud-exp">EXP 0/100</span>
+          <span class="hud-item" id="hud-gold">Gold 0</span>
+          <span class="hud-item" id="hud-streak">🔥 0日</span>
+          <span class="hud-item" id="hud-clock">00:00</span>
+        </div>
+        <button class="btn-ai-toggle" id="btn-ai-toggle" title="AIチューター">
+          AI
+        </button>
       </div>
-      <div class="form-group">
-        <label for="char-ancestry-select">種族</label>
-        <select id="char-ancestry-select"></select>
+    </header>
+
+    <!-- ===== メインナビ ===== -->
+    <nav id="main-nav">
+      <button class="nav-btn active" data-tab="home">ホーム</button>
+      <button class="nav-btn" data-tab="character">キャラクター</button>
+      <button class="nav-btn" data-tab="missions">ミッション</button>
+      <button class="nav-btn" data-tab="scheduler">スケジューラー</button>
+      <button class="nav-btn" data-tab="sphere">スフィア盤</button>
+      <button class="nav-btn" data-tab="dashboard">ダッシュボード</button>
+      <button class="nav-btn" data-tab="review">復習</button>
+      <button class="nav-btn" data-tab="settings">設定</button>
+    </nav>
+
+    <!-- ===== コンテンツエリア ===== -->
+    <main id="content-area">
+      <!-- ===== ホーム ===== -->
+      <section class="tab-panel active" id="tab-home">
+        <div class="card welcome-card">
+          <h2>冒険の始まり</h2>
+          <p>
+            LinguaQuestへようこそ！言語を学びながら、キャラクターを育て、スフィア盤を解放し、ミッションをクリアしよう。
+          </p>
+          <div class="home-stats" id="home-stats"></div>
+        </div>
+        <div class="card" id="home-daily">
+          <h3>📅 今日のスケジュール</h3>
+          <div id="today-schedule-preview"></div>
+        </div>
+        <div class="card" id="home-recent">
+          <h3>📜 最近の活動</h3>
+          <div id="recent-activity"></div>
+        </div>
+        <div class="card" id="home-weakness">
+          <h3>⚠️ AI弱点アラート</h3>
+          <div id="weakness-alert"></div>
+        </div>
+      </section>
+
+      <!-- ===== キャラクター ===== -->
+      <section class="tab-panel" id="tab-character">
+        <div class="card" id="char-display">
+          <h2>キャラクター</h2>
+          <div id="char-info"></div>
+        </div>
+        <div class="card" id="char-creation" style="display: none">
+          <h2>キャラクター作成</h2>
+          <div class="form-group">
+            <label for="char-name-input">名前</label>
+            <input
+              type="text"
+              id="char-name-input"
+              placeholder="冒険者の名前"
+              maxlength="20"
+            />
+          </div>
+          <div class="form-group">
+            <label for="char-ancestry-select">種族</label>
+            <select id="char-ancestry-select"></select>
+          </div>
+          <div class="form-group">
+            <label for="char-heritage-select">Heritage</label>
+            <select id="char-heritage-select"></select>
+          </div>
+          <div class="form-group">
+            <label for="char-class-select">職業</label>
+            <select id="char-class-select"></select>
+          </div>
+          <div class="form-group">
+            <label for="char-subclass-select">Subclass</label>
+            <select id="char-subclass-select"></select>
+          </div>
+          <div class="bonus-preview" id="bonus-preview"></div>
+          <button class="btn-primary" id="btn-create-char">作成する</button>
+        </div>
+      </section>
+
+      <!-- ===== ミッション（タイマー付き学習タスク） ===== -->
+      <section class="tab-panel" id="tab-missions">
+        <div class="card">
+          <h2>🎯 学習ミッション</h2>
+          <p class="mission-hint">
+            タスクを開始してタイマーが完了したらXPを獲得！
+          </p>
+          <div id="mission-list"></div>
+        </div>
+        <div class="card">
+          <h3>📊 今日の進捗</h3>
+          <div id="mission-today-summary"></div>
+        </div>
+      </section>
+
+      <!-- ===== スケジューラー ===== -->
+      <section class="tab-panel" id="tab-scheduler">
+        <div class="card">
+          <h2>🗓️ AIスケジューラー</h2>
+          <div class="scheduler-controls">
+            <button class="btn-primary" id="btn-generate-schedule">
+              🤖 AIでスケジュール生成
+            </button>
+            <button class="btn-secondary" id="btn-manual-schedule">
+              ✏️ 手動で編集
+            </button>
+          </div>
+          <div id="scheduler-config">
+            <div class="form-group">
+              <label>1日の学習可能時間（分）</label>
+              <input
+                type="number"
+                id="daily-available-time"
+                value="120"
+                min="30"
+                max="480"
+              />
+            </div>
+            <div class="form-group">
+              <label>学習開始時刻</label>
+              <input type="time" id="study-start-time" value="09:00" />
+            </div>
+            <div class="form-group">
+              <label>優先言語</label>
+              <select id="priority-language">
+                <option value="balanced">バランス型</option>
+                <option value="italian">イタリア語重視</option>
+                <option value="english">英語重視</option>
+                <option value="cantonese">広東語重視</option>
+              </select>
+            </div>
+          </div>
+          <div id="weekly-schedule"></div>
+        </div>
+        <div class="card">
+          <h3>🔔 リマインダー設定</h3>
+          <div class="form-group">
+            <label
+              ><input type="checkbox" id="enable-notifications" />
+              ブラウザ通知を有効にする</label
+            >
+          </div>
+          <div class="form-group">
+            <label>リマインダータイミング</label>
+            <select id="reminder-timing">
+              <option value="5">5分前</option>
+              <option value="10" selected>10分前</option>
+              <option value="15">15分前</option>
+              <option value="30">30分前</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== スフィア盤 ===== -->
+      <section class="tab-panel" id="tab-sphere">
+        <div class="card">
+          <h2>スフィア盤</h2>
+          <p class="sphere-hint">ノードをクリックしてスキルを解放しよう</p>
+          <div id="sphere-grid-container">
+            <div id="sphere-grid"></div>
+          </div>
+          <div id="sphere-info" class="sphere-info-box"></div>
+        </div>
+      </section>
+
+      <!-- ===== ダッシュボード ===== -->
+      <section class="tab-panel" id="tab-dashboard">
+        <div class="card">
+          <h2>📈 学習ダッシュボード</h2>
+          <div class="dashboard-grid">
+            <div class="dash-card" id="dash-overview">
+              <h3>総合概要</h3>
+              <div id="dash-overview-content"></div>
+            </div>
+            <div class="dash-card" id="dash-language-breakdown">
+              <h3>言語別進捗</h3>
+              <canvas id="chart-language" width="400" height="200"></canvas>
+            </div>
+            <div class="dash-card" id="dash-skill-radar">
+              <h3>スキルレーダー</h3>
+              <canvas id="chart-radar" width="300" height="300"></canvas>
+            </div>
+            <div class="dash-card" id="dash-weekly-heatmap">
+              <h3>週間ヒートマップ</h3>
+              <div id="heatmap-container"></div>
+            </div>
+            <div class="dash-card" id="dash-streak-graph">
+              <h3>学習継続グラフ</h3>
+              <canvas id="chart-streak" width="400" height="150"></canvas>
+            </div>
+            <div class="dash-card" id="dash-ai-insights">
+              <h3>🤖 AI分析・予測</h3>
+              <div id="ai-insights-content"></div>
+              <button class="btn-primary" id="btn-ai-analyze">
+                AIで分析する
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 復習 ===== -->
+      <section class="tab-panel" id="tab-review">
+        <div class="card">
+          <h2>復習デッキ</h2>
+          <div id="review-area"></div>
+        </div>
+      </section>
+
+      <!-- ===== 設定 ===== -->
+      <section class="tab-panel" id="tab-settings">
+        <div class="card">
+          <h2>設定</h2>
+          <div class="form-group">
+            <label>データ管理</label>
+            <button class="btn-secondary" id="btn-export">エクスポート</button>
+            <button class="btn-secondary" id="btn-import">インポート</button>
+            <input
+              type="file"
+              id="import-file"
+              accept=".json"
+              style="display: none"
+            />
+            <button class="btn-danger" id="btn-reset">リセット</button>
+          </div>
+          <div class="form-group">
+            <label>バージョン</label>
+            <span id="app-version">v2.0.0</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== AIチューター サイドバー ===== -->
+    <aside id="ai-sidebar" class="ai-sidebar">
+      <div class="ai-sidebar-header">
+        <h3>AIチューター</h3>
+        <div class="ai-lang-switch">
+          <select id="ai-lang-select"></select>
+        </div>
+        <button class="btn-icon" id="btn-ai-settings" title="設定">⚙</button>
+        <button class="btn-icon" id="btn-ai-close" title="閉じる">✕</button>
       </div>
-      <div class="form-group">
-        <label for="char-heritage-select">Heritage</label>
-        <select id="char-heritage-select"></select>
+      <div class="ai-chat-area" id="ai-chat-messages"></div>
+      <div class="ai-input-area">
+        <input type="text" id="ai-input" placeholder="メッセージを入力…" />
+        <button class="btn-primary" id="ai-send-btn">送信</button>
       </div>
-      <div class="form-group">
-        <label for="char-class-select">職業</label>
-        <select id="char-class-select"></select>
-      </div>
-      <div class="form-group">
-        <label for="char-subclass-select">Subclass</label>
-        <select id="char-subclass-select"></select>
-      </div>
-      <div class="bonus-preview" id="bonus-preview"></div>
-      <button class="btn-primary" id="btn-create-char">作成する</button>
-    </div>
-  </section>
+      <div class="ai-status" id="ai-status"></div>
+    </aside>
 
-  <!-- スフィア盤 -->
-  <section class="tab-panel" id="tab-sphere">
-    <div class="card">
-      <h2>スフィア盤</h2>
-      <p class="sphere-hint">ノードをクリックしてスキルを解放しよう</p>
-      <div id="sphere-grid-container">
-        <div id="sphere-grid"></div>
-      </div>
-      <div id="sphere-info" class="sphere-info-box"></div>
-    </div>
-  </section>
-
-  <!-- クエスト -->
-  <section class="tab-panel" id="tab-quests">
-    <div class="card">
-      <h2>クエスト</h2>
-      <div id="quest-list"></div>
-    </div>
-  </section>
-
-  <!-- 復習 -->
-  <section class="tab-panel" id="tab-review">
-    <div class="card">
-      <h2>復習デッキ</h2>
-      <div id="review-area"></div>
-    </div>
-  </section>
-
-  <!-- 設定 -->
-  <section class="tab-panel" id="tab-settings">
-    <div class="card">
-      <h2>設定</h2>
-      <div class="form-group">
-        <label>データ管理</label>
-        <button class="btn-secondary" id="btn-export">エクスポート</button>
-        <button class="btn-secondary" id="btn-import">インポート</button>
-        <input type="file" id="import-file" accept=".json" style="display:none;"/>
-        <button class="btn-danger" id="btn-reset">リセット</button>
-      </div>
-      <div class="form-group">
-        <label>バージョン</label>
-        <span id="app-version">v1.0.0</span>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<!-- ===== AIチューター サイドバー ===== -->
-<aside id="ai-sidebar" class="ai-sidebar">
-  <div class="ai-sidebar-header">
-    <h3>AIチューター</h3>
-    <div class="ai-lang-switch">
-      <select id="ai-lang-select"></select>
-    </div>
-    <button class="btn-icon" id="btn-ai-settings" title="設定">⚙</button>
-    <button class="btn-icon" id="btn-ai-close" title="閉じる">✕</button>
-  </div>
-  <div class="ai-chat-area" id="ai-chat-messages"></div>
-  <div class="ai-input-area">
-    <input type="text" id="ai-input" placeholder="メッセージを入力…"/>
-    <button class="btn-primary" id="ai-send-btn">送信</button>
-  </div>
-  <div class="ai-status" id="ai-status"></div>
-</aside>
-
-<!-- ===== AI設定モーダル ===== -->
-<div class="modal-overlay" id="ai-settings-overlay">
-  <div class="modal-content">
-    <h3>AIチューター設定</h3>
-    <div class="form-group">
-      <label for="ai-provider-select">APIプロバイダ</label>
-      <select id="ai-provider-select">
-        <option value="gemini">Gemini</option>
-        <option value="openrouter">OpenRouter</option>
-        <option value="openai">OpenAI</option>
-        <option value="custom">カスタム</option>
-      </select>
-    </div>
-    <div class="form-group" id="fg-gemini-key">
-      <label for="ai-gemini-key">Gemini APIキー</label>
-      <input type="password" id="ai-gemini-key" placeholder="APIキーを入力"/>
-    </div>
-    <div class="form-group" id="fg-gemini-model">
-      <label for="ai-gemini-model">Geminiモデル</label>
-      <input type="text" id="ai-gemini-model" placeholder="gemini-2.5-flash"/>
-    </div>
-    <div class="form-group" id="fg-openrouter-key">
-      <label for="ai-openrouter-key">OpenRouter APIキー</label>
-      <input type="password" id="ai-openrouter-key" placeholder="APIキーを入力"/>
-    </div>
-    <div class="form-group" id="fg-openrouter-model">
-      <label for="ai-openrouter-model">OpenRouterモデル</label>
-      <input type="text" id="ai-openrouter-model" placeholder="deepseek/deepseek-r1:free"/>
-    </div>
-    <div class="form-group" id="fg-openai-key">
-      <label for="ai-openai-key">OpenAI APIキー</label>
-      <input type="password" id="ai-openai-key" placeholder="APIキーを入力"/>
-    </div>
-    <div class="form-group" id="fg-openai-model">
-      <label for="ai-openai-model">OpenAIモデル</label>
-      <input type="text" id="ai-openai-model" placeholder="gpt-4o"/>
-    </div>
-    <div class="form-group" id="fg-custom-ep">
-      <label for="ai-custom-endpoint">カスタムエンドポイント</label>
-      <input type="text" id="ai-custom-endpoint" placeholder="https://your-api.com/v1"/>
-    </div>
-    <div class="form-group" id="fg-custom-key">
-      <label for="ai-custom-key">カスタムAPIキー</label>
-      <input type="password" id="ai-custom-key" placeholder="APIキーを入力"/>
-    </div>
-    <div class="form-group" id="fg-custom-model">
-      <label for="ai-custom-model">カスタムモデル</label>
-      <input type="text" id="ai-custom-model" placeholder="model-name"/>
-    </div>
-    <div class="form-group">
-      <label>学習言語の管理</label>
-      <div id="ai-lang-manager"></div>
-      <div class="lang-add-row">
-        <input type="text" id="ai-new-lang-code" placeholder="コード (例: ko)" maxlength="5"/>
-        <input type="text" id="ai-new-lang-name" placeholder="名前 (例: 韓国語)" maxlength="20"/>
-        <button class="btn-secondary" id="btn-add-lang">追加</button>
+    <!-- ===== AI設定モーダル ===== -->
+    <div class="modal-overlay" id="ai-settings-overlay">
+      <div class="modal-content">
+        <h3>AIチューター設定</h3>
+        <div class="form-group">
+          <label for="ai-provider-select">APIプロバイダ</label>
+          <select id="ai-provider-select">
+            <option value="gemini">Gemini</option>
+            <option value="openrouter">OpenRouter</option>
+            <option value="openai">OpenAI</option>
+            <option value="custom">カスタム</option>
+          </select>
+        </div>
+        <div class="form-group" id="fg-gemini-key">
+          <label for="ai-gemini-key">Gemini APIキー</label>
+          <input
+            type="password"
+            id="ai-gemini-key"
+            placeholder="APIキーを入力"
+          />
+        </div>
+        <div class="form-group" id="fg-gemini-model">
+          <label for="ai-gemini-model">Geminiモデル</label>
+          <input
+            type="text"
+            id="ai-gemini-model"
+            placeholder="gemini-2.5-flash"
+          />
+        </div>
+        <div class="form-group" id="fg-openrouter-key">
+          <label for="ai-openrouter-key">OpenRouter APIキー</label>
+          <input
+            type="password"
+            id="ai-openrouter-key"
+            placeholder="APIキーを入力"
+          />
+        </div>
+        <div class="form-group" id="fg-openrouter-model">
+          <label for="ai-openrouter-model">OpenRouterモデル</label>
+          <input
+            type="text"
+            id="ai-openrouter-model"
+            placeholder="deepseek/deepseek-r1:free"
+          />
+        </div>
+        <div class="form-group" id="fg-openai-key">
+          <label for="ai-openai-key">OpenAI APIキー</label>
+          <input
+            type="password"
+            id="ai-openai-key"
+            placeholder="APIキーを入力"
+          />
+        </div>
+        <div class="form-group" id="fg-openai-model">
+          <label for="ai-openai-model">OpenAIモデル</label>
+          <input type="text" id="ai-openai-model" placeholder="gpt-4o" />
+        </div>
+        <div class="form-group" id="fg-custom-ep">
+          <label for="ai-custom-endpoint">カスタムエンドポイント</label>
+          <input
+            type="text"
+            id="ai-custom-endpoint"
+            placeholder="https://your-api.com/v1"
+          />
+        </div>
+        <div class="form-group" id="fg-custom-key">
+          <label for="ai-custom-key">カスタムAPIキー</label>
+          <input
+            type="password"
+            id="ai-custom-key"
+            placeholder="APIキーを入力"
+          />
+        </div>
+        <div class="form-group" id="fg-custom-model">
+          <label for="ai-custom-model">カスタムモデル</label>
+          <input type="text" id="ai-custom-model" placeholder="model-name" />
+        </div>
+        <div class="form-group">
+          <label>学習言語の管理</label>
+          <div id="ai-lang-manager"></div>
+          <div class="lang-add-row">
+            <input
+              type="text"
+              id="ai-new-lang-code"
+              placeholder="コード (例: ko)"
+              maxlength="5"
+            />
+            <input
+              type="text"
+              id="ai-new-lang-name"
+              placeholder="名前 (例: 韓国語)"
+              maxlength="20"
+            />
+            <button class="btn-secondary" id="btn-add-lang">追加</button>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-primary" id="btn-save-ai-settings">保存</button>
+          <button class="btn-secondary" id="btn-test-ai">接続テスト</button>
+          <button class="btn-secondary" id="btn-close-ai-settings">
+            閉じる
+          </button>
+        </div>
       </div>
     </div>
-    <div class="modal-actions">
-      <button class="btn-primary" id="btn-save-ai-settings">保存</button>
-      <button class="btn-secondary" id="btn-test-ai">接続テスト</button>
-      <button class="btn-secondary" id="btn-close-ai-settings">閉じる</button>
-    </div>
-  </div>
-</div>
 
-<!-- ===== トースト通知 ===== -->
-<div id="toast-container"></div>
+    <!-- ===== トースト通知 ===== -->
+    <div id="toast-container"></div>
 
-<script src="./app.js"></script>
-</body>
+    <script src="./app.js"></script>
+  </body>
 </html>
